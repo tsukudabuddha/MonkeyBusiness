@@ -9,8 +9,8 @@
 import SpriteKit
 
 class MainMenu: SKScene {
-    private var buttonPlay: MSButtonNode!
-    var GameScene: GameScene!
+    var buttonPlay: MSButtonNode!
+    var player: Player!
     
     
     override func didMove(to view: SKView) {
@@ -20,19 +20,39 @@ class MainMenu: SKScene {
         buttonPlay = self.childNode(withName: "buttonPlay") as! MSButtonNode
         
         buttonPlay.selectedHandler = {
-            /* Load Game scene */
-            let scene = GameScene(fileNamed: "GameScene") as GameScene!
-            
-            /* Ensure correct aspect mode */
-            scene?.scaleMode = .aspectFill
-            
-            /* Character Animation */
-            scene.beginningAnimation()
-            scene.buttonPlay.isHidden = true
-            
-            /* Change gamestate */
-            scene.gameState = .active
-
+                self.loadGame()
+            }
         }
-    }
+    
+    
+        func loadGame() {
+            
+            //print("Game Should Load")
+            
+            /* 1) Grab reference to our spriteKit view */
+            guard let skView = self.view as SKView! else {
+                print("Could not get SkView")
+                return
+            }
+            
+            /* 2) Load Game Scene */
+            guard let scene = GameScene.level() else {
+                print("Could not load GameScene")
+                return
+            }
+            
+            /* 3) Ensure correct aspect mode */
+            scene.scaleMode = .aspectFit
+            
+            /* Show Debug */
+            //        skView.showsPhysics = true
+            //        skView.showsDrawCount = true
+            skView.showsFPS = true
+            
+            /* 4) Start game scene */
+            print(scene)
+            skView.presentScene(scene)
+        }
+    
+    
 }

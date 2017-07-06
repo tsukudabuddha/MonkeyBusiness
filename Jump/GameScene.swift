@@ -6,6 +6,8 @@
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
 //
 
+
+
 import SpriteKit
 import GameplayKit
 
@@ -25,12 +27,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var spawnTimer: CFTimeInterval = 0
     let spawnTime: Double = 1.25
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */
-    var isTouchingGround = true
-    var characterSpeed: CGFloat = 3
+
+    var characterSpeed: CGFloat = 2
 
     let scrollSpeed: CGFloat = 100
 
-    private var gameState: GameSceneState = .gameOver
+    private var gameState: GameSceneState = .active
     private var characterOrientation: characterOrientationState = .bottom
     
     override func didMove(to view: SKView) {
@@ -41,6 +43,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         
         physicsWorld.contactDelegate = self
+        beginningAnimation()
         
     }
     
@@ -148,6 +151,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         spawnObstacles()
 
     }
+    
+    // Make a Class method to load levels
+    class func level() -> GameScene? {
+        guard let scene = GameScene(fileNamed: "GameScene") else {
+            return nil
+        }
+        scene.scaleMode = .aspectFit
+        return scene
+        
+    }
+    
     func beginningAnimation() {
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
         player.run(SKAction(named: "beginAnimationMonkey")!)
