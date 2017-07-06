@@ -6,7 +6,8 @@
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
 //
 
-
+// TODO: Jump on top to kill scorpion
+//             -> by using didbegin contact, check location of monkey in relation to scorpion
 
 import SpriteKit
 import GameplayKit
@@ -22,6 +23,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var player: Player!
     private var roundLabel: SKLabelNode! = SKLabelNode()
     private var round: Int = 1
+    private var isTouchingGround: Bool = true
+    var scorpion: Scorpion = Scorpion()
     
     
     
@@ -41,11 +44,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
         
-        
+        self.addChild(scorpion)
         // Create Physics Body for frame
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
-        
+        self.physicsBody?.categoryBitMask = 2
+        self.physicsBody?.contactTestBitMask = 4294967295
         physicsWorld.contactDelegate = self
+        
         createObjects()
         beginningAnimation()
         
@@ -57,25 +62,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Checks to see if game is running */
         if gameState != .active { return }
         
-        if player.orientation == .bottom {
-            /* Apply vertical impulse */
-            player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 15))
+        /* Checks if player is on the ground */
+        if isTouchingGround {
+            
+            if player.orientation == .bottom {
+                /* Apply vertical impulse */
+                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 15))
+            }
+            
+            if player.orientation == .right {
+                /* Apply vertical impulse */
+                player.physicsBody?.applyImpulse(CGVector(dx: -15, dy: 0))
+            }
+            
+            if player.orientation == .top {
+                /* Apply vertical impulse */
+                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -15))
+            }
+            
+            if player.orientation == .left {
+                /* Apply vertical impulse */
+                player.physicsBody?.applyImpulse(CGVector(dx: 15, dy: 0))
+            }
         }
         
-        if player.orientation == .right {
-            /* Apply vertical impulse */
-            player.physicsBody?.applyImpulse(CGVector(dx: -15, dy: 0))
-        }
-        
-        if player.orientation == .top {
-            /* Apply vertical impulse */
-            player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -15))
-        }
-        
-        if player.orientation == .left {
-            /* Apply vertical impulse */
-            player.physicsBody?.applyImpulse(CGVector(dx: 15, dy: 0))
-        }
         
     }
     
@@ -84,6 +94,82 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Called before each frame is rendered
         if gameState == .gameOver { return }
         
+        
+        playerMovement()
+        
+        scorpion.movement(frameWidth: self.frame.width, frameHeight: self.frame.height)
+        checkSpeed()
+        
+        
+        // Call scrolling function for the game
+        spawnObstacles()
+
+    }
+    
+    func didBegin(_ contact: SKPhysicsContact) {
+        /* Physics contact delegate implementation */
+        /* Get references to the bodies invloved in the collision */
+        let contactA: SKPhysicsBody = contact.bodyA
+        let contactB: SKPhysicsBody = contact.bodyB
+        
+        /* Get references to the phyiscs body parent SKSpriteNode */
+        let nodeA = contactA.node! //as! SKSpriteNode
+        let nodeB = contactB.node!//as! SKSpriteNode
+        
+        if nodeA.name == "player" {
+            if nodeB.name == "ground" {
+                self.isTouchingGround = true
+            }
+        }
+        
+        if nodeA.name == "ground" {
+            if nodeB.name == "player" {
+                self.isTouchingGround = true
+            }
+        }
+        
+        
+    }
+    
+    func didEnd(_ contact: SKPhysicsContact) {
+        /* Runs when objects stop being in contact */
+        
+        /* Get references to the bodies invloved in the collision */
+        let contactA: SKPhysicsBody = contact.bodyA
+        let contactB: SKPhysicsBody = contact.bodyB
+        
+        /* Get references to the phyiscs body parent */
+        let nodeA = contactA.node!
+        let nodeB = contactB.node!
+        
+        if nodeA.name == "player" {
+            if nodeB.name == "ground" {
+                self.isTouchingGround = false
+            }
+        }
+        
+        if nodeA.name == "ground" {
+            if nodeB.name == "player" {
+                self.isTouchingGround = false
+            }
+        }
+
+    }
+
+    
+    // Make a Class method to load levels
+    class func level() -> GameScene? {
+        guard let scene = GameScene(fileNamed: "GameScene") else {
+            return nil
+        }
+        scene.scaleMode = .aspectFit
+        return scene
+        
+    }
+    
+    
+    // MARK: Player Auto Run
+    func playerMovement() {
         /* Called if player is on bottom of screen */
         if player.orientation == .bottom {
             player.position.x += characterSpeed
@@ -147,30 +233,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.run(SKAction(named: "Rotate")!)
             }
         }
-        
-        print(player.orientation)
-        
-        
-        // Call scrolling function for the game
-        spawnObstacles()
 
     }
     
-    // Make a Class method to load levels
-    class func level() -> GameScene? {
-        guard let scene = GameScene(fileNamed: "GameScene") else {
-            return nil
-        }
-        scene.scaleMode = .aspectFit
-        return scene
-        
-    }
+    
     
     func beginningAnimation() {
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
         player.run(SKAction(named: "beginAnimationMonkey")!)
         player.run(SKAction(named: "Run")!)
         roundLabel.run(SKAction(named: "RoundLabel")!)
+        scorpion.run(SKAction(named: "Scorpion")!)
     }
     
     func createObjects() {
@@ -178,6 +251,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         roundLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2))
         roundLabel.text = "Round \(round)"
         self.addChild(roundLabel)
+    }
+    
+    func spawnEnemy() {
+        /* Create scorpion object */
+        let scorpion = Scorpion()
+        scorpion.movement(frameWidth: self.frame.width, frameHeight: self.frame.height)
+        
+    }
+    
+    
+    // TODO: Create way to monitor speed
+    func checkSpeed() {
+        
     }
     func spawnObstacles() {
         
