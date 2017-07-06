@@ -20,6 +20,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Declare GameScene objects
     
     private var player: Player!
+    private var roundLabel: SKLabelNode! = SKLabelNode()
+    private var round: Int = 1
     
     
     
@@ -39,10 +41,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
         
+        
         // Create Physics Body for frame
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         
         physicsWorld.contactDelegate = self
+        createObjects()
         beginningAnimation()
         
     }
@@ -166,6 +170,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
         player.run(SKAction(named: "beginAnimationMonkey")!)
         player.run(SKAction(named: "Run")!)
+        roundLabel.run(SKAction(named: "RoundLabel")!)
+    }
+    
+    func createObjects() {
+        /* Initialize roundLabel object */
+        roundLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2))
+        roundLabel.text = "Round \(round)"
+        self.addChild(roundLabel)
     }
     func spawnObstacles() {
         
