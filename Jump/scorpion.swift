@@ -36,10 +36,11 @@ class Scorpion: SKSpriteNode {
                                                  height: 50))
         physicsBody?.affectedByGravity = false
         physicsBody?.allowsRotation = false
+        physicsBody?.contactTestBitMask = 2
         
         self.run(SKAction(named: "Scorpion")!)
         
-        position = CGPoint(x: 310, y: 290)
+        position = CGPoint(x: 305, y: 290)
         run(SKAction(named: "Rotate")!)
         
         self.orientation = .right

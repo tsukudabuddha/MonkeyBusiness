@@ -23,17 +23,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var player: Player!
     private var roundLabel: SKLabelNode! = SKLabelNode()
     private var round: Int = 1
-    private var isTouchingGround: Bool = true
+    private var canJump: Bool = true
+    private var jumping: Bool = false
     var scorpion: Scorpion = Scorpion()
     
     
     
     // Create Timing Variables
-    var spawnTimer: CFTimeInterval = 0
-    let spawnTime: Double = 1.25
+    var jumpTimer: CFTimeInterval = 0
+    let jumpTime: Double = 0.2
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */
 
-    var characterSpeed: CGFloat = 2
+    var characterSpeed: CGFloat = 100
 
     let scrollSpeed: CGFloat = 100
 
@@ -49,6 +50,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         self.physicsBody?.categoryBitMask = 2
         self.physicsBody?.contactTestBitMask = 4294967295
+        self.physicsBody?.restitution = 0.2
         physicsWorld.contactDelegate = self
         
         createObjects()
@@ -63,28 +65,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if gameState != .active { return }
         
         /* Checks if player is on the ground */
-        if isTouchingGround {
+        if canJump && jumpTimer <= jumpTime {
             
             if player.orientation == .bottom {
                 /* Apply vertical impulse */
-                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 15))
+                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 12.5))
             }
             
             if player.orientation == .right {
                 /* Apply vertical impulse */
-                player.physicsBody?.applyImpulse(CGVector(dx: -15, dy: 0))
+                player.physicsBody?.applyImpulse(CGVector(dx: -12.5, dy: 0))
             }
             
             if player.orientation == .top {
                 /* Apply vertical impulse */
-                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -15))
+                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -12.5))
             }
             
             if player.orientation == .left {
                 /* Apply vertical impulse */
-                player.physicsBody?.applyImpulse(CGVector(dx: 15, dy: 0))
+                player.physicsBody?.applyImpulse(CGVector(dx: 12.5, dy: 0))
             }
+            player.physicsBody?.affectedByGravity = false
+            
         }
+        
+        jumping = true
         
         
     }
@@ -98,8 +104,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playerMovement()
         
         scorpion.movement(frameWidth: self.frame.width, frameHeight: self.frame.height)
-        checkSpeed()
         
+        if jumping {
+            /* Update spawn touch timer */
+            jumpTimer += fixedDelta
+        }
+        
+        if jumpTimer > jumpTime{
+            player.physicsBody?.affectedByGravity = true
+            jumping = false
+            
+        }
         
         // Call scrolling function for the game
         spawnObstacles()
@@ -117,18 +132,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let nodeB = contactB.node!//as! SKSpriteNode
         
         if nodeA.name == "player" {
-            if nodeB.name == "ground" {
-                self.isTouchingGround = true
+            self.canJump = true
+        }
+        
+        if nodeB.name == "player" {
+            self.canJump = true
+        }
+        
+        
+        // TODO: Create player touching scorpion death or kill
+        if nodeA.name == "player" {
+            if nodeB.name == "scorpion" {
+                checkScorpion(scorpion: nodeB as! Scorpion)
             }
         }
         
-        if nodeA.name == "ground" {
+        if nodeA.name == "scorpion" {
             if nodeB.name == "player" {
-                self.isTouchingGround = true
+                checkScorpion(scorpion: nodeA as! Scorpion)
             }
         }
         
-        
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        player.physicsBody?.affectedByGravity = true
+        jumping = false
+        jumpTimer = 0
     }
     
     func didEnd(_ contact: SKPhysicsContact) {
@@ -143,15 +173,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let nodeB = contactB.node!
         
         if nodeA.name == "player" {
-            if nodeB.name == "ground" {
-                self.isTouchingGround = false
-            }
+            self.canJump = false
         }
         
-        if nodeA.name == "ground" {
-            if nodeB.name == "player" {
-                self.isTouchingGround = false
-            }
+        if nodeB.name == "player" {
+            self.canJump = false
         }
 
     }
@@ -172,8 +198,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func playerMovement() {
         /* Called if player is on bottom of screen */
         if player.orientation == .bottom {
-            player.position.x += characterSpeed
-            print(player.position)
+            
+            player.physicsBody?.velocity.dx = characterSpeed
+            //print(player.position)
             if player.position.x > self.frame.width - 50 {
                 
                 /* Change Gravity so right is down */
@@ -188,8 +215,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Called if the player is on right-side of screen */
         if player.orientation == .right {
-            player.position.y += characterSpeed
-            print(player.position)
+            
+            player.physicsBody?.velocity.dy = characterSpeed
+            //print(player.position)
             if player.position.y > self.frame.height - 50 {
                 
                 /* Change Gravity so top is down */
@@ -204,8 +232,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Called if the player is on top of screen */
         if player.orientation == .top {
-            player.position.x -= characterSpeed
-            print(player.position)
+            
+            player.physicsBody?.velocity.dx = -1 * characterSpeed
+            //print(player.position)
             if player.position.x < 0 {
                 
                 /* Change Gravity so left is down */
@@ -220,8 +249,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Called if the player is on left-side of screen */
         if player.orientation == .left {
-            player.position.y -= characterSpeed
-            print(player.position)
+            
+            player.physicsBody?.velocity.dy = -1 * characterSpeed
+            //print(player.position)
             if player.position.y < 10 {
                 
                 /* Change Gravity so bottom is down */
@@ -235,8 +265,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
 
     }
-    
-    
     
     func beginningAnimation() {
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
@@ -265,8 +293,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func checkSpeed() {
         
     }
+    
     func spawnObstacles() {
         
 
+    }
+    
+    // TODO: check scorpion relation to player
+    func checkScorpion(scorpion: Scorpion) {
+        switch player.orientation {
+        case .right:
+            if player.position.x < scorpion.position.x {
+                print("fuck scorpions")
+            }
+        default:
+            break
+        }
     }
 }

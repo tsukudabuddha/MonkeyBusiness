@@ -50,7 +50,7 @@ class MainMenu: SKScene {
             skView.showsFPS = true
             
             /* 4) Start game scene */
-            print(scene)
+            //print(scene)
             skView.presentScene(scene)
         }
     
