@@ -19,6 +19,10 @@ class Scorpion: SKSpriteNode {
     
     var orientation: Orientation = .right
     let enemySpeed = CGFloat(1)
+    var spawned: Int = 0
+    static var totalSpawned: Int = 0
+    static var totalAlive: Int = 0
+    var isAlive = true
     
     init() {
         // Make a texture from an image, a color, and size
@@ -37,7 +41,10 @@ class Scorpion: SKSpriteNode {
         physicsBody?.affectedByGravity = false
         physicsBody?.allowsRotation = false
         physicsBody?.contactTestBitMask = 2
-        physicsBody?.collisionBitMask = 0
+        
+        Scorpion.totalSpawned += 1
+        Scorpion.totalAlive += 1
+        
         
         self.run(SKAction(named: "Scorpion")!)
         
@@ -78,6 +85,13 @@ class Scorpion: SKSpriteNode {
         let seq = SKAction.sequence([death, removeScorpion])
         self.run(seq)
         
+        if self.isAlive {
+            Scorpion.totalAlive -= 1
+            self.isAlive = false
+        }
+    
+        print("ded")
+        
         /* Load partcile effect */
         let particles = SKEmitterNode(fileNamed: "deathEmitter")!
         
@@ -94,9 +108,7 @@ class Scorpion: SKSpriteNode {
         
     }
     
-    func amount() {
-        
-    }
+
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not yet been implemented")

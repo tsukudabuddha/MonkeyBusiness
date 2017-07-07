@@ -124,6 +124,8 @@
 			isa = PBXGroup;
 			children = (
 				49D1D3451F0D55E800FCB951 /* monkey.sks */,
+				49D1D34F1F0DB72400FCB951 /* scorpion.sks */,
+				49266ACE1F0FFC770035AF75 /* deathEmitter.sks */,
 				49266ACA1F0F0D170035AF75 /* Platform.swift */,
 				494578EF1F0B05E200267C4A /* AppDelegate.swift */,
 				494578F31F0B05E200267C4A /* Actions.sks */,
@@ -132,9 +134,7 @@
 				49D1D34B1F0D9D7D00FCB951 /* MainMenu.sks */,
 				49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */,
 				49D1D3511F0EB71C00FCB951 /* go3v2.ttf */,
-				49D1D34F1F0DB72400FCB951 /* scorpion.sks */,
 				49D1D3541F0EC5CE00FCB951 /* scorpion.swift */,
-				49266ACE1F0FFC770035AF75 /* deathEmitter.sks */,
 				49D1D3491F0D845000FCB951 /* Player.swift */,
 				494578F71F0B05E200267C4A /* GameViewController.swift */,
 				494578F91F0B05E200267C4A /* Main.storyboard */,

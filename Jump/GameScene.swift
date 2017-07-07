@@ -53,6 +53,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         self.physicsBody?.categoryBitMask = 2
         self.physicsBody?.contactTestBitMask = 4294967295
+        self.physicsBody?.collisionBitMask = 1
         self.physicsBody?.restitution = 0.2
         physicsWorld.contactDelegate = self
         
@@ -118,9 +119,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             jumping = false
             
         }
-        
-        // Call scrolling function for the game
-        spawnObstacles()
 
     }
     
@@ -272,6 +270,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.run(SKAction(named: "Rotate")!)
                 
                 spawnObstacles(orientation: player.orientation)
+                roundChecker()
                 
            }
         }
@@ -337,6 +336,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func roundChecker() {
+        print("Scorpions alive: \(Scorpion.totalAlive)")
+        if Scorpion.totalAlive == 0 {
+            round += 1
+            roundLabel.text = "Round \(round)"
+            roundLabel.run(SKAction(named: "RoundLabel")!)
+        }
+    }
+    
     func beginningAnimation() {
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
         player.run(SKAction(named: "beginAnimationMonkey")!)
@@ -360,33 +368,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
-    // TODO: Create way to monitor speed
-    func checkSpeed() {
-        
-    }
-    
-    func spawnObstacles() {
-        
-
-    }
-    
     // TODO: check scorpion relation to player
     func checkScorpion(scorpion: Scorpion) {
         
         switch player.orientation {
         case .right:
-            if player.position.x < scorpion.position.x {
+            if player.position.x + 33 < scorpion.position.x {
                 scorpion.die()
+                print("scorpion x: \(scorpion.position.x)")
+                print("player x: \(player.position.x)")
                 
                 /* Player jumps off enemy */
                 player.physicsBody?.applyImpulse(CGVector(dx: -1, dy: 0))
+            } else {
+                player.run(SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50))
             }
         case .left:
-            if player.position.x > scorpion.position.x {
+            if player.position.x - 10 > scorpion.position.x {
                 scorpion.die()
                 
                 /* Player jumps off enemy */
                 player.physicsBody?.applyImpulse(CGVector(dx: 1, dy: 0))
+            } else {
+                player.run(SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50))
             }
         default:
             break
