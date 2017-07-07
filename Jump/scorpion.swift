@@ -36,7 +36,8 @@ class Scorpion: SKSpriteNode {
                                                  height: 50))
         physicsBody?.affectedByGravity = false
         physicsBody?.allowsRotation = false
-        physicsBody?.contactTestBitMask = 4294967295
+        physicsBody?.contactTestBitMask = 2
+        physicsBody?.collisionBitMask = 0
         
         self.run(SKAction(named: "Scorpion")!)
         
@@ -68,6 +69,35 @@ class Scorpion: SKSpriteNode {
         }
 
     }
+    
+    func die() {
+        // TODO: Create particles on death
+        
+        let death = SKAction(named: "Death")!
+        let removeScorpion = SKAction.removeFromParent()
+        let seq = SKAction.sequence([death, removeScorpion])
+        self.run(seq)
+        
+        /* Load partcile effect */
+        let particles = SKEmitterNode(fileNamed: "deathEmitter")!
+        
+        /* Position particles on scorpion */
+        particles.position = self.position
+        
+        /* Add particles to the scene */
+        self.parent?.addChild(particles)
+        let wait = SKAction.wait(forDuration: 1)
+        let removeParticles = SKAction.removeFromParent()
+        let particleSeq = SKAction.sequence([wait, removeParticles])
+        particles.run(particleSeq)
+        
+        
+    }
+    
+    func amount() {
+        
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not yet been implemented")
     }

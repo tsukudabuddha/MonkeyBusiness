@@ -27,6 +27,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var jumping: Bool = false
     var scorpion: Scorpion = Scorpion()
     
+    var platform1 : Platform! = Platform()
+    var platform2 : Platform! = Platform()
+    var platform3 : Platform! = Platform()
+    var platform4 : Platform! = Platform()
+    
     
     
     // Create Timing Variables
@@ -140,17 +145,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // TODO: Create player touching scorpion death or kill
         if nodeA.name == "player" {
-            if nodeB.name == "scorpion" {
+            if nodeB.physicsBody?.contactTestBitMask == 2 {
                 checkScorpion(scorpion: nodeB as! Scorpion)
             }
         }
         
-        if nodeA.name == "scorpion" {
+        if nodeA.physicsBody?.contactTestBitMask == 2 {
             if nodeB.name == "player" {
                 checkScorpion(scorpion: nodeA as! Scorpion)
             }
         }
-        
+
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -192,14 +197,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
-    // MARK: Player Auto Run
+    // MARK: Player Auto Run and calls spawnObstacles()
     func playerMovement() {
         /* Called if player is on bottom of screen */
         if player.orientation == .bottom {
             
             player.physicsBody?.velocity.dx = characterSpeed
             //print(player.position)
-            if player.position.x > self.frame.width - 50 {
+            if player.position.x > self.frame.width - 60 {
                 
                 /* Change Gravity so right is down */
                 self.physicsWorld.gravity.dx = 9.8
@@ -208,6 +213,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 /* Change player orientation to work with new gravity */
                 player.orientation = .right
                 player.run(SKAction(named: "Rotate")!)
+                
             }
         }
         
@@ -225,7 +231,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 /* Change player orientation to work with new gravity */
                 player.orientation = .top
                 player.run(SKAction(named: "Rotate")!)
+                
+                spawnObstacles(orientation: player.orientation)
+                
             }
+            
         }
         
         /* Called if the player is on top of screen */
@@ -243,6 +253,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.orientation = .left
                 player.run(SKAction(named: "Rotate")!)
             }
+            
         }
         
         /* Called if the player is on left-side of screen */
@@ -259,9 +270,71 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 /* Change player orientation to work with new gravity */
                 player.orientation = .bottom
                 player.run(SKAction(named: "Rotate")!)
-            }
+                
+                spawnObstacles(orientation: player.orientation)
+                
+           }
         }
 
+    }
+    
+    func spawnObstacles(orientation: characterOrientationState) {
+        switch orientation {
+        case .bottom:
+            /* Remove old platforms */
+            platform1.removeFromParent()
+            platform2.removeFromParent()
+            platform3.removeFromParent()
+            platform4.removeFromParent()
+            
+            /* Position new platforms */
+            platform1.position = CGPoint(x: 275, y: 400)
+            platform2.position = CGPoint(x: 275, y: 300)
+            platform3.position = CGPoint(x: 275, y: 200)
+            platform4.position = CGPoint(x: 275, y: 100)
+            
+            /* Flip platforms */
+            platform1.xScale = platform1.xScale * -1
+            platform2.xScale = platform2.xScale * -1
+            platform3.xScale = platform3.xScale * -1
+            platform4.xScale = platform4.xScale * -1
+            
+            /* Add platform to scene */
+            self.addChild(platform1)
+            self.addChild(platform2)
+            self.addChild(platform3)
+            self.addChild(platform4)
+
+        case .top:
+            
+            /* Remove old platforms */
+            platform1.removeFromParent()
+            platform2.removeFromParent()
+            platform3.removeFromParent()
+            platform4.removeFromParent()
+            
+            /* position new platforms */
+            platform1.position = CGPoint(x: 45, y: 500)
+            platform2.position = CGPoint(x: 45, y: 450)
+            platform3.position = CGPoint(x: 45, y: 300)
+            platform4.position = CGPoint(x: 45, y: 150)
+            
+            /* Flip platforms */
+            platform1.xScale = platform1.xScale * -1
+            platform2.xScale = platform2.xScale * -1
+            platform3.xScale = platform3.xScale * -1
+            platform4.xScale = platform4.xScale * -1
+            
+            /* Add new platforms */
+            self.addChild(platform1)
+            self.addChild(platform2)
+            self.addChild(platform3)
+            self.addChild(platform4)
+            
+        default:
+            break
+
+        }
     }
     
     func beginningAnimation() {
@@ -303,7 +376,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         switch player.orientation {
         case .right:
             if player.position.x < scorpion.position.x {
-                print("fuck scorpions")
+                scorpion.die()
+                
+                /* Player jumps off enemy */
+                player.physicsBody?.applyImpulse(CGVector(dx: -1, dy: 0))
+            }
+        case .left:
+            if player.position.x > scorpion.position.x {
+                scorpion.die()
+                
+                /* Player jumps off enemy */
+                player.physicsBody?.applyImpulse(CGVector(dx: 1, dy: 0))
             }
         default:
             break
