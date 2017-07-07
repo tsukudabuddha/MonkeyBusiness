@@ -6,9 +6,6 @@
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
 //
 
-// TODO: Jump on top to kill scorpion
-//             -> by using didbegin contact, check location of monkey in relation to scorpion
-
 import SpriteKit
 import GameplayKit
 
@@ -64,6 +61,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         /* Called when a touch begins */
+        
         
         /* Checks to see if game is running */
         if gameState != .active { return }
@@ -157,6 +155,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        /* Checks to see if game is running */
+        if gameState != .active { return }
+        
         player.physicsBody?.affectedByGravity = true
         jumping = false
         jumpTimer = 0
@@ -342,6 +343,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             round += 1
             roundLabel.text = "Round \(round)"
             roundLabel.run(SKAction(named: "RoundLabel")!)
+            
+            
         }
     }
     
@@ -375,13 +378,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .right:
             if player.position.x + 33 < scorpion.position.x {
                 scorpion.die()
-                print("scorpion x: \(scorpion.position.x)")
-                print("player x: \(player.position.x)")
                 
                 /* Player jumps off enemy */
                 player.physicsBody?.applyImpulse(CGVector(dx: -1, dy: 0))
+                
             } else {
-                player.run(SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50))
+                gameOver()
             }
         case .left:
             if player.position.x - 10 > scorpion.position.x {
@@ -390,10 +392,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 /* Player jumps off enemy */
                 player.physicsBody?.applyImpulse(CGVector(dx: 1, dy: 0))
             } else {
-                player.run(SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50))
+                gameOver()
             }
         default:
             break
         }
     }
+    
+    func gameOver() {
+        /* Set gamestate to gameOver */
+        gameState = .gameOver
+        player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        player.removeAllActions()
+        player.run(SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50))
+    }
+    
+    
+    
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
