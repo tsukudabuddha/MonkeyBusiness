@@ -34,9 +34,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let jumpTime: Double = 0.2
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */
 
-    var characterSpeed: CGFloat = 100
-
-    let scrollSpeed: CGFloat = 100
+    var characterSpeed: CGFloat = 150
 
     private var gameState: GameSceneState = .active
     private var characterOrientation: characterOrientationState = .bottom
@@ -172,11 +170,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let nodeA = contactA.node!
         let nodeB = contactB.node!
         
-        if nodeA.name == "player" {
+        if nodeA.name == "player" && (nodeB.name == "ground" || nodeB.name == "") {
             self.canJump = false
         }
         
-        if nodeB.name == "player" {
+        if nodeB.name == "player" && (nodeA.name == "ground" || nodeA.name == "") {
             self.canJump = false
         }
 
@@ -301,6 +299,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // TODO: check scorpion relation to player
     func checkScorpion(scorpion: Scorpion) {
+        
         switch player.orientation {
         case .right:
             if player.position.x < scorpion.position.x {

@@ -36,7 +36,7 @@ class Scorpion: SKSpriteNode {
                                                  height: 50))
         physicsBody?.affectedByGravity = false
         physicsBody?.allowsRotation = false
-        physicsBody?.contactTestBitMask = 2
+        physicsBody?.contactTestBitMask = 4294967295
         
         self.run(SKAction(named: "Scorpion")!)
         
@@ -51,9 +51,9 @@ class Scorpion: SKSpriteNode {
     func movement(frameWidth:CGFloat, frameHeight: CGFloat) {
         if self.orientation == .right {
             if self.xScale == -1{
-                self.position.y -= 1
+                self.physicsBody?.velocity.dy = -50
             } else if self.xScale == 1 {
-                self.position.y += 1
+                self.physicsBody?.velocity.dy = 50
             }
             
             /* When scorpion runs into wall it turns around */
