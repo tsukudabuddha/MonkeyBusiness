@@ -88,7 +88,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let location = touch.location(in: self)
             
             
-            /* Did the user tap on the play button? */
+            /* Did the user tap on the restart label? */
             if location.x < restartLabel.position.x + 50 && location.x > restartLabel.position.x && location.y > restartLabel.position.y && location.y < restartLabel.position.y + 20 {
                 /* Grab reference to the SPriteKit view */
                 let skView = self.view as SKView!

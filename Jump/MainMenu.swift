@@ -31,26 +31,14 @@ class MainMenu: SKScene {
         /* Get touch position in scene */
         let location = touch.location(in: self)
         
+        print("location: \(location)")
+        print("playLabel: \(playLabel.position)")
+        
         /* Did the user tap on the play button? */
-        if location == playLabel.position {
+        if location.x < playLabel.position.x + 35 && location.x > playLabel.position.x - 35 && location.y < playLabel.position.y + 20 && location.y > playLabel.position.y  {
             self.loadGame()
-        } 
-
-        
-        
-        /* Grab reference to the SPriteKit view */
-        let skView = self.view as SKView!
-        
-        /* Load Game Scene */
-        guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
-            return
         }
         
-        /* Ensure correct aspect mode */
-        scene.scaleMode = .aspectFill
-        
-        /* Restart Game Scene */
-        skView?.presentScene(scene)
     
     }
     
@@ -59,31 +47,20 @@ class MainMenu: SKScene {
     
         func loadGame() {
             
-            //print("Game Should Load")
+            /* Grab reference to the SPriteKit view */
+            let skView = self.view as SKView!
             
-            /* 1) Grab reference to our spriteKit view */
-            guard let skView = self.view as SKView! else {
-                print("Could not get SkView")
+            /* Load Game Scene */
+            guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
                 return
             }
             
-            /* 2) Load Game Scene */
-            guard let scene = GameScene.level() else {
-                print("Could not load GameScene")
-                return
-            }
+            /* Ensure correct aspect mode */
+            scene.scaleMode = .aspectFill
             
-            /* 3) Ensure correct aspect mode */
-            scene.scaleMode = .aspectFit
-            
-            /* Show Debug */
-            //        skView.showsPhysics = true
-            //        skView.showsDrawCount = true
-            skView.showsFPS = true
-            
-            /* 4) Start game scene */
-            //print(scene)
-            skView.presentScene(scene)
+            /* Restart Game Scene */
+            skView?.presentScene(scene)
+
         }
     
     
