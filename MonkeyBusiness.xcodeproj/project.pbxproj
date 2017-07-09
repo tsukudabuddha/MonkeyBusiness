@@ -120,12 +120,12 @@
 		49266AD51F11CB6D0035AF75 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				494578F51F0B05E200267C4A /* GameScene.swift */,
 				49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */,
+				494578F51F0B05E200267C4A /* GameScene.swift */,
 				49266AD21F11C8DD0035AF75 /* CreditScene.swift */,
 				49D1D3541F0EC5CE00FCB951 /* scorpion.swift */,
-				49D1D3491F0D845000FCB951 /* Player.swift */,
 				49266ACA1F0F0D170035AF75 /* Platform.swift */,
+				49D1D3491F0D845000FCB951 /* Player.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";

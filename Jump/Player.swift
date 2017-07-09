@@ -28,5 +28,15 @@ class Player: SKSpriteNode {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
+    
+    func death() {
+        self.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        self.removeAllActions()
+        
+        let turnRed = SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50)
+        let removePlayer = SKAction.removeFromParent()
+        let seq = SKAction.sequence([turnRed, removePlayer])
+        self.run(seq)
+    }
 
 }

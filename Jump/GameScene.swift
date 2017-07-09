@@ -478,10 +478,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func gameOver() {
         /* Set gamestate to gameOver */
         gameState = .gameOver
-        player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        player.removeAllActions()
-        player.run(SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50))
-        player.removeFromParent()
+        player.death()
         dedLabel.text = "You made it to Round \(round)"
         dedLabel.isHidden = false
         restartLabel.isHidden = false
