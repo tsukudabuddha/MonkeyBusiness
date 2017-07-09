@@ -41,6 +41,8 @@ class Scorpion: SKSpriteNode {
         physicsBody?.affectedByGravity = false
         physicsBody?.allowsRotation = false
         physicsBody?.contactTestBitMask = 2
+        physicsBody?.friction = 0
+        physicsBody?.linearDamping = 0
         
         Scorpion.totalSpawned += 1
         Scorpion.totalAlive += 1
@@ -48,7 +50,6 @@ class Scorpion: SKSpriteNode {
         
         self.run(SKAction(named: "Scorpion")!)
         
-        position = CGPoint(x: 305, y: 290)
         run(SKAction(named: "Rotate")!)
         
         self.orientation = .right
@@ -106,6 +107,17 @@ class Scorpion: SKSpriteNode {
         particles.run(particleSeq)
         
         
+    }
+    
+    func turnAround() {
+        
+        if self.xScale == -1{
+            self.xScale = 1
+            self.physicsBody?.velocity.dy = 50
+        } else {
+            self.xScale = -1
+            self.physicsBody?.velocity.dy = -50
+        }
     }
     
 

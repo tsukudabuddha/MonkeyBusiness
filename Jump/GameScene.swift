@@ -19,10 +19,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private var player: Player!
     private var roundLabel: SKLabelNode! = SKLabelNode()
+    private var dedLabel: SKLabelNode!
     private var round: Int = 1
     private var canJump: Bool = true
     private var jumping: Bool = false
-    var scorpion: Scorpion = Scorpion()
     
     var platform1 : Platform! = Platform()
     var platform2 : Platform! = Platform()
@@ -33,7 +33,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // Create Timing Variables
     var jumpTimer: CFTimeInterval = 0
-    let jumpTime: Double = 0.2
+    let jumpTime: Double = 0.25
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */
 
     var characterSpeed: CGFloat = 150
@@ -44,18 +44,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
+        dedLabel = childNode(withName: "dedLabel") as! SKLabelNode
+        dedLabel.isHidden = true
         
-        self.addChild(scorpion)
         // Create Physics Body for frame
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         self.physicsBody?.categoryBitMask = 2
         self.physicsBody?.contactTestBitMask = 4294967295
         self.physicsBody?.collisionBitMask = 1
-        self.physicsBody?.restitution = 0.2
+        self.physicsBody?.restitution = 0.15
+        self.physicsBody?.friction = 0
         physicsWorld.contactDelegate = self
         
         createObjects()
         beginningAnimation()
+        
+        /* Position new platforms */
+        platform1.name = "platform1"
+        platform2.name = "platform2"
+        platform3.name = "platform3"
+        platform4.name = "platform4"
         
     }
     
@@ -64,7 +72,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         /* Checks to see if game is running */
-        if gameState != .active { return }
+        if gameState != .active {
+            /* Grab reference to the SPriteKit view */
+            let skView = self.view as SKView!
+            
+            /* Load Game Scene */
+            guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
+                return
+            }
+            
+            /* Ensure correct aspect mode */
+            scene.scaleMode = .aspectFill
+            
+            /* Restart Game Scene */
+            skView?.presentScene(scene) } else {
+            
+        }
         
         /* Checks if player is on the ground */
         if canJump && jumpTimer <= jumpTime {
@@ -89,11 +112,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.physicsBody?.applyImpulse(CGVector(dx: 12.5, dy: 0))
             }
             player.physicsBody?.affectedByGravity = false
+            canJump = false
             
         }
-        
-        jumping = true
-        
         
     }
     
@@ -101,21 +122,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
         if gameState == .gameOver { return }
-        
-        
+
         playerMovement()
         
-        scorpion.movement(frameWidth: self.frame.width, frameHeight: self.frame.height)
-        
-        if jumping {
-            /* Update spawn touch timer */
+        if !canJump {
+            /* Update jump timer */
             jumpTimer += fixedDelta
         }
         
         if jumpTimer > jumpTime{
             player.physicsBody?.affectedByGravity = true
-            jumping = false
-            
+            jumpTimer = 0
         }
 
     }
@@ -130,27 +147,48 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let nodeA = contactA.node! //as! SKSpriteNode
         let nodeB = contactB.node!//as! SKSpriteNode
         
-        if nodeA.name == "player" {
+        if nodeA.physicsBody?.categoryBitMask == 1 {
             self.canJump = true
+            //jumping = false
         }
         
-        if nodeB.name == "player" {
+        if nodeB.physicsBody?.categoryBitMask == 1 {
             self.canJump = true
+            //jumping = false
         }
         
         
-        // TODO: Create player touching scorpion death or kill
+        // MARK: Enemy contacts
         if nodeA.name == "player" {
             if nodeB.physicsBody?.contactTestBitMask == 2 {
                 checkScorpion(scorpion: nodeB as! Scorpion)
             }
+        } else if nodeB.physicsBody?.contactTestBitMask == 2 {
+            (nodeB as! Scorpion).turnAround()
         }
         
         if nodeA.physicsBody?.contactTestBitMask == 2 {
             if nodeB.name == "player" {
                 checkScorpion(scorpion: nodeA as! Scorpion)
+            } else {
+                (nodeA as! Scorpion).turnAround()
             }
         }
+//        if let name = nodeA.name {
+//            print("nodeA name = \(name)")
+//        } else {
+//            print("nameless = \(nodeA)")
+//        }
+//        
+//        if let name = nodeB.name {
+//            print("nodeB name = \(name)")
+//        } else {
+//            print("nameless = \(nodeA)")
+//        }
+        
+        
+        
+      
 
     }
     
@@ -159,30 +197,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if gameState != .active { return }
         
         player.physicsBody?.affectedByGravity = true
-        jumping = false
+        //jumping = false
         jumpTimer = 0
     }
     
-    func didEnd(_ contact: SKPhysicsContact) {
-        /* Runs when objects stop being in contact */
-        
-        /* Get references to the bodies invloved in the collision */
-        let contactA: SKPhysicsBody = contact.bodyA
-        let contactB: SKPhysicsBody = contact.bodyB
-        
-        /* Get references to the phyiscs body parent */
-        let nodeA = contactA.node!
-        let nodeB = contactB.node!
-        
-        if nodeA.name == "player" && (nodeB.name == "ground" || nodeB.name == "") {
-            self.canJump = false
-        }
-        
-        if nodeB.name == "player" && (nodeA.name == "ground" || nodeA.name == "") {
-            self.canJump = false
-        }
-
-    }
+//    func didEnd(_ contact: SKPhysicsContact) {
+//        /* Runs when objects stop being in contact */
+//        
+//        /* Get references to the bodies invloved in the collision */
+//        let contactA: SKPhysicsBody = contact.bodyA
+//        let contactB: SKPhysicsBody = contact.bodyB
+//        
+//        /* Get references to the phyiscs body parent */
+//        let nodeA = contactA.node!
+//        let nodeB = contactB.node!
+//        
+//        if nodeA.name == "player" && (nodeB.name == "ground") {
+//            self.canJump = false
+//        }
+//        
+//        if nodeB.name == "player" && (nodeA.name == "ground") {
+//            self.canJump = false
+//        }
+//
+//    }
 
     
     // Make a Class method to load levels
@@ -281,17 +319,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func spawnObstacles(orientation: characterOrientationState) {
         switch orientation {
         case .bottom:
+            
+            /* Position new platforms */
+            platform1.position = CGPoint(x: 235, y: 400)
+            platform2.position = CGPoint(x: 235, y: 300)
+            platform3.position = CGPoint(x: 235, y: 200)
+            platform4.position = CGPoint(x: 235, y: 100)
+            
             /* Remove old platforms */
             platform1.removeFromParent()
             platform2.removeFromParent()
             platform3.removeFromParent()
             platform4.removeFromParent()
             
-            /* Position new platforms */
-            platform1.position = CGPoint(x: 275, y: 400)
-            platform2.position = CGPoint(x: 275, y: 300)
-            platform3.position = CGPoint(x: 275, y: 200)
-            platform4.position = CGPoint(x: 275, y: 100)
+            
             
             /* Flip platforms */
             platform1.xScale = platform1.xScale * -1
@@ -314,10 +355,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             platform4.removeFromParent()
             
             /* position new platforms */
-            platform1.position = CGPoint(x: 45, y: 500)
-            platform2.position = CGPoint(x: 45, y: 450)
-            platform3.position = CGPoint(x: 45, y: 300)
-            platform4.position = CGPoint(x: 45, y: 150)
+            platform1.position = CGPoint(x: 80, y: 500)
+            platform2.position = CGPoint(x: 80, y: 450)
+            platform3.position = CGPoint(x: 80, y: 300)
+            platform4.position = CGPoint(x: 80, y: 150)
             
             /* Flip platforms */
             platform1.xScale = platform1.xScale * -1
@@ -344,7 +385,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             roundLabel.text = "Round \(round)"
             roundLabel.run(SKAction(named: "RoundLabel")!)
             
-            
+            newRound(round: round)
         }
     }
     
@@ -353,7 +394,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.run(SKAction(named: "beginAnimationMonkey")!)
         player.run(SKAction(named: "Run")!)
         roundLabel.run(SKAction(named: "RoundLabel")!)
-        scorpion.run(SKAction(named: "Scorpion")!)
     }
     
     func createObjects() {
@@ -363,15 +403,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.addChild(roundLabel)
     }
     
-    func spawnEnemy() {
+    func spawnEnemy(round: Int) {
         /* Create scorpion object */
-        let scorpion = Scorpion()
-        scorpion.movement(frameWidth: self.frame.width, frameHeight: self.frame.height)
+        
+        for _ in 0..<round { /* do something */
+            
+            let height = arc4random_uniform(550)
+            let direction = arc4random_uniform(5)
+            
+            let scorpion = Scorpion()
+            addChild(scorpion)
+            scorpion.run(SKAction(named: "Scorpion")!)
+            scorpion.position = CGPoint(x: 305, y: Int(height))
+            scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * (pow(-1.0, Double(direction))))
+        }
         
     }
     
     
-    // TODO: check scorpion relation to player
+    /* Checks if player is above scorpion */
     func checkScorpion(scorpion: Scorpion) {
         
         switch player.orientation {
@@ -399,12 +449,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func newRound(round: Int) {
+        spawnEnemy(round: round)
+        
+    }
+    
     func gameOver() {
         /* Set gamestate to gameOver */
         gameState = .gameOver
         player.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
         player.removeAllActions()
         player.run(SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50))
+        player.removeFromParent()
+        dedLabel.text = "You made it to Round \(round)"
+        dedLabel.isHidden = false
     }
     
     

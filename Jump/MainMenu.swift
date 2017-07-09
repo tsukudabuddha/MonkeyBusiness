@@ -9,7 +9,7 @@
 import SpriteKit
 
 class MainMenu: SKScene {
-    var buttonPlay: MSButtonNode!
+    var playLabel: SKLabelNode!
     var player: Player!
     
     
@@ -17,12 +17,44 @@ class MainMenu: SKScene {
         /* Setup Scene here */
         
         /* Set UI connections */
-        buttonPlay = self.childNode(withName: "buttonPlay") as! MSButtonNode
+        playLabel = self.childNode(withName: "playLabel") as! SKLabelNode
         
-        buttonPlay.selectedHandler = {
-                self.loadGame()
-            }
         }
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        /* Called when a touch begins */
+        
+        /* We only need a single touch here */
+        let touch = touches.first!
+        
+        /* Get touch position in scene */
+        let location = touch.location(in: self)
+        
+        /* Did the user tap on the play button? */
+        if location == playLabel.position {
+            self.loadGame()
+        } 
+
+        
+        
+        /* Grab reference to the SPriteKit view */
+        let skView = self.view as SKView!
+        
+        /* Load Game Scene */
+        guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
+            return
+        }
+        
+        /* Ensure correct aspect mode */
+        scene.scaleMode = .aspectFill
+        
+        /* Restart Game Scene */
+        skView?.presentScene(scene)
+    
+    }
+    
+    
     
     
         func loadGame() {
