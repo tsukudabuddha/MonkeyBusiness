@@ -429,7 +429,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         for _ in 0..<round { /* do something */
             
-            let height = arc4random_uniform(550)
+            let height = arc4random_uniform(528) + 20
             let direction = arc4random_uniform(5)
             
             let scorpion = Scorpion()
