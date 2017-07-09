@@ -20,6 +20,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var player: Player!
     private var roundLabel: SKLabelNode! = SKLabelNode()
     private var dedLabel: SKLabelNode!
+    private var restartLabel: SKLabelNode!
     private var round: Int = 1
     private var canJump: Bool = true
     private var jumping: Bool = false
@@ -45,6 +46,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
         dedLabel = childNode(withName: "dedLabel") as! SKLabelNode
+        restartLabel = childNode(withName: "restartLabel") as! SKLabelNode
+        
+        
+        
+        /* Set Labels to be hidden */
+        restartLabel.isHidden = true
         dedLabel.isHidden = true
         
         // Create Physics Body for frame
@@ -73,19 +80,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Checks to see if game is running */
         if gameState != .active {
-            /* Grab reference to the SPriteKit view */
-            let skView = self.view as SKView!
             
-            /* Load Game Scene */
-            guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
-                return
-            }
+            /* We only need a single touch here */
+            let touch = touches.first!
             
-            /* Ensure correct aspect mode */
-            scene.scaleMode = .aspectFill
+            /* Get touch position in scene */
+            let location = touch.location(in: self)
             
-            /* Restart Game Scene */
-            skView?.presentScene(scene) } else {
+            
+            /* Did the user tap on the play button? */
+            if location.x < restartLabel.position.x + 50 && location.x > restartLabel.position.x && location.y > restartLabel.position.y && location.y < restartLabel.position.y + 20 {
+                /* Grab reference to the SPriteKit view */
+                let skView = self.view as SKView!
+                
+                /* Load Game Scene */
+                guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
+                    return
+                }
+                
+                /* Ensure correct aspect mode */
+                scene.scaleMode = .aspectFill
+                
+                /* Restart Game Scene */
+                skView?.presentScene(scene) } else {
+            } 
+
+            
+            
             
         }
         
@@ -463,6 +484,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player.removeFromParent()
         dedLabel.text = "You made it to Round \(round)"
         dedLabel.isHidden = false
+        restartLabel.isHidden = false
     }
     
     
