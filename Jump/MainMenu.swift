@@ -10,6 +10,7 @@ import SpriteKit
 
 class MainMenu: SKScene {
     var playLabel: SKLabelNode!
+    var creditLabel: SKLabelNode!
     var player: Player!
     
     
@@ -18,6 +19,7 @@ class MainMenu: SKScene {
         
         /* Set UI connections */
         playLabel = self.childNode(withName: "playLabel") as! SKLabelNode
+        creditLabel = self.childNode(withName: "creditLabel") as! SKLabelNode
         
         }
     
@@ -32,11 +34,15 @@ class MainMenu: SKScene {
         let location = touch.location(in: self)
         
         print("location: \(location)")
-        print("playLabel: \(playLabel.position)")
+        print("credit: \(creditLabel.position)")
         
         /* Did the user tap on the play button? */
         if location.x < playLabel.position.x + 35 && location.x > playLabel.position.x - 35 && location.y < playLabel.position.y + 20 && location.y > playLabel.position.y  {
             self.loadGame()
+        }
+        
+        if location.x < creditLabel.position.x + 35 && location.x > creditLabel.position.x - 35 && location.y < creditLabel.position.y + 20 && location.y > creditLabel.position.y  {
+            self.loadCredits()
         }
         
     
@@ -45,23 +51,42 @@ class MainMenu: SKScene {
     
     
     
-        func loadGame() {
-            
-            /* Grab reference to the SPriteKit view */
-            let skView = self.view as SKView!
-            
-            /* Load Game Scene */
-            guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
-                return
-            }
-            
-            /* Ensure correct aspect mode */
-            scene.scaleMode = .aspectFill
-            
-            /* Restart Game Scene */
-            skView?.presentScene(scene)
-
+    func loadGame() {
+        
+        /* Grab reference to the SPriteKit view */
+        let skView = self.view as SKView!
+        
+        /* Load Game Scene */
+        guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
+            return
         }
+        
+        /* Ensure correct aspect mode */
+        scene.scaleMode = .aspectFill
+        
+        /* Restart Game Scene */
+        skView?.presentScene(scene)
+
+    }
+    
+    func loadCredits() {
+        
+        /* Grab reference to the SPriteKit view */
+        let skView = self.view as SKView!
+        
+        /* Load Game Scene */
+        guard let scene = CreditScene(fileNamed: "CreditScene") as CreditScene! else {
+            return
+        }
+        
+        /* Ensure correct aspect mode */
+        scene.scaleMode = .aspectFill
+        
+        /* Restart Game Scene */
+        skView?.presentScene(scene)
+        
+    }
+
     
     
 }
