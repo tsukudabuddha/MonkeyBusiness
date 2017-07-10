@@ -86,25 +86,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             /* Get touch position in scene */
             let location = touch.location(in: self)
-            
+            let touchedNode = self.atPoint(location)
             
             /* Did the user tap on the restart label? */
-            if location.x < restartLabel.position.x + 50 && location.x > restartLabel.position.x && location.y > restartLabel.position.y && location.y < restartLabel.position.y + 20 {
-                /* Grab reference to the SPriteKit view */
-                let skView = self.view as SKView!
+            if(touchedNode.name == "restartLabel"){
+                restartGame()
                 
-                /* Load Game Scene */
-                guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
-                    return
-                }
-                
-                /* Ensure correct aspect mode */
-                scene.scaleMode = .aspectFill
-                
-                /* Restart Game Scene */
-                skView?.presentScene(scene) } else {
-            } 
-
+            }
             
             
             
@@ -448,8 +436,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         restartLabel.isHidden = false
     }
     
-    
-    
+    func restartGame() {
+        /* Grab reference to the SPriteKit view */
+        let skView = self.view as SKView!
+        
+        /* Load Game Scene */
+        guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
+            return
+        }
+        
+        /* Reset outside variables */
+        
+        Scorpion.totalSpawned = 0
+        Scorpion.totalAlive = 0
+        
+        /* Ensure correct aspect mode */
+        scene.scaleMode = .aspectFill
+        
+        /* Restart Game Scene */
+        skView?.presentScene(scene)
+    }
+
+
+
 
 }
 
