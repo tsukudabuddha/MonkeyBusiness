@@ -169,13 +169,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let nodeB = contactB.node!//as! SKSpriteNode
         
         if nodeA.physicsBody?.categoryBitMask == 1 {
-            self.canJump = true
-            //jumping = false
+            canJump = true
+            jumpTimer = 0
         }
         
         if nodeB.physicsBody?.categoryBitMask == 1 {
-            self.canJump = true
-            //jumping = false
+            canJump = true
+            jumpTimer = 0
         }
         
         
@@ -195,20 +195,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 (nodeA as! Scorpion).turnAround()
             }
         }
-//        if let name = nodeA.name {
-//            print("nodeA name = \(name)")
-//        } else {
-//            print("nameless = \(nodeA)")
-//        }
-//        
-//        if let name = nodeB.name {
-//            print("nodeB name = \(name)")
-//        } else {
-//            print("nameless = \(nodeA)")
-//        }
-        
-        
-        
       
 
     }
@@ -218,32 +204,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if gameState != .active { return }
         
         player.physicsBody?.affectedByGravity = true
-        //jumping = false
         jumpTimer = 0
     }
     
-//    func didEnd(_ contact: SKPhysicsContact) {
-//        /* Runs when objects stop being in contact */
-//        
-//        /* Get references to the bodies invloved in the collision */
-//        let contactA: SKPhysicsBody = contact.bodyA
-//        let contactB: SKPhysicsBody = contact.bodyB
-//        
-//        /* Get references to the phyiscs body parent */
-//        let nodeA = contactA.node!
-//        let nodeB = contactB.node!
-//        
-//        if nodeA.name == "player" && (nodeB.name == "ground") {
-//            self.canJump = false
-//        }
-//        
-//        if nodeB.name == "player" && (nodeA.name == "ground") {
-//            self.canJump = false
-//        }
-//
-//    }
 
-    
     // Make a Class method to load levels
     class func level() -> GameScene? {
         guard let scene = GameScene(fileNamed: "GameScene") else {
