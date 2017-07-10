@@ -25,7 +25,6 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         
         physicsWorld.contactDelegate = self
-        
         beginningAnimation()
         
     }

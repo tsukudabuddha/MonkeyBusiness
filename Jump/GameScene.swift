@@ -25,10 +25,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var canJump: Bool = true
     private var jumping: Bool = false
     
-    var platform1 : Platform! = Platform()
-    var platform2 : Platform! = Platform()
-    var platform3 : Platform! = Platform()
-    var platform4 : Platform! = Platform()
+    private var platform = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
     
     
     
@@ -65,12 +62,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         createObjects()
         beginningAnimation()
-        
-        /* Position new platforms */
-        platform1.name = "platform1"
-        platform2.name = "platform2"
-        platform3.name = "platform3"
-        platform4.name = "platform4"
         
     }
     
@@ -213,7 +204,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if player.orientation == .bottom {
             
             player.physicsBody?.velocity.dx = characterSpeed
-            //print(player.position)
+            
             if player.position.x > self.frame.width - 60 {
                 
                 /* Change Gravity so right is down */
@@ -294,56 +285,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .bottom:
             
             /* Position new platforms */
-            platform1.position = CGPoint(x: 235, y: 400)
-            platform2.position = CGPoint(x: 235, y: 300)
-            platform3.position = CGPoint(x: 235, y: 200)
-            platform4.position = CGPoint(x: 235, y: 100)
+            platform[0].position = CGPoint(x: 235, y: 400)
+            platform[1].position = CGPoint(x: 235, y: 300)
+            platform[2].position = CGPoint(x: 235, y: 200)
+            platform[3].position = CGPoint(x: 235, y: 100)
             
             /* Remove old platforms */
-            platform1.removeFromParent()
-            platform2.removeFromParent()
-            platform3.removeFromParent()
-            platform4.removeFromParent()
-            
+            removePlatforms()
             
             
             /* Flip platforms */
-            platform1.xScale = platform1.xScale * -1
-            platform2.xScale = platform2.xScale * -1
-            platform3.xScale = platform3.xScale * -1
-            platform4.xScale = platform4.xScale * -1
+            flipPlatforms()
             
             /* Add platform to scene */
-            self.addChild(platform1)
-            self.addChild(platform2)
-            self.addChild(platform3)
-            self.addChild(platform4)
+            addPlatforms()
 
         case .top:
             
             /* Remove old platforms */
-            platform1.removeFromParent()
-            platform2.removeFromParent()
-            platform3.removeFromParent()
-            platform4.removeFromParent()
+            removePlatforms()
             
             /* position new platforms */
-            platform1.position = CGPoint(x: 80, y: 500)
-            platform2.position = CGPoint(x: 80, y: 450)
-            platform3.position = CGPoint(x: 80, y: 300)
-            platform4.position = CGPoint(x: 80, y: 150)
+            platform[0].position = CGPoint(x: 80, y: 500)
+            platform[1].position = CGPoint(x: 80, y: 450)
+            platform[2].position = CGPoint(x: 80, y: 300)
+            platform[3].position = CGPoint(x: 80, y: 150)
             
             /* Flip platforms */
-            platform1.xScale = platform1.xScale * -1
-            platform2.xScale = platform2.xScale * -1
-            platform3.xScale = platform3.xScale * -1
-            platform4.xScale = platform4.xScale * -1
+            flipPlatforms()
             
             /* Add new platforms */
-            self.addChild(platform1)
-            self.addChild(platform2)
-            self.addChild(platform3)
-            self.addChild(platform4)
+            addPlatforms()
             
         default:
             break
@@ -377,12 +349,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func spawnEnemy(round: Int) {
-        /* Create scorpion object */
+        /* Create array of spawn heights */
+        var heightArray = [30,100,170,240,310,380,450,520]
         if round < 5 {
             for _ in 0..<round { /* do something */
                 let direction = arc4random_uniform(5)
-                
-                var heightArray = [35,55,85,115,165,215,265,315,265,415,465,515]
                 let height = arc4random_uniform(UInt32(heightArray.count))
                 
                 let scorpion = Scorpion()
@@ -407,9 +378,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if player.position.x + 33 < scorpion.position.x {
                 scorpion.die()
                 
-                /* Player jumps off enemy */
-                player.physicsBody?.applyImpulse(CGVector(dx: -1, dy: 0))
-                
             } else {
                 gameOver()
             }
@@ -417,8 +385,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if player.position.x - 10 > scorpion.position.x {
                 scorpion.die()
                 
-                /* Player jumps off enemy */
-                player.physicsBody?.applyImpulse(CGVector(dx: 1, dy: 0))
             } else {
                 gameOver()
             }
@@ -461,8 +427,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Restart Game Scene */
         skView?.presentScene(scene)
     }
-
-
+    
+    func addPlatforms() {
+        for n in 0..<platform.count {
+            addChild(platform[n])
+        }
+    }
+    
+    func removePlatforms() {
+        for n in 0..<platform.count {
+            platform[n].removeFromParent()
+        }
+    }
+    
+    func flipPlatforms() {
+        for n in 0..<platform.count / 2 {
+            platform[n].xScale = platform[n].xScale * -1
+        }
+    }
 
 
 }

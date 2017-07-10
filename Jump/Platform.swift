@@ -24,10 +24,16 @@ class Platform: SKSpriteNode {
         physicsBody = SKPhysicsBody(texture: texture,
                                     size: CGSize(width: texture.size().width,
                                                  height: texture.size().height))
+        
         physicsBody?.affectedByGravity = false
         physicsBody?.allowsRotation = false
         physicsBody?.pinned = true
         physicsBody?.contactTestBitMask = 1
+        physicsBody?.friction = 0
+        physicsBody?.restitution = 0.5
+        
+        /* Position the unused platforms off screen */
+        position = CGPoint(x: -20, y: -20)
         
 
     }

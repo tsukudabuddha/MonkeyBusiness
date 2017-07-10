@@ -37,17 +37,12 @@ class CreditScene: SKScene {
         
         /* Get touch position in scene */
         let location = touch.location(in: self)
+        let touchedNode = self.atPoint(location)
         
-        print("location: \(location)")
-        print("playLabel: \(returnLabel.position)")
-        
-        /* Did the user tap on the return label? */
-        if location.x < returnLabel.position.x + 35 && location.x > returnLabel.position.x - 35 && location.y < returnLabel.position.y + 20 && location.y > returnLabel.position.y  {
-            self.loadMenu()
+        if touchedNode.name == "returnLabel" {
+            loadMenu()
         }
-        
-        
-        
+
     }
     
     override func update(_ currentTime: TimeInterval) {
