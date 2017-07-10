@@ -79,32 +79,33 @@ class Scorpion: SKSpriteNode {
     }
     
     func die() {
-        // TODO: Create particles on death
-        
-        let death = SKAction(named: "Death")!
-        let removeScorpion = SKAction.removeFromParent()
-        let seq = SKAction.sequence([death, removeScorpion])
-        self.run(seq)
+        // Checks that scorpion has not already run death function
         
         if self.isAlive {
+            
+            let death = SKAction(named: "Death")!
+            let removeScorpion = SKAction.removeFromParent()
+            let seq = SKAction.sequence([death, removeScorpion])
+            self.run(seq)
+            
+            /* Load partcile effect */
+            let particles = SKEmitterNode(fileNamed: "deathEmitter")!
+            
+            /* Position particles on scorpion */
+            particles.position = self.position
+            
+            /* Add particles to the scene */
+            self.parent?.addChild(particles)
+            let wait = SKAction.wait(forDuration: 1)
+            let removeParticles = SKAction.removeFromParent()
+            let particleSeq = SKAction.sequence([wait, removeParticles])
+            particles.run(particleSeq)
+            
             Scorpion.totalAlive -= 1
             self.isAlive = false
         }
-    
-        print("ded")
         
-        /* Load partcile effect */
-        let particles = SKEmitterNode(fileNamed: "deathEmitter")!
         
-        /* Position particles on scorpion */
-        particles.position = self.position
-        
-        /* Add particles to the scene */
-        self.parent?.addChild(particles)
-        let wait = SKAction.wait(forDuration: 1)
-        let removeParticles = SKAction.removeFromParent()
-        let particleSeq = SKAction.sequence([wait, removeParticles])
-        particles.run(particleSeq)
         
         
     }
