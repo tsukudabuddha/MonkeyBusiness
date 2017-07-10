@@ -52,13 +52,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         dedLabel.isHidden = true
         
         // Create Physics Body for frame
-        self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
-        self.physicsBody?.categoryBitMask = 2
-        self.physicsBody?.contactTestBitMask = 4294967295
-        self.physicsBody?.collisionBitMask = 1
-        self.physicsBody?.restitution = 0.15
-        self.physicsBody?.friction = 0
-        physicsWorld.contactDelegate = self
+        setupPhysicsBody()
         
         createObjects()
         beginningAnimation()
@@ -197,89 +191,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    
-    // MARK: Player Auto Run and calls spawnObstacles()
-    func playerMovement() {
-        /* Called if player is on bottom of screen */
-        if player.orientation == .bottom {
-            
-            player.physicsBody?.velocity.dx = characterSpeed
-            
-            if player.position.x > self.frame.width - 60 {
-                
-                /* Change Gravity so right is down */
-                self.physicsWorld.gravity.dx = 9.8
-                self.physicsWorld.gravity.dy = 0
-                
-                /* Change player orientation to work with new gravity */
-                player.orientation = .right
-                player.run(SKAction(named: "Rotate")!)
-                
-            }
-        }
-        
-        /* Called if the player is on right-side of screen */
-        if player.orientation == .right {
-            
-            player.physicsBody?.velocity.dy = characterSpeed
-            //print(player.position)
-            if player.position.y > self.frame.height - 50 {
-                
-                /* Change Gravity so top is down */
-                self.physicsWorld.gravity.dx = 0
-                self.physicsWorld.gravity.dy = 9.8
-                
-                /* Change player orientation to work with new gravity */
-                player.orientation = .top
-                player.run(SKAction(named: "Rotate")!)
-                
-                spawnObstacles(orientation: player.orientation)
-                
-            }
-            
-        }
-        
-        /* Called if the player is on top of screen */
-        if player.orientation == .top {
-            
-            player.physicsBody?.velocity.dx = -1 * characterSpeed
-            //print(player.position)
-            if player.position.x < 0 {
-                
-                /* Change Gravity so left is down */
-                self.physicsWorld.gravity.dx = -9.8
-                self.physicsWorld.gravity.dy = 0
-                
-                /* Change player orientation to work with new gravity */
-                player.orientation = .left
-                player.run(SKAction(named: "Rotate")!)
-            }
-            
-        }
-        
-        /* Called if the player is on left-side of screen */
-        if player.orientation == .left {
-            
-            player.physicsBody?.velocity.dy = -1 * characterSpeed
-            //print(player.position)
-            if player.position.y < 10 {
-                
-                /* Change Gravity so bottom is down */
-                self.physicsWorld.gravity.dx = 0
-                self.physicsWorld.gravity.dy = -9.8
-                
-                /* Change player orientation to work with new gravity */
-                player.orientation = .bottom
-                player.run(SKAction(named: "Rotate")!)
-                
-                spawnObstacles(orientation: player.orientation)
-                roundChecker()
-                
-           }
-        }
-
-    }
-    
     func spawnObstacles(orientation: characterOrientationState) {
         switch orientation {
         case .bottom:
@@ -351,20 +262,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func spawnEnemy(round: Int) {
         /* Create array of spawn heights */
         var heightArray = [30,100,170,240,310,380,450,520]
-        if round < 5 {
-            for _ in 0..<round { /* do something */
-                let direction = arc4random_uniform(5)
-                let height = arc4random_uniform(UInt32(heightArray.count))
-                
-                let scorpion = Scorpion()
-                addChild(scorpion)
-                scorpion.run(SKAction(named: "Scorpion")!)
-                scorpion.position = CGPoint(x: 305, y: Int(heightArray[Int(height)]))
-                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * (pow(-1.0, Double(direction))))
-                
-                heightArray.remove(at: Int(height))
-                
+        var sideArray = [15, 305]
+        for _ in 0..<round { /* do something */
+            let direction = arc4random_uniform(5)
+            let height = arc4random_uniform(UInt32(heightArray.count))
+            
+            let side = arc4random_uniform(UInt32(2))
+            
+            let scorpion = Scorpion()
+            addChild(scorpion)
+            if side == 0 {
+                scorpion.yScale = scorpion.yScale * -1
             }
+            scorpion.run(SKAction(named: "Scorpion")!)
+            scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
+            scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * (pow(-1.0, Double(direction))))
+            
+            heightArray.remove(at: Int(height))
+            
         }
         
     }
@@ -444,6 +359,97 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for n in 0..<platform.count / 2 {
             platform[n].xScale = platform[n].xScale * -1
         }
+    }
+    
+    // MARK: Player Auto Run and calls spawnObstacles()
+    func playerMovement() {
+        /* Called if player is on bottom of screen */
+        if player.orientation == .bottom {
+            
+            player.physicsBody?.velocity.dx = characterSpeed
+            
+            if player.position.x > self.frame.width - 60 {
+                
+                /* Change Gravity so right is down */
+                self.physicsWorld.gravity.dx = 9.8
+                self.physicsWorld.gravity.dy = 0
+                
+                /* Change player orientation to work with new gravity */
+                player.orientation = .right
+                player.run(SKAction(named: "Rotate")!)
+                
+            }
+        }
+        
+        /* Called if the player is on right-side of screen */
+        if player.orientation == .right {
+            
+            player.physicsBody?.velocity.dy = characterSpeed
+            //print(player.position)
+            if player.position.y > self.frame.height - 50 {
+                
+                /* Change Gravity so top is down */
+                self.physicsWorld.gravity.dx = 0
+                self.physicsWorld.gravity.dy = 9.8
+                
+                /* Change player orientation to work with new gravity */
+                player.orientation = .top
+                player.run(SKAction(named: "Rotate")!)
+                
+                spawnObstacles(orientation: player.orientation)
+                
+            }
+            
+        }
+        
+        /* Called if the player is on top of screen */
+        if player.orientation == .top {
+            
+            player.physicsBody?.velocity.dx = -1 * characterSpeed
+            //print(player.position)
+            if player.position.x < 0 {
+                
+                /* Change Gravity so left is down */
+                self.physicsWorld.gravity.dx = -9.8
+                self.physicsWorld.gravity.dy = 0
+                
+                /* Change player orientation to work with new gravity */
+                player.orientation = .left
+                player.run(SKAction(named: "Rotate")!)
+            }
+            
+        }
+        
+        /* Called if the player is on left-side of screen */
+        if player.orientation == .left {
+            
+            player.physicsBody?.velocity.dy = -1 * characterSpeed
+            //print(player.position)
+            if player.position.y < 10 {
+                
+                /* Change Gravity so bottom is down */
+                self.physicsWorld.gravity.dx = 0
+                self.physicsWorld.gravity.dy = -9.8
+                
+                /* Change player orientation to work with new gravity */
+                player.orientation = .bottom
+                player.run(SKAction(named: "Rotate")!)
+                
+                spawnObstacles(orientation: player.orientation)
+                roundChecker()
+                
+            }
+        }
+        
+    }
+    func setupPhysicsBody() {
+        physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
+        physicsBody?.categoryBitMask = 2
+        physicsBody?.contactTestBitMask = 4294967295
+        physicsBody?.collisionBitMask = 1
+        physicsBody?.restitution = 0.15
+        physicsBody?.friction = 0
+        physicsWorld.contactDelegate = self
     }
 
 

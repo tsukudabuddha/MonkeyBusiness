@@ -109,15 +109,27 @@ class Scorpion: SKSpriteNode {
         
         
     }
-    
+    // TODO: Fix
     func turnAround() {
         
         if self.xScale == -1{
-            self.xScale = 1
-            self.physicsBody?.velocity.dy = 50
-        } else {
-            self.xScale = -1
-            self.physicsBody?.velocity.dy = -50
+            if yScale == 1{
+                self.xScale = xScale * -1
+                self.physicsBody?.velocity.dy = 50
+            } else {
+                self.xScale = xScale * -1
+                self.physicsBody?.velocity.dy = -50
+            }
+            
+        } else if xScale == 1  {
+            if yScale == -1 {
+                self.xScale = -1 * xScale
+                self.physicsBody?.velocity.dy = -50
+            } else {
+                self.xScale = xScale * -1
+                self.physicsBody?.velocity.dy = 50
+            }
+            
         }
     }
     
