@@ -107,17 +107,14 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         
         /* Get touch position in scene */
         let location = touch.location(in: self)
+        let touchedNode = self.atPoint(location)
         
-        print("location: \(location)")
-        print("credit: \(creditLabel.position)")
-        
-        /* Did the user tap on the play button? */
-        if location.x < playLabel.position.x + 35 && location.x > playLabel.position.x - 35 && location.y < playLabel.position.y + 20 && location.y > playLabel.position.y  {
-            self.loadGame()
-        }
-        
-        if location.x < creditLabel.position.x + 35 && location.x > creditLabel.position.x - 35 && location.y < creditLabel.position.y + 20 && location.y > creditLabel.position.y  {
+        if(touchedNode.name == "creditLabel"){
             self.loadCredits()
+            
+        } else if(touchedNode.name == "playLabel"){
+            self.loadGame()
+            
         }
         
     
@@ -127,10 +124,6 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     
     
     func loadGame() {
-        
-        /* Grab reference to the SPriteKit view */
-        let skView = self.view as SKView!
-        
         /* Load Game Scene */
         guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
             return
@@ -140,15 +133,12 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         scene.scaleMode = .aspectFill
         
         /* Restart Game Scene */
-        skView?.presentScene(scene)
-
+        let transition = SKTransition.doorsCloseHorizontal(withDuration: 1.0)
+        view?.presentScene(scene, transition: transition)
+        
     }
     
     func loadCredits() {
-        
-        /* Grab reference to the SPriteKit view */
-        let skView = self.view as SKView!
-        
         /* Load Game Scene */
         guard let scene = CreditScene(fileNamed: "CreditScene") as CreditScene! else {
             return
@@ -158,7 +148,8 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         scene.scaleMode = .aspectFill
         
         /* Restart Game Scene */
-        skView?.presentScene(scene)
+        let doorsClose = SKTransition.doorsCloseHorizontal(withDuration: 2.0)
+        view?.presentScene(scene, transition: doorsClose)
         
     }
     
