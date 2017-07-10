@@ -378,17 +378,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func spawnEnemy(round: Int) {
         /* Create scorpion object */
-        
-        for _ in 0..<round { /* do something */
-            
-            let height = arc4random_uniform(528) + 20
-            let direction = arc4random_uniform(5)
-            
-            let scorpion = Scorpion()
-            addChild(scorpion)
-            scorpion.run(SKAction(named: "Scorpion")!)
-            scorpion.position = CGPoint(x: 305, y: Int(height))
-            scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * (pow(-1.0, Double(direction))))
+        if round < 5 {
+            for _ in 0..<round { /* do something */
+                let direction = arc4random_uniform(5)
+                
+                var heightArray = [35,55,85,115,165,215,265,315,265,415,465,515]
+                let height = arc4random_uniform(UInt32(heightArray.count))
+                
+                let scorpion = Scorpion()
+                addChild(scorpion)
+                scorpion.run(SKAction(named: "Scorpion")!)
+                scorpion.position = CGPoint(x: 305, y: Int(heightArray[Int(height)]))
+                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * (pow(-1.0, Double(direction))))
+                
+                heightArray.remove(at: Int(height))
+                
+            }
         }
         
     }
