@@ -33,6 +33,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var jumpTimer: CFTimeInterval = 0
     let jumpTime: Double = 0.25
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */
+    
+    var turnTimer: CFTimeInterval = 0
 
     var characterSpeed: CGFloat = 150
 
@@ -118,7 +120,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if gameState == .gameOver { return }
 
         playerMovement()
-        
+        turnTimer += fixedDelta
         if !canJump {
             /* Update jump timer */
             jumpTimer += fixedDelta
@@ -157,18 +159,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if nodeB.physicsBody?.contactTestBitMask == 2 {
                 checkScorpion(scorpion: nodeB as! Scorpion)
             }
-        } else if nodeB.physicsBody?.contactTestBitMask == 2 {
-            (nodeB as! Scorpion).turnAround()
         }
-        
         if nodeA.physicsBody?.contactTestBitMask == 2 {
             if nodeB.name == "player" {
                 checkScorpion(scorpion: nodeA as! Scorpion)
-            } else {
-                (nodeA as! Scorpion).turnAround()
             }
         }
-      
+
+        if nodeB.physicsBody?.contactTestBitMask == 2 {
+            if turnTimer > 0.02 {
+                (nodeB as! Scorpion).turnAround()
+                turnTimer = 0
+            }
+            
+            
+        }
+        if nodeA.physicsBody?.contactTestBitMask == 2 {
+            if turnTimer > 0.02 {
+                (nodeA as! Scorpion).turnAround()
+                turnTimer = 0
+            }
+        }
+        
+        
 
     }
     
@@ -182,7 +195,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
 
     // Make a Class method to load levels
-    class func level() -> GameScene? {
+    func level() -> GameScene? {
         guard let scene = GameScene(fileNamed: "GameScene") else {
             return nil
         }
@@ -217,10 +230,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             removePlatforms()
             
             /* position new platforms */
-            platform[0].position = CGPoint(x: 80, y: 500)
-            platform[1].position = CGPoint(x: 80, y: 450)
-            platform[2].position = CGPoint(x: 80, y: 300)
-            platform[3].position = CGPoint(x: 80, y: 150)
+            platform[6].position = CGPoint(x: 80, y: 500)
+            platform[7].position = CGPoint(x: 80, y: 450)
+            platform[8].position = CGPoint(x: 80, y: 300)
+            platform[9].position = CGPoint(x: 80, y: 150)
             
             /* Flip platforms */
             flipPlatforms()
@@ -258,10 +271,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         roundLabel.text = "Round \(round)"
         self.addChild(roundLabel)
     }
-    
+    // TODO: uncomment next line
     func spawnEnemy(round: Int) {
         /* Create array of spawn heights */
-        var heightArray = [30,100,170,240,310,380,450,520]
+        var heightArray = [100,170,240,310,380,450,520]
         var sideArray = [15, 305]
         for _ in 0..<round { /* do something */
             let direction = arc4random_uniform(5)
@@ -269,10 +282,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             let side = arc4random_uniform(UInt32(2))
             
-            let scorpion = Scorpion()
+            var scorpion = Scorpion(orientation: .right)
             addChild(scorpion)
             if side == 0 {
                 scorpion.yScale = scorpion.yScale * -1
+                scorpion.orientation = .left
             }
             scorpion.run(SKAction(named: "Scorpion")!)
             scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))

@@ -24,7 +24,7 @@ class Scorpion: SKSpriteNode {
     static var totalAlive: Int = 0
     var isAlive = true
     
-    init() {
+    init(orientation: Orientation) {
         // Make a texture from an image, a color, and size
         let texture = SKTexture(imageNamed: "Scorpion")
         let color = UIColor.clear
@@ -52,7 +52,12 @@ class Scorpion: SKSpriteNode {
         
         run(SKAction(named: "Rotate")!)
         
-        self.orientation = .right
+        if(orientation == .left) {
+            physicsBody?.velocity.dy = 50
+        } else {
+            physicsBody?.velocity.dy = 50
+        }
+        
         
         
     }
@@ -64,16 +69,12 @@ class Scorpion: SKSpriteNode {
             } else if self.xScale == 1 {
                 self.physicsBody?.velocity.dy = 50
             }
-            
-            /* When scorpion runs into wall it turns around */
-            if self.position.y < 20 {
-                self.xScale = 1
+        } else {
+            if self.xScale == -1{
+                self.physicsBody?.velocity.dy = 50
+            } else if self.xScale == 1 {
+                self.physicsBody?.velocity.dy = -50
             }
-            
-            if self.position.y > frameHeight - 20 {
-                self.xScale = -1
-            }
-            
         }
 
     }
@@ -112,25 +113,35 @@ class Scorpion: SKSpriteNode {
     // TODO: Fix
     func turnAround() {
         
-        if self.xScale == -1{
-            if yScale == 1{
-                self.xScale = xScale * -1
+        if orientation == .right {
+            if self.xScale == -1{
+                
+                self.xScale = 1
                 self.physicsBody?.velocity.dy = 50
-            } else {
-                self.xScale = xScale * -1
+                
+            } else if xScale == 1  {
+                self.xScale = -1
                 self.physicsBody?.velocity.dy = -50
             }
-            
-        } else if xScale == 1  {
-            if yScale == -1 {
-                self.xScale = -1 * xScale
-                self.physicsBody?.velocity.dy = -50
-            } else {
-                self.xScale = xScale * -1
-                self.physicsBody?.velocity.dy = 50
+        } else if orientation == .left{
+//            if self.xScale == -1 && physicsBody?.velocity.dy == -50{
+//                self.xScale = 1
+//                self.physicsBody?.velocity.dy = 50
+//                
+//            } else if xScale == 1 && physicsBody?.velocity.dy == 50  {
+//                self.xScale = -1
+//                self.physicsBody?.velocity.dy = -50
+//            }
+            if xScale == 1 {
+                physicsBody?.velocity.dy = -50
+                xScale = -1
+            } else if xScale == -1{
+                physicsBody?.velocity.dy = 50
+                xScale = 1
             }
             
         }
+        
     }
     
 
