@@ -78,10 +78,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Did the user tap on the restart label? */
             if(touchedNode.name == "restartLabel"){
                 restartGame()
-                
             }
-            
-            
             
         }
         
@@ -125,7 +122,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Update jump timer */
             jumpTimer += fixedDelta
         }
-        
+    
         if jumpTimer > jumpTime{
             player.physicsBody?.affectedByGravity = true
             jumpTimer = 0
@@ -217,10 +214,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Remove old platforms */
             removePlatforms()
             
-            
-            /* Flip platforms */
-            flipPlatforms()
-            
             /* Add platform to scene */
             addPlatforms()
 
@@ -234,9 +227,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             platform[7].position = CGPoint(x: 80, y: 450)
             platform[8].position = CGPoint(x: 80, y: 300)
             platform[9].position = CGPoint(x: 80, y: 150)
-            
-            /* Flip platforms */
-            flipPlatforms()
             
             /* Add new platforms */
             addPlatforms()
@@ -271,7 +261,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         roundLabel.text = "Round \(round)"
         self.addChild(roundLabel)
     }
-    // TODO: uncomment next line
+  
     func spawnEnemy(round: Int) {
         /* Create array of spawn heights */
         var heightArray = [100,170,240,310,380,450,520]
@@ -282,7 +272,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             let side = arc4random_uniform(UInt32(2))
             
-            var scorpion = Scorpion(orientation: .right)
+            let scorpion = Scorpion(orientation: .right)
             addChild(scorpion)
             if side == 0 {
                 scorpion.yScale = scorpion.yScale * -1
@@ -311,7 +301,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 gameOver()
             }
         case .left:
-            if player.position.x - 10 > scorpion.position.x {
+            if player.position.x + 20 > scorpion.position.x {
                 scorpion.die()
                 
             } else {
@@ -346,7 +336,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         /* Reset outside variables */
-        
         Scorpion.totalSpawned = 0
         Scorpion.totalAlive = 0
         
