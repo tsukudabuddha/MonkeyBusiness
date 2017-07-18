@@ -437,6 +437,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: Player Auto Run and calls spawnObstacles()
     func playerMovement() {
         
+        print("player xScale: \(player.xScale)")
+        
         switch player.orientation {
         case .bottom:
             player.physicsBody?.velocity.dx = characterSpeed
