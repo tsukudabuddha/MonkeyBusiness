@@ -416,6 +416,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.orientation = .top
                 player.run(SKAction(named: "Rotate")!)
                 
+                roundChecker()
                 spawnObstacles(orientation: player.orientation)
                 
             }
