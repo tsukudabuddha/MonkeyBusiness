@@ -16,9 +16,6 @@ class Player: SKSpriteNode {
     
     var orientation: characterOrientationState = .bottom
     
-    
-    
-    
     /* You are required to implement this for your subclass to work */
     override init(texture: SKTexture?, color: UIColor, size: CGSize) {
         super.init(texture: texture, color: color, size: size)

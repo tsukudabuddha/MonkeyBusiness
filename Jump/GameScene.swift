@@ -24,6 +24,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var round: Int = 1
     private var canJump: Bool = true
     private var jumping: Bool = false
+    private var scorpionArray: [Scorpion] = []
     
     private var platform = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
     
@@ -33,8 +34,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var jumpTimer: CFTimeInterval = 0
     let jumpTime: Double = 0.25
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */
-    
-    var turnTimer: CFTimeInterval = 0
 
     var characterSpeed: CGFloat = 150
 
@@ -117,7 +116,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if gameState == .gameOver { return }
 
         playerMovement()
-        turnTimer += fixedDelta
+        
+        for scorpion in scorpionArray {
+            scorpion.turnTimer += scorpion.fixedDelta
+        }
         if !canJump {
             /* Update jump timer */
             jumpTimer += fixedDelta
@@ -154,28 +156,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // MARK: Enemy contacts
         if nodeA.name == "player" {
             if nodeB.physicsBody?.contactTestBitMask == 2 {
-                checkScorpion(scorpion: nodeB as! Scorpion)
+                if (nodeB as! Scorpion).isAlive {
+                    checkScorpion(scorpion: nodeB as! Scorpion)
+                }
+
             }
         }
         if nodeA.physicsBody?.contactTestBitMask == 2 {
             if nodeB.name == "player" {
-                checkScorpion(scorpion: nodeA as! Scorpion)
+                if (nodeA as! Scorpion).isAlive {
+                    checkScorpion(scorpion: nodeA as! Scorpion)
+                }
             }
         }
-
+        
         if nodeB.physicsBody?.contactTestBitMask == 2 {
-            if turnTimer > 0.02 {
+            if (nodeB as! Scorpion).turnTimer > 0.02 {
+                print((nodeB as! Scorpion).turnTimer)
                 (nodeB as! Scorpion).turnAround()
-                turnTimer = 0
+                (nodeB as! Scorpion).turnTimer = 0
             }
             
             
         }
+        
         if nodeA.physicsBody?.contactTestBitMask == 2 {
-            if turnTimer > 0.02 {
+            if (nodeA as! Scorpion).turnTimer > 0.02 {
+                print((nodeA as! Scorpion).turnTimer)
                 (nodeA as! Scorpion).turnAround()
-                turnTimer = 0
+                (nodeA as! Scorpion).turnTimer = 0
             }
+            
         }
         
         
@@ -272,12 +283,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             let side = arc4random_uniform(UInt32(2))
             
-            let scorpion = Scorpion(orientation: .right)
+            let scorpion = Scorpion()
+            scorpionArray.append(scorpion)
+            print("Scorpion added to the array")
+            print(scorpionArray.count)
             addChild(scorpion)
             if side == 0 {
                 scorpion.yScale = scorpion.yScale * -1
                 scorpion.orientation = .left
+            } else if side == 1 {
+                scorpion.orientation = .right
             }
+            print("scorpion orientation: \(scorpion.orientation)")
             scorpion.run(SKAction(named: "Scorpion")!)
             scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
             scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * (pow(-1.0, Double(direction))))
@@ -301,7 +318,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 gameOver()
             }
         case .left:
-            if player.position.x + 20 > scorpion.position.x {
+            if player.position.x + 25 > scorpion.position.x {
                 scorpion.die()
                 
             } else {
