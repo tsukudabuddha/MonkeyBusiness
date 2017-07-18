@@ -26,7 +26,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var jumping: Bool = false
     private var scorpionArray: [Scorpion] = []
     
-    private var platform = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
+    private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
+    private var rightPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
+
     
     
     
@@ -57,6 +59,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         createObjects()
         beginningAnimation()
+        flipPlatforms()
         
     }
     
@@ -94,8 +97,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case .left:
                 player.physicsBody?.applyImpulse(CGVector(dx: 12.5, dy: 0))
                 
-            default:
-                break
             }
             
             player.physicsBody?.affectedByGravity = false
@@ -115,6 +116,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for scorpion in scorpionArray {
             scorpion.turnTimer += scorpion.fixedDelta
         }
+        
         if !canJump {
             /* Update jump timer */
             jumpTimer += fixedDelta
@@ -212,11 +214,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .bottom:
             
             /* Position new platforms */
-            platform[0].position = CGPoint(x: 235, y: 400)
-            platform[1].position = CGPoint(x: 235, y: 300)
-            platform[2].position = CGPoint(x: 235, y: 200)
-            platform[3].position = CGPoint(x: 235, y: 100)
-            
+            positionPlatforms(side: .right)
             /* Remove old platforms */
             removePlatforms()
             
@@ -229,11 +227,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             removePlatforms()
             
             /* position new platforms */
-            platform[6].position = CGPoint(x: 80, y: 500)
-            platform[7].position = CGPoint(x: 80, y: 450)
-            platform[8].position = CGPoint(x: 80, y: 300)
-            platform[9].position = CGPoint(x: 80, y: 150)
-            
+            positionPlatforms(side: .left)
             /* Add new platforms */
             addPlatforms()
             
@@ -359,20 +353,84 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func addPlatforms() {
-        for n in 0..<platform.count {
-            addChild(platform[n])
+        for n in 0..<rightPlatforms.count {
+            addChild(rightPlatforms[n])
+        }
+        
+        for n in 0..<leftPlatforms.count {
+            addChild(leftPlatforms[n])
         }
     }
     
     func removePlatforms() {
-        for n in 0..<platform.count {
-            platform[n].removeFromParent()
+        for n in 0..<rightPlatforms.count {
+            rightPlatforms[n].removeFromParent()
+        }
+        for n in 0..<leftPlatforms.count {
+            leftPlatforms[n].removeFromParent()
         }
     }
     
     func flipPlatforms() {
-        for n in 0..<platform.count / 2 {
-            platform[n].xScale = platform[n].xScale * -1
+        for platform in rightPlatforms {
+            platform.flip()
+        }
+    }
+    
+    func positionPlatforms(side: Orientation) {
+        let formation = arc4random_uniform(UInt32(2))
+        
+        let x1 = 70
+        let x2 = x1 * 2
+        let width = Int(frame.width)
+        
+        let oppositeX1 = width - x1
+        let oppositeX2 = width - x2
+        
+        switch side {
+        case .right:
+            switch formation {
+            case 0:
+                rightPlatforms[0].position = CGPoint(x: x1, y: 170)
+                rightPlatforms[1].position = CGPoint(x: x1, y: 220)
+                rightPlatforms[2].position = CGPoint(x: x1, y: 270)
+                rightPlatforms[3].position = CGPoint(x: x1, y: 320)
+                rightPlatforms[4].position = CGPoint(x: x1, y: 370)
+                break
+            case 1:
+                rightPlatforms[0].position = CGPoint(x: x1, y: 170)
+                rightPlatforms[1].position = CGPoint(x: x2, y: 220)
+                rightPlatforms[2].position = CGPoint(x: x1, y: 270)
+                rightPlatforms[3].position = CGPoint(x: x2, y: 320)
+                rightPlatforms[4].position = CGPoint(x: x1, y: 370)
+                break
+            default:
+                break
+            }
+            break
+        case .left:
+            switch formation {
+            case 0:
+                leftPlatforms[0].position = CGPoint(x: oppositeX1, y: 170)
+                leftPlatforms[1].position = CGPoint(x: oppositeX1, y: 220)
+                leftPlatforms[2].position = CGPoint(x: oppositeX1, y: 270)
+                leftPlatforms[3].position = CGPoint(x: oppositeX1, y: 320)
+                leftPlatforms[4].position = CGPoint(x: oppositeX1, y: 370)
+                break
+            case 1:
+                leftPlatforms[0].position = CGPoint(x: oppositeX1, y: 170)
+                leftPlatforms[1].position = CGPoint(x: oppositeX2, y: 220)
+                leftPlatforms[2].position = CGPoint(x: oppositeX1, y: 270)
+                leftPlatforms[3].position = CGPoint(x: oppositeX2, y: 320)
+                leftPlatforms[4].position = CGPoint(x: oppositeX1, y: 370)
+                break
+            default:
+                break
+
+        }
+
+        default:
+            break
         }
     }
     
@@ -383,7 +441,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .bottom:
             player.physicsBody?.velocity.dx = characterSpeed
             
-            if player.position.x > self.frame.width - 60 {
+            if player.position.x > self.frame.width * 0.6 { // MARK: Changed from -60
                 
                 /* Change Gravity so right is down */
                 self.physicsWorld.gravity.dx = 9.8
@@ -396,8 +454,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         case .right:
             player.physicsBody?.velocity.dy = characterSpeed
-            //print(player.position)
-            if player.position.y > self.frame.height - 50 {
+            
+            if player.position.y > self.frame.height - 46 { // 46 is from math it good dont worry
                 
                 /* Change Gravity so top is down */
                 self.physicsWorld.gravity.dx = 0
@@ -414,7 +472,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .top:
             player.physicsBody?.velocity.dx = -1 * characterSpeed
             //print(player.position)
-            if player.position.x < 0 {
+            if player.position.x < frame.width * 0.4 { // MARK: Changed from 0
                 
                 /* Change Gravity so left is down */
                 self.physicsWorld.gravity.dx = -9.8
@@ -456,14 +514,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
 
 }
-
-
-
-
-
-
-
-
 
 
 

@@ -27,6 +27,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         beginningAnimation()
         
+        
     }
     
     
@@ -119,9 +120,6 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     
     }
     
-    
-    
-    
     func loadGame() {
         /* Load Game Scene */
         guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
@@ -132,7 +130,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         scene.scaleMode = .aspectFill
         
         /* Restart Game Scene */
-        let transition = SKTransition.doorsCloseHorizontal(withDuration: 1.0)
+        let transition = SKTransition.doorsCloseHorizontal(withDuration: 0.5)
         view?.presentScene(scene, transition: transition)
         
     }
@@ -147,7 +145,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         scene.scaleMode = .aspectFill
         
         /* Restart Game Scene */
-        let doorsClose = SKTransition.doorsCloseHorizontal(withDuration: 2.0)
+        let doorsClose = SKTransition.doorsCloseHorizontal(withDuration: 0.5)
         view?.presentScene(scene, transition: doorsClose)
         
     }

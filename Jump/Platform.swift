@@ -43,5 +43,9 @@ class Platform: SKSpriteNode {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not yet been implemented")
     }
+    
+    func flip() {
+        self.zRotation = CGFloat(-1 * Double.pi)
+    }
 
 }
