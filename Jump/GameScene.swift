@@ -378,9 +378,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: Player Auto Run and calls spawnObstacles()
     func playerMovement() {
-        /* Called if player is on bottom of screen */
-        if player.orientation == .bottom {
-            
+        
+        switch player.orientation {
+        case .bottom:
             player.physicsBody?.velocity.dx = characterSpeed
             
             if player.position.x > self.frame.width - 60 {
@@ -394,11 +394,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.run(SKAction(named: "Rotate")!)
                 
             }
-        }
-        
-        /* Called if the player is on right-side of screen */
-        if player.orientation == .right {
-            
+        case .right:
             player.physicsBody?.velocity.dy = characterSpeed
             //print(player.position)
             if player.position.y > self.frame.height - 50 {
@@ -415,12 +411,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 spawnObstacles(orientation: player.orientation)
                 
             }
-            
-        }
-        
-        /* Called if the player is on top of screen */
-        if player.orientation == .top {
-            
+        case .top:
             player.physicsBody?.velocity.dx = -1 * characterSpeed
             //print(player.position)
             if player.position.x < 0 {
@@ -433,12 +424,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.orientation = .left
                 player.run(SKAction(named: "Rotate")!)
             }
-            
-        }
-        
-        /* Called if the player is on left-side of screen */
-        if player.orientation == .left {
-            
+        case .left:
             player.physicsBody?.velocity.dy = -1 * characterSpeed
             //print(player.position)
             if player.position.y < 10 {
