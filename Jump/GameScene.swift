@@ -84,25 +84,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Checks if player is on the ground */
         if canJump && jumpTimer <= jumpTime {
             
-            if player.orientation == .bottom {
-                /* Apply vertical impulse */
+            switch player.orientation {
+            case .bottom:
                 player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 12.5))
-            }
-            
-            if player.orientation == .right {
-                /* Apply vertical impulse */
+            case .right:
                 player.physicsBody?.applyImpulse(CGVector(dx: -12.5, dy: 0))
-            }
-            
-            if player.orientation == .top {
-                /* Apply vertical impulse */
+            case .top:
                 player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -12.5))
+            case .left:
+                player.physicsBody?.applyImpulse(CGVector(dx: 12.5, dy: 0))
+                
+            default:
+                break
             }
             
-            if player.orientation == .left {
-                /* Apply vertical impulse */
-                player.physicsBody?.applyImpulse(CGVector(dx: 12.5, dy: 0))
-            }
             player.physicsBody?.affectedByGravity = false
             canJump = false
             
