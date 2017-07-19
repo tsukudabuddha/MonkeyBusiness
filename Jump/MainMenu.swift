@@ -11,17 +11,19 @@ import SpriteKit
 class MainMenu: SKScene, SKPhysicsContactDelegate {
     var playLabel: SKLabelNode!
     var creditLabel: SKLabelNode!
+    var monkeyLabel: SKLabelNode!
     var gameScene: GameScene!
     var foxNode: SKSpriteNode!
     var player: Player!
     var characterSpeed = GameScene(fileNamed: "GameScene")?.characterSpeed
     
-    var character: Bool = false
+    static var character: Bool = false
     
     override func didMove(to view: SKView) {
         /* Set UI connections */
         playLabel = self.childNode(withName: "playLabel") as! SKLabelNode
         creditLabel = self.childNode(withName: "creditLabel") as! SKLabelNode
+        monkeyLabel = childNode(withName: "\"monkey\"Label") as! SKLabelNode
         foxNode = childNode(withName: "foxNode") as! SKSpriteNode
         gameScene = GameScene(fileNamed: "GameScene")!
         
@@ -122,8 +124,9 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         } else if(touchedNode.name == "playLabel"){
             self.loadGame()
             
-        } else if(touchedNode.name == "foxNode"){
-            character = true
+        } else if(touchedNode == monkeyLabel){
+            GameScene.theme = .fox
+            self.loadGame()
         }
         
     
@@ -164,7 +167,6 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         player.run(SKAction(named: "beginAnimationMonkey")!)
         player.run(SKAction(named: "Run")!)
     }
-
     
     
 }

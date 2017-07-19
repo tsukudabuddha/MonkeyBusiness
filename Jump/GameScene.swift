@@ -29,12 +29,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var canJump: Bool = true
     private var jumping: Bool = false
     private var scorpionArray: [Scorpion] = []
-    var theme: Theme = .monkey // TODO: Add fox to game
     
     private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
     private var rightPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
-
     
+    
+    static var theme: Theme = .monkey // static so I can modify from Main Menu
     
     
     // Create Timing Variables
@@ -53,8 +53,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         dedLabel = childNode(withName: "dedLabel") as! SKLabelNode
         restartLabel = childNode(withName: "restartLabel") as! SKLabelNode
         
-        
-        
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
         dedLabel.isHidden = true
@@ -62,6 +60,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Create Physics Body for frame
         setupPhysicsBody()
         
+        /* Make all the platforms */
         createObjects()
         beginningAnimation()
         flipPlatforms()
@@ -256,7 +255,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func beginningAnimation() {
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
         
-        switch theme {
+        switch GameScene.theme {
         case .fox:
             player.size = CGSize(width: 28, height: 30)
             player.run(SKAction(named: "characterRun")!)
@@ -264,8 +263,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .monkey:
             player.run(SKAction(named: "Run")!)
         }
-//        player.run(SKAction(named: "beginAnimationMonkey")!)
-//        player.run(SKAction(named: "Run")!)
         roundLabel.run(SKAction(named: "RoundLabel")!)
     }
     
@@ -292,8 +289,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print(scorpionArray.count)
             addChild(scorpion)
             if side == 0 {
-                //scorpion.yScale = scorpion.yScale * -1
-                scorpion.zRotation = CGFloat(Double.pi)
+                scorpion.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
                 scorpion.orientation = .left
             } else if side == 1 {
                 scorpion.orientation = .right
@@ -368,21 +364,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func addPlatforms() {
-        for n in 0..<rightPlatforms.count {
-            addChild(rightPlatforms[n])
+        for platform in rightPlatforms {
+            addChild(platform)
         }
         
-        for n in 0..<leftPlatforms.count {
-            addChild(leftPlatforms[n])
+        for platform in leftPlatforms{
+            addChild(platform)
         }
     }
     
     func removePlatforms() {
-        for n in 0..<rightPlatforms.count {
-            rightPlatforms[n].removeFromParent()
+        for platform in rightPlatforms {
+            platform.removeFromParent()
         }
-        for n in 0..<leftPlatforms.count {
-            leftPlatforms[n].removeFromParent()
+        for platform in leftPlatforms {
+            platform.removeFromParent()
         }
     }
     
@@ -457,8 +453,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: Player Auto Run and calls spawnObstacles()
     func playerMovement() {
-        
-        print("player xScale: \(player.xScale)")
         
         switch player.orientation {
         case .bottom:

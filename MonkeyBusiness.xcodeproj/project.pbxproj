@@ -110,6 +110,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		490A7C2A1F1FD2F600A7F759 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		49266AD41F11CADD0035AF75 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -155,6 +162,7 @@
 				494579091F0B05E200267C4A /* JumpTests */,
 				494579141F0B05E200267C4A /* JumpUITests */,
 				494578ED1F0B05E200267C4A /* Products */,
+				490A7C2A1F1FD2F600A7F759 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -273,6 +281,11 @@
 						CreatedOnToolsVersion = 8.3.2;
 						DevelopmentTeam = YTYUD7N245;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.GameCenter = {
+								enabled = 0;
+							};
+						};
 					};
 					494579051F0B05E200267C4A = {
 						CreatedOnToolsVersion = 8.3.2;

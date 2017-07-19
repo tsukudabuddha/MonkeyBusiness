@@ -45,7 +45,7 @@ class Platform: SKSpriteNode {
     }
     
     func flip() {
-        self.zRotation = CGFloat(-1 * Double.pi)
+        self.zRotation = CGFloat(1 * Double.pi)
     }
 
 }
