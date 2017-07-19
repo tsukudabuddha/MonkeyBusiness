@@ -21,7 +21,6 @@
 		494579001F0B05E200267C4A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 494578FE1F0B05E200267C4A /* LaunchScreen.storyboard */; };
 		4945790B1F0B05E200267C4A /* JumpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4945790A1F0B05E200267C4A /* JumpTests.swift */; };
 		494579161F0B05E200267C4A /* JumpUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494579151F0B05E200267C4A /* JumpUITests.swift */; };
-		49A143951F1EC94000CAA597 /* sprites.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 49A143941F1EC93F00CAA597 /* sprites.atlas */; };
 		49A143971F1EC99600CAA597 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49A143961F1EC99600CAA597 /* Actions.sks */; };
 		49D1D3461F0D55E800FCB951 /* monkey.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D3451F0D55E800FCB951 /* monkey.sks */; };
 		49D1D3481F0D615800FCB951 /* MSButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3471F0D615800FCB951 /* MSButtonNode.swift */; };
@@ -30,8 +29,9 @@
 		49D1D34E1F0D9E6700FCB951 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */; };
 		49D1D3501F0DB72400FCB951 /* scorpion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D34F1F0DB72400FCB951 /* scorpion.sks */; };
 		49D1D3521F0EB73000FCB951 /* go3v2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D3511F0EB71C00FCB951 /* go3v2.ttf */; };
-		49D1D3551F0EC5CE00FCB951 /* scorpion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3541F0EC5CE00FCB951 /* scorpion.swift */; };
+		49D1D3551F0EC5CE00FCB951 /* Scorpion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3541F0EC5CE00FCB951 /* Scorpion.swift */; };
 		49E21A211F14051B009E4C88 /* ka1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49E21A201F140501009E4C88 /* ka1.ttf */; };
+		49F55E541F20155100E8553F /* sprites.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 49F55E531F20155100E8553F /* sprites.atlas */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,7 +72,6 @@
 		494579111F0B05E200267C4A /* MonkeyBusinessUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MonkeyBusinessUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		494579151F0B05E200267C4A /* JumpUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpUITests.swift; sourceTree = "<group>"; };
 		494579171F0B05E200267C4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		49A143941F1EC93F00CAA597 /* sprites.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = sprites.atlas; path = ../sprites.atlas; sourceTree = "<group>"; };
 		49A143961F1EC99600CAA597 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		49D1D3451F0D55E800FCB951 /* monkey.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = monkey.sks; sourceTree = "<group>"; };
 		49D1D3471F0D615800FCB951 /* MSButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSButtonNode.swift; sourceTree = "<group>"; };
@@ -81,8 +80,9 @@
 		49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
 		49D1D34F1F0DB72400FCB951 /* scorpion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = scorpion.sks; sourceTree = "<group>"; };
 		49D1D3511F0EB71C00FCB951 /* go3v2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = go3v2.ttf; sourceTree = "<group>"; };
-		49D1D3541F0EC5CE00FCB951 /* scorpion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = scorpion.swift; sourceTree = "<group>"; };
+		49D1D3541F0EC5CE00FCB951 /* Scorpion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scorpion.swift; sourceTree = "<group>"; };
 		49E21A201F140501009E4C88 /* ka1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ka1.ttf; sourceTree = "<group>"; };
+		49F55E531F20155100E8553F /* sprites.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = sprites.atlas; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,7 +138,7 @@
 				49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */,
 				494578F51F0B05E200267C4A /* GameScene.swift */,
 				49266AD21F11C8DD0035AF75 /* CreditScene.swift */,
-				49D1D3541F0EC5CE00FCB951 /* scorpion.swift */,
+				49D1D3541F0EC5CE00FCB951 /* Scorpion.swift */,
 				49266ACA1F0F0D170035AF75 /* Platform.swift */,
 				49D1D3491F0D845000FCB951 /* Player.swift */,
 			);
@@ -185,7 +185,7 @@
 				494578FC1F0B05E200267C4A /* Assets.xcassets */,
 				494578FE1F0B05E200267C4A /* LaunchScreen.storyboard */,
 				494579011F0B05E200267C4A /* Info.plist */,
-				49A143941F1EC93F00CAA597 /* sprites.atlas */,
+				49F55E531F20155100E8553F /* sprites.atlas */,
 				49266AD41F11CADD0035AF75 /* Resources */,
 				49266AD51F11CB6D0035AF75 /* Classes */,
 				49266AD61F11CB930035AF75 /* Scenes */,
@@ -326,11 +326,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				49F55E541F20155100E8553F /* sprites.atlas in Resources */,
 				49E21A211F14051B009E4C88 /* ka1.ttf in Resources */,
 				49D1D3501F0DB72400FCB951 /* scorpion.sks in Resources */,
 				49D1D3461F0D55E800FCB951 /* monkey.sks in Resources */,
 				494578FB1F0B05E200267C4A /* Main.storyboard in Resources */,
-				49A143951F1EC94000CAA597 /* sprites.atlas in Resources */,
 				49D1D3521F0EB73000FCB951 /* go3v2.ttf in Resources */,
 				494578F21F0B05E200267C4A /* GameScene.sks in Resources */,
 				49A143971F1EC99600CAA597 /* Actions.sks in Resources */,
@@ -372,7 +372,7 @@
 				49D1D3481F0D615800FCB951 /* MSButtonNode.swift in Sources */,
 				49266ACB1F0F0D170035AF75 /* Platform.swift in Sources */,
 				49266AD31F11C8DD0035AF75 /* CreditScene.swift in Sources */,
-				49D1D3551F0EC5CE00FCB951 /* scorpion.swift in Sources */,
+				49D1D3551F0EC5CE00FCB951 /* Scorpion.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -117,10 +117,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         playerMovement()
         
-        for scorpion in scorpionArray {
-            scorpion.turnTimer += scorpion.fixedDelta
-        }
-        
         if !canJump {
             /* Update jump timer */
             jumpTimer += fixedDelta
@@ -172,22 +168,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if nodeB.physicsBody?.contactTestBitMask == 2 {
-            if (nodeB as! Scorpion).turnTimer > 0.02 {
-                print((nodeB as! Scorpion).turnTimer)
-                (nodeB as! Scorpion).turnAround()
-                (nodeB as! Scorpion).turnTimer = 0
-            }
-            
-            
+            (nodeB as! Scorpion).turnAround()
         }
         
         if nodeA.physicsBody?.contactTestBitMask == 2 {
-            if (nodeA as! Scorpion).turnTimer > 0.02 {
-                print((nodeA as! Scorpion).turnTimer)
-                (nodeA as! Scorpion).turnAround()
-                (nodeA as! Scorpion).turnTimer = 0
-            }
-            
+            (nodeA as! Scorpion).turnAround()
         }
         
         
@@ -285,8 +270,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             let scorpion = Scorpion()
             scorpionArray.append(scorpion)
-            print("Scorpion added to the array")
-            print(scorpionArray.count)
             addChild(scorpion)
             if side == 0 {
                 scorpion.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
@@ -294,8 +277,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             } else if side == 1 {
                 scorpion.orientation = .right
             }
-            print("scorpion orientation: \(scorpion.orientation)")
-            scorpion.run(SKAction(named: "Scorpion")!)
+            
             scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
             scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * (pow(-1.0, Double(direction))))
             
@@ -313,6 +295,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .right:
             if player.position.x + 33 < scorpion.position.x {
                 scorpion.die()
+                player.physicsBody?.applyImpulse(CGVector(dx: -10, dy: 0))
                 
             } else {
                 gameOver()
@@ -320,6 +303,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .left:
             if player.position.x + 25 > scorpion.position.x {
                 scorpion.die()
+                player.physicsBody?.applyImpulse(CGVector(dx: 10, dy: 0))
                 
             } else {
                 gameOver()
