@@ -118,7 +118,11 @@ class Scorpion: SKSpriteNode {
         
         if self.isAlive {
             
-            let death = SKAction(named: "Death")!
+            /* Pins animation to death spot then makes it so player cannot touch it */
+            self.physicsBody?.pinned = true
+            physicsBody?.collisionBitMask = 0
+            
+            let death = SKAction(named: "enemyDeath")!
             let removeScorpion = SKAction.removeFromParent()
             let seq = SKAction.sequence([death, removeScorpion])
             self.run(seq)
@@ -129,12 +133,14 @@ class Scorpion: SKSpriteNode {
             /* Position particles on scorpion */
             particles.position = self.position
             
+            
+            
             /* Add particles to the scene */
-            self.parent?.addChild(particles)
-            let wait = SKAction.wait(forDuration: 1)
-            let removeParticles = SKAction.removeFromParent()
-            let particleSeq = SKAction.sequence([wait, removeParticles])
-            particles.run(particleSeq)
+//            self.parent?.addChild(particles)
+//            let wait = SKAction.wait(forDuration: 1)
+//            let removeParticles = SKAction.removeFromParent()
+//            let particleSeq = SKAction.sequence([wait, removeParticles])
+//            particles.run(particleSeq)
             
             Scorpion.totalAlive -= 1
             self.isAlive = false
@@ -158,14 +164,6 @@ class Scorpion: SKSpriteNode {
                 self.physicsBody?.velocity.dy = -50
             }
         } else if orientation == .left{
-//            if self.xScale == -1 && physicsBody?.velocity.dy == -50{
-//                self.xScale = 1
-//                self.physicsBody?.velocity.dy = 50
-//                
-//            } else if xScale == 1 && physicsBody?.velocity.dy == 50  {
-//                self.xScale = -1
-//                self.physicsBody?.velocity.dy = -50
-//            }
             if self.xScale == -1 {
                 xScale = 1
                 physicsBody?.velocity.dy = -50

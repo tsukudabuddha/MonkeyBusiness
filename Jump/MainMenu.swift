@@ -124,9 +124,14 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         } else if(touchedNode.name == "playLabel"){
             self.loadGame()
             
-        } else if(touchedNode == monkeyLabel){
-            GameScene.theme = .fox
-            self.loadGame()
+        } else if(touchedNode == foxNode){
+            if GameScene.theme == .monkey {
+                GameScene.theme = .fox
+                monkeyLabel.text = "Foxy"
+            } else {
+                GameScene.theme = .monkey
+                monkeyLabel.text = "Monkey"
+            }
         }
         
     
