@@ -11,13 +11,20 @@ import SpriteKit
 class MainMenu: SKScene, SKPhysicsContactDelegate {
     var playLabel: SKLabelNode!
     var creditLabel: SKLabelNode!
+    var gameScene: GameScene!
+    var foxNode: SKSpriteNode!
     var player: Player!
     var characterSpeed = GameScene(fileNamed: "GameScene")?.characterSpeed
+    
+    var character: Bool = false
     
     override func didMove(to view: SKView) {
         /* Set UI connections */
         playLabel = self.childNode(withName: "playLabel") as! SKLabelNode
         creditLabel = self.childNode(withName: "creditLabel") as! SKLabelNode
+        foxNode = childNode(withName: "foxNode") as! SKSpriteNode
+        gameScene = GameScene(fileNamed: "GameScene")!
+        
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
         
@@ -115,6 +122,8 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         } else if(touchedNode.name == "playLabel"){
             self.loadGame()
             
+        } else if(touchedNode.name == "foxNode"){
+            character = true
         }
         
     

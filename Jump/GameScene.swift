@@ -13,6 +13,10 @@ enum GameSceneState {
     case active, gameOver
 }
 
+enum Theme {
+    case monkey, fox
+}
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // Declare GameScene objects
@@ -25,6 +29,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var canJump: Bool = true
     private var jumping: Bool = false
     private var scorpionArray: [Scorpion] = []
+    var theme: Theme = .monkey // TODO: Add fox to game
     
     private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
     private var rightPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
@@ -250,8 +255,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func beginningAnimation() {
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
-        player.run(SKAction(named: "beginAnimationMonkey")!)
-        player.run(SKAction(named: "Run")!)
+        
+        switch theme {
+        case .fox:
+            player.size = CGSize(width: 28, height: 30)
+            player.run(SKAction(named: "characterRun")!)
+            break
+        case .monkey:
+            player.run(SKAction(named: "Run")!)
+        }
+//        player.run(SKAction(named: "beginAnimationMonkey")!)
+//        player.run(SKAction(named: "Run")!)
         roundLabel.run(SKAction(named: "RoundLabel")!)
     }
     
@@ -278,7 +292,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             print(scorpionArray.count)
             addChild(scorpion)
             if side == 0 {
-                scorpion.yScale = scorpion.yScale * -1
+                //scorpion.yScale = scorpion.yScale * -1
+                scorpion.zRotation = CGFloat(Double.pi)
                 scorpion.orientation = .left
             } else if side == 1 {
                 scorpion.orientation = .right
@@ -384,6 +399,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let x2 = x1 * 2
         let width = Int(frame.width)
         
+        let y1 = 120
+        let y2 = y1 + 90
+        let y3 = y2 + 90
+        let y4 = y3 + 90
+        let y5 = y4 + 90
+        
         let oppositeX1 = width - x1
         let oppositeX2 = width - x2
         
@@ -391,18 +412,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .right:
             switch formation {
             case 0:
-                rightPlatforms[0].position = CGPoint(x: x1, y: 170)
-                rightPlatforms[1].position = CGPoint(x: x1, y: 220)
-                rightPlatforms[2].position = CGPoint(x: x1, y: 270)
-                rightPlatforms[3].position = CGPoint(x: x1, y: 320)
-                rightPlatforms[4].position = CGPoint(x: x1, y: 370)
+                rightPlatforms[0].position = CGPoint(x: x1, y: y1)
+                rightPlatforms[1].position = CGPoint(x: x1, y: y2)
+                rightPlatforms[2].position = CGPoint(x: x1, y: y3)
+                rightPlatforms[3].position = CGPoint(x: x1, y: y4)
+                rightPlatforms[4].position = CGPoint(x: x1, y: y5)
                 break
             case 1:
-                rightPlatforms[0].position = CGPoint(x: x1, y: 170)
-                rightPlatforms[1].position = CGPoint(x: x2, y: 220)
-                rightPlatforms[2].position = CGPoint(x: x1, y: 270)
-                rightPlatforms[3].position = CGPoint(x: x2, y: 320)
-                rightPlatforms[4].position = CGPoint(x: x1, y: 370)
+                rightPlatforms[0].position = CGPoint(x: x1, y: y1)
+                rightPlatforms[1].position = CGPoint(x: x2, y: y2)
+                rightPlatforms[2].position = CGPoint(x: x1, y: y3)
+                rightPlatforms[3].position = CGPoint(x: x2, y: y4)
+                rightPlatforms[4].position = CGPoint(x: x1, y: y5)
                 break
             default:
                 break
@@ -411,18 +432,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .left:
             switch formation {
             case 0:
-                leftPlatforms[0].position = CGPoint(x: oppositeX1, y: 170)
-                leftPlatforms[1].position = CGPoint(x: oppositeX1, y: 220)
-                leftPlatforms[2].position = CGPoint(x: oppositeX1, y: 270)
-                leftPlatforms[3].position = CGPoint(x: oppositeX1, y: 320)
-                leftPlatforms[4].position = CGPoint(x: oppositeX1, y: 370)
+                leftPlatforms[0].position = CGPoint(x: oppositeX1, y: y1)
+                leftPlatforms[1].position = CGPoint(x: oppositeX1, y: y2)
+                leftPlatforms[2].position = CGPoint(x: oppositeX1, y: y3)
+                leftPlatforms[3].position = CGPoint(x: oppositeX1, y: y4)
+                leftPlatforms[4].position = CGPoint(x: oppositeX1, y: y5)
                 break
             case 1:
-                leftPlatforms[0].position = CGPoint(x: oppositeX1, y: 170)
-                leftPlatforms[1].position = CGPoint(x: oppositeX2, y: 220)
-                leftPlatforms[2].position = CGPoint(x: oppositeX1, y: 270)
-                leftPlatforms[3].position = CGPoint(x: oppositeX2, y: 320)
-                leftPlatforms[4].position = CGPoint(x: oppositeX1, y: 370)
+                leftPlatforms[0].position = CGPoint(x: oppositeX1, y: y1)
+                leftPlatforms[1].position = CGPoint(x: oppositeX2, y: y2)
+                leftPlatforms[2].position = CGPoint(x: oppositeX1, y: y3)
+                leftPlatforms[3].position = CGPoint(x: oppositeX2, y: y4)
+                leftPlatforms[4].position = CGPoint(x: oppositeX1, y: y5)
                 break
             default:
                 break

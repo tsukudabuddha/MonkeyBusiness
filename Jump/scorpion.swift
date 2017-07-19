@@ -168,11 +168,11 @@ class Scorpion: SKSpriteNode {
 //            }
             if self.xScale == -1 {
                 xScale = 1
-                physicsBody?.velocity.dy = 50
+                physicsBody?.velocity.dy = -50
                 
             } else if xScale == 1 {
                 xScale = -1
-                physicsBody?.velocity.dy = -50
+                physicsBody?.velocity.dy = 50
             }
         }
         

@@ -8,16 +8,11 @@
 
 import SpriteKit
 
-enum Theme {
-    case monkey, fox
-}
-
 class CreditScene: SKScene {
     
     private var returnLabel: SKLabelNode!
     private var player: Player!
     private var characterSpeed = GameScene(fileNamed: "GameScene")?.characterSpeed
-    private var theme: Theme = .monkey // TODO: Add fox to game
     
     override func didMove(to view: SKView) {
         /* Setup Scene here */
