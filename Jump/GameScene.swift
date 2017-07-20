@@ -6,6 +6,7 @@
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
 //
 
+// TODO: Turn Down jump height
 import SpriteKit
 import GameplayKit
 
@@ -150,7 +151,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             } else {
                 (nodeB as! Scorpion).turnAround()
-                print("Turn Around")
             }
         }
         
@@ -161,11 +161,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             } else {
                 (nodeA as! Scorpion).turnAround()
-                print("Turn Around")
             }
         }
-        
-
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

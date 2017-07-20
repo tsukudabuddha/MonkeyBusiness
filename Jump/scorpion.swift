@@ -20,6 +20,8 @@ class Scorpion: SKSpriteNode {
     var orientation: Orientation = .bottom
     let enemySpeed = CGFloat(1)
     var spawned: Int = 0
+    var canContact: Bool = true
+    
     static var totalSpawned: Int = 0
     static var totalAlive: Int = 0
     var isAlive = true
@@ -30,22 +32,32 @@ class Scorpion: SKSpriteNode {
 
     init() {
         // Make a texture from an image, a color, and size
+        let random = arc4random_uniform(UInt32(2))
         var texture = SKTexture()
         switch GameScene.theme {
         case .monkey:
-            texture = SKTexture(imageNamed: "Scorpion")
+            if random == 0 {
+                texture = SKTexture(imageNamed: "Scorpion")
+            } else {
+                texture = SKTexture(imageNamed: "snake-1")
+            }
+            
         case .fox:
             texture = SKTexture(imageNamed: "opossum-1")
         }
         let color = UIColor.clear
-        let size = texture.size()
+        let size = CGSize(width: 50, height: 50)
         
         // Call the designated initializer
         super.init(texture: texture, color: color, size: size)
         
         // Set physics properties
+        if GameScene.theme == .monkey && random == 0 {
+            physicsBody = SKPhysicsBody(texture: texture, size: size)
+        } else {
+            physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
+        }
         
-        physicsBody = SKPhysicsBody(texture: texture, size: texture.size())
         physicsBody?.affectedByGravity = false
         physicsBody?.allowsRotation = false
         physicsBody?.contactTestBitMask = 2
@@ -57,7 +69,12 @@ class Scorpion: SKSpriteNode {
         
         switch GameScene.theme {
         case .monkey:
-            self.run(SKAction(named: "Scorpion")!)
+            if random == 0 {
+                self.run(SKAction(named: "Scorpion")!)
+            } else {
+                self.run(SKAction(named: "snakeMovement")!)
+            }
+            
         case .fox:
             self.run(SKAction(named: "opposumMovement")!)
         }
@@ -93,6 +110,8 @@ class Scorpion: SKSpriteNode {
     }
     // TODO: Fix
     func turnAround() {
+        
+        self.physicsBody?.velocity.dy = 0
         
         if orientation == .right {
             if self.xScale == -1{
