@@ -6,7 +6,6 @@
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
 //
 
-// TODO: Turn Down jump height
 import SpriteKit
 import GameplayKit
 
@@ -89,7 +88,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Checks if player is on the ground */
         if canJump && jumpTimer <= jumpTime {
-            
+            // TODO: Turn Down jump height
             switch player.orientation {
             case .bottom:
                 player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 12.5))
@@ -211,6 +210,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             newRound(round: round)
         }
+        // TODO: Add portals after round 5/ at round 6
     }
     
     func setupGame() {
@@ -236,28 +236,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   
     func spawnEnemy(round: Int) {
         /* Create array of spawn heights */
-        var heightArray = [100,170,240,310,380,450,520]
+        var heightArray = [100,200,300,400,500]
         var sideArray = [15, 305]
-        for _ in 0..<round { /* do something */
-            let height = arc4random_uniform(UInt32(heightArray.count))
-            
-            let side = arc4random_uniform(UInt32(2))
-            
-            let scorpion = Scorpion()
-            scorpionArray.append(scorpion)
-            addChild(scorpion)
-            if side == 0 {
-                scorpion.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
-                scorpion.orientation = .left
-                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale * -1)
-            } else if side == 1 {
-                scorpion.orientation = .right
-                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale)
-            }
-            scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
-            
-            
-            heightArray.remove(at: Int(height))
+        
+        if round <= heightArray.count{ // Only 5 rounds
+            for _ in 0..<round {
+                let height = arc4random_uniform(UInt32(heightArray.count))
+                
+                let side = arc4random_uniform(UInt32(2))
+                
+                let scorpion = Scorpion()
+                scorpionArray.append(scorpion)
+                addChild(scorpion)
+                if side == 0 {
+                    scorpion.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
+                    scorpion.orientation = .left
+                    scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale * -1)
+                } else if side == 1 {
+                    scorpion.orientation = .right
+                    scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale)
+                }
+                scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
+                
+                
+                heightArray.remove(at: Int(height))
+        }
+        
             
         }
         
