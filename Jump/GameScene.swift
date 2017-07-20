@@ -182,22 +182,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .bottom:
             
             /* Position new platforms */
-            positionPlatforms(side: .right)
+            positionPlatforms(side: .left)
             /* Remove old platforms */
-            removePlatforms()
+            removePlatforms(side: .right)
             
             /* Add platform to scene */
-            addPlatforms()
+            addPlatforms(side: .left)
 
         case .top:
             
             /* Remove old platforms */
-            removePlatforms()
+            removePlatforms(side: .left)
             
             /* position new platforms */
-            positionPlatforms(side: .left)
+            positionPlatforms(side: .right)
+            
             /* Add new platforms */
-            addPlatforms()
+            addPlatforms(side: .right)
             
         default:
             break
@@ -326,23 +327,42 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         skView?.presentScene(scene)
     }
     
-    func addPlatforms() {
-        for platform in rightPlatforms {
-            addChild(platform)
-        }
-        
-        for platform in leftPlatforms{
-            addChild(platform)
+    func addPlatforms(side: Orientation) {
+        switch side {
+        case .right:
+            
+            for platform in rightPlatforms {
+                addChild(platform)
+            }
+            break
+            
+        case .left:
+            for platform in leftPlatforms {
+                addChild(platform)
+            }
+        default:
+            break
         }
     }
     
-    func removePlatforms() {
-        for platform in rightPlatforms {
+    func removePlatforms(side: Orientation) {
+        
+        switch side {
+        case .right:
+            
+            for platform in rightPlatforms {
             platform.removeFromParent()
-        }
-        for platform in leftPlatforms {
+            }
+            break
+            
+        case .left:
+            for platform in leftPlatforms {
             platform.removeFromParent()
+            }
+        default:
+            break
         }
+        
     }
     
     func flipPlatforms() {
