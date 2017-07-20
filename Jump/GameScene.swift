@@ -34,7 +34,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var rightPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
     
     
-    static var theme: Theme = .monkey // static so I can modify from Main Menu
+    static var theme: Theme = .monkey // static so it can be modified from Main Menu
     
     
     // Create Timing Variables
@@ -61,8 +61,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupPhysicsBody()
         
         /* Make all the platforms */
-        createObjects()
-        beginningAnimation()
+        setupGame()
         flipPlatforms()
         
     }
@@ -139,42 +138,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let nodeA = contactA.node! //as! SKSpriteNode
         let nodeB = contactB.node!//as! SKSpriteNode
         
-        if nodeA.physicsBody?.categoryBitMask == 1 {
+        if nodeA.name == "player" || nodeB.name == "player"{
             canJump = true
             jumpTimer = 0
         }
         
-        if nodeB.physicsBody?.categoryBitMask == 1 {
-            canJump = true
-            jumpTimer = 0
-        }
-        
-        
-        // MARK: Enemy contacts
-        if nodeA.name == "player" {
-            if nodeB.physicsBody?.contactTestBitMask == 2 {
+        // MARK: Enemy Contact Functions
+        if nodeB.physicsBody?.contactTestBitMask == 2 {
+            if nodeA.name == "player" {
                 if (nodeB as! Scorpion).isAlive {
                     checkScorpion(scorpion: nodeB as! Scorpion)
                 }
-
+            } else {
+                (nodeB as! Scorpion).turnAround()
+                print("Turn Around")
             }
         }
+        
         if nodeA.physicsBody?.contactTestBitMask == 2 {
             if nodeB.name == "player" {
                 if (nodeA as! Scorpion).isAlive {
                     checkScorpion(scorpion: nodeA as! Scorpion)
                 }
+            } else {
+                (nodeA as! Scorpion).turnAround()
+                print("Turn Around")
             }
         }
-        
-        if nodeB.physicsBody?.contactTestBitMask == 2 {
-            (nodeB as! Scorpion).turnAround()
-        }
-        
-        if nodeA.physicsBody?.contactTestBitMask == 2 {
-            (nodeA as! Scorpion).turnAround()
-        }
-        
         
 
     }
@@ -185,17 +175,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         player.physicsBody?.affectedByGravity = true
         jumpTimer = 0
-    }
-    
-
-    // Make a Class method to load levels
-    func level() -> GameScene? {
-        guard let scene = GameScene(fileNamed: "GameScene") else {
-            return nil
-        }
-        scene.scaleMode = .aspectFit
-        return scene
-        
     }
     
     func spawnObstacles(orientation: characterOrientationState) {
@@ -227,7 +206,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func roundChecker() {
-        print("Scorpions alive: \(Scorpion.totalAlive)")
+        
         if Scorpion.totalAlive == 0 {
             round += 1
             roundLabel.text = "Round \(round)"
@@ -237,7 +216,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    func beginningAnimation() {
+    func setupGame() {
+        
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
         
         switch GameScene.theme {
@@ -248,14 +228,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .monkey:
             player.run(SKAction(named: "Run")!)
         }
-        roundLabel.run(SKAction(named: "RoundLabel")!)
-    }
-    
-    func createObjects() {
+        
         /* Initialize roundLabel object */
         roundLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2))
         roundLabel.text = "Round \(round)"
         self.addChild(roundLabel)
+        
+        roundLabel.run(SKAction(named: "RoundLabel")!)
     }
   
     func spawnEnemy(round: Int) {
@@ -263,7 +242,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var heightArray = [100,170,240,310,380,450,520]
         var sideArray = [15, 305]
         for _ in 0..<round { /* do something */
-            let direction = arc4random_uniform(5)
             let height = arc4random_uniform(UInt32(heightArray.count))
             
             let side = arc4random_uniform(UInt32(2))
@@ -274,12 +252,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if side == 0 {
                 scorpion.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
                 scorpion.orientation = .left
+                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale * -1)
             } else if side == 1 {
                 scorpion.orientation = .right
+                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale)
             }
-            
             scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
-            scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * (pow(-1.0, Double(direction))))
+            
             
             heightArray.remove(at: Int(height))
             
