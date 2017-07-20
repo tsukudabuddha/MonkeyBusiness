@@ -63,7 +63,6 @@ class Scorpion: SKSpriteNode {
         }
         
         
-        
         run(SKAction(named: "Rotate")!)
         
         

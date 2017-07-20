@@ -63,7 +63,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Make all the platforms */
         setupGame()
         flipPlatforms()
-        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
