@@ -24,8 +24,8 @@
 		494579001F0B05E200267C4A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 494578FE1F0B05E200267C4A /* LaunchScreen.storyboard */; };
 		4945790B1F0B05E200267C4A /* JumpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4945790A1F0B05E200267C4A /* JumpTests.swift */; };
 		494579161F0B05E200267C4A /* JumpUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494579151F0B05E200267C4A /* JumpUITests.swift */; };
+		49890D3C1F22C5F80008AD56 /* monkey.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49890D3B1F22C5F80008AD56 /* monkey.sks */; };
 		49A143971F1EC99600CAA597 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49A143961F1EC99600CAA597 /* Actions.sks */; };
-		49D1D3461F0D55E800FCB951 /* monkey.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D3451F0D55E800FCB951 /* monkey.sks */; };
 		49D1D3481F0D615800FCB951 /* MSButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3471F0D615800FCB951 /* MSButtonNode.swift */; };
 		49D1D34A1F0D845000FCB951 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3491F0D845000FCB951 /* Player.swift */; };
 		49D1D34C1F0D9D7D00FCB951 /* MainMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D34B1F0D9D7D00FCB951 /* MainMenu.sks */; };
@@ -84,8 +84,8 @@
 		494579111F0B05E200267C4A /* MonkeyBusinessUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MonkeyBusinessUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		494579151F0B05E200267C4A /* JumpUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpUITests.swift; sourceTree = "<group>"; };
 		494579171F0B05E200267C4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		49890D3B1F22C5F80008AD56 /* monkey.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = monkey.sks; path = "../../../../Downloads/MonkeyBusiness-master 3/Jump/monkey.sks"; sourceTree = "<group>"; };
 		49A143961F1EC99600CAA597 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
-		49D1D3451F0D55E800FCB951 /* monkey.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = monkey.sks; sourceTree = "<group>"; };
 		49D1D3471F0D615800FCB951 /* MSButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSButtonNode.swift; sourceTree = "<group>"; };
 		49D1D3491F0D845000FCB951 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		49D1D34B1F0D9D7D00FCB951 /* MainMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MainMenu.sks; sourceTree = "<group>"; };
@@ -144,15 +144,16 @@
 		49266AD41F11CADD0035AF75 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				49D1D3451F0D55E800FCB951 /* monkey.sks */,
 				49D1D34F1F0DB72400FCB951 /* scorpion.sks */,
+				49890D3B1F22C5F80008AD56 /* monkey.sks */,
 				49266ACE1F0FFC770035AF75 /* deathEmitter.sks */,
 				49E21A201F140501009E4C88 /* ka1.ttf */,
 				49D1D3511F0EB71C00FCB951 /* go3v2.ttf */,
 				49D1D3471F0D615800FCB951 /* MSButtonNode.swift */,
+				49F605571F227FD3007B7BBD /* GoogleService-Info.plist */,
+				494579011F0B05E200267C4A /* Info.plist */,
 				494578F31F0B05E200267C4A /* originalActions.sks */,
 				49A143961F1EC99600CAA597 /* Actions.sks */,
-				49F605571F227FD3007B7BBD /* GoogleService-Info.plist */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -210,7 +211,6 @@
 				494578F91F0B05E200267C4A /* Main.storyboard */,
 				494578FC1F0B05E200267C4A /* Assets.xcassets */,
 				494578FE1F0B05E200267C4A /* LaunchScreen.storyboard */,
-				494579011F0B05E200267C4A /* Info.plist */,
 				49F55E531F20155100E8553F /* sprites.atlas */,
 				49266AD41F11CADD0035AF75 /* Resources */,
 				49266AD51F11CB6D0035AF75 /* Classes */,
@@ -378,7 +378,6 @@
 				49E21A211F14051B009E4C88 /* ka1.ttf in Resources */,
 				49F605581F227FD3007B7BBD /* GoogleService-Info.plist in Resources */,
 				49D1D3501F0DB72400FCB951 /* scorpion.sks in Resources */,
-				49D1D3461F0D55E800FCB951 /* monkey.sks in Resources */,
 				494578FB1F0B05E200267C4A /* Main.storyboard in Resources */,
 				49D1D3521F0EB73000FCB951 /* go3v2.ttf in Resources */,
 				494578F21F0B05E200267C4A /* GameScene.sks in Resources */,
@@ -387,6 +386,7 @@
 				494579001F0B05E200267C4A /* LaunchScreen.storyboard in Resources */,
 				49D1D34C1F0D9D7D00FCB951 /* MainMenu.sks in Resources */,
 				494578F41F0B05E200267C4A /* originalActions.sks in Resources */,
+				49890D3C1F22C5F80008AD56 /* monkey.sks in Resources */,
 				49266ACF1F0FFC770035AF75 /* deathEmitter.sks in Resources */,
 				49266AD11F11C8680035AF75 /* CreditScene.sks in Resources */,
 			);

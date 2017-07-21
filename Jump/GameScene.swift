@@ -4,8 +4,7 @@
 //
 //  Created by Andrew Tsukuda on 7/3/17.
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
-// Push Before Firebase
-
+//  TODO: When you're headed to the left side, don't spawn enemy in corner
 import SpriteKit
 import GameplayKit
 
@@ -131,6 +130,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             player.physicsBody?.affectedByGravity = true
             jumpTimer = 0
         }
+        print("player x: \(player.position.x)")
 
     }
     
@@ -154,7 +154,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if nodeA.name == "player" {
                 if (nodeB as! Enemy).isAlive {
                     checkScorpion(scorpion: nodeB as! Enemy)
-                    points += (nodeB as! Enemy).pointValue
                     pointsLabel.text = String(points)
                 }
             } else {
@@ -166,7 +165,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if nodeB.name == "player" {
                 if (nodeA as! Enemy).isAlive {
                     checkScorpion(scorpion: nodeA as! Enemy)
-                    points += (nodeA as! Enemy).pointValue
                     pointsLabel.text = String(points)
                 }
             } else {
@@ -238,6 +236,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             player.run(SKAction(named: "Run")!)
         }
         
+        /* Un-hide points label */
+        pointsLabel.isHidden = false
+        
         /* Initialize roundLabel object */
         roundLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2))
         roundLabel.text = "Round \(round)"
@@ -254,29 +255,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Create array of spawn heights */
         var heightArray = [100,200,300,400,500]
         var sideArray = [15, 305]
+        var count = round
         
-        if round <= heightArray.count{ // Only 5 rounds
-            for _ in 0..<round {
-                let height = arc4random_uniform(UInt32(heightArray.count))
-                
-                let side = arc4random_uniform(UInt32(2))
-                
-                let scorpion = Enemy()
-                enemyArray.append(scorpion)
-                addChild(scorpion)
-                if side == 0 {
-                    scorpion.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
-                    scorpion.orientation = .left
-                    scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale * -1)
-                } else if side == 1 {
-                    scorpion.orientation = .right
-                    scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale)
-                }
-                scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
-                
-                
-                heightArray.remove(at: Int(height))
+        if round > 5 {
+            count = 5
         }
+        
+        for _ in 0..<count {
+            let height = arc4random_uniform(UInt32(heightArray.count))
+            
+            let side = arc4random_uniform(UInt32(2))
+            
+            let scorpion = Enemy()
+            enemyArray.append(scorpion)
+            addChild(scorpion)
+            if side == 0 {
+                scorpion.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scorpions
+                scorpion.orientation = .left
+                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale * -1)
+            } else if side == 1 {
+                scorpion.orientation = .right
+                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale)
+            }
+            scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
+            
+            
+            heightArray.remove(at: Int(height))
         
             
         }
@@ -289,20 +293,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         switch player.orientation {
         case .right:
-            if player.position.x + 33 < scorpion.position.x {
+            if player.position.x + (player.size.height / 2) < scorpion.position.x - (scorpion.size.height / 2) {
                 scorpion.die()
                 player.physicsBody?.applyImpulse(CGVector(dx: -10, dy: 0))
+                points += scorpion.pointValue
                 
             } else {
                 gameOver()
             }
         case .left:
-            if player.position.x + 25 > scorpion.position.x {
+            if player.position.x + 30 > scorpion.position.x {
                 scorpion.die()
                 player.physicsBody?.applyImpulse(CGVector(dx: 10, dy: 0))
+                points += scorpion.pointValue
                 
             } else {
                 gameOver()
+                
             }
         default:
             break
@@ -314,14 +321,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    func gameOver() {
+    
+    
+    func gameOver() { // MARK: Game Over
         /* Set gamestate to gameOver */
         gameState = .gameOver
         player.death()
-        dedLabel.text = "0 points..." // TODO: Implement points
-        dedLabel.isHidden = false
+        dedLabel.text = "\(points) points"
+        dedLabel.isHidden = false // MARK: Could Clean up the remaining part of function
         restartLabel.isHidden = false
         menuLabel.isHidden = false
+        let fadeOut = SKAction.fadeOut(withDuration: 0.00)
+        let fadeIn = SKAction.fadeIn(withDuration: 1)
+        let seq = SKAction.sequence([fadeOut, fadeIn])
+        dedLabel.run(seq)
+        menuLabel.run(seq)
+        restartLabel.run(seq)
+        pointsLabel.isHidden = true
         
     }
     
@@ -416,11 +432,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let x2 = x1 * 2
         let width = Int(frame.width)
         
-        let y1 = 120
-        let y2 = y1 + 90
-        let y3 = y2 + 90
-        let y4 = y3 + 90
-        let y5 = y4 + 90
+        let y1 = 105
+        let y2 = y1 + 95
+        let y3 = y2 + 95
+        let y4 = y3 + 95
+        let y5 = y4 + 95
         
         let oppositeX1 = width - x1
         let oppositeX2 = width - x2
@@ -479,7 +495,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .bottom:
             player.physicsBody?.velocity.dx = characterSpeed
             
-            if player.position.x > self.frame.width * 0.5 {
+            if player.position.x > frame.size.width * 0.4 {
+                
                 
                 /* Change Gravity so right is down */
                 self.physicsWorld.gravity.dx = 9.8
@@ -510,7 +527,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .top:
             player.physicsBody?.velocity.dx = -1 * characterSpeed
             //print(player.position)
-            if player.position.x < frame.width * 0.5 {
+            if player.position.x < frame.size.width * 0.4 {
                 
                 /* Change Gravity so left is down */
                 self.physicsWorld.gravity.dx = -9.8

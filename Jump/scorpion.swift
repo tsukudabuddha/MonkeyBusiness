@@ -30,6 +30,7 @@ class Enemy: SKSpriteNode {
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */
     
     var turnTimer: CFTimeInterval = 0
+    
 
     init() {
         // Make a texture from an image, a color, and size
@@ -54,6 +55,7 @@ class Enemy: SKSpriteNode {
         
         // Call the designated initializer
         super.init(texture: texture, color: color, size: size)
+
         
         // Set physics properties
        
