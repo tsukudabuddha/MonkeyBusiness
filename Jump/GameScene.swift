@@ -25,13 +25,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var roundLabel: SKLabelNode! = SKLabelNode()
     private var dedLabel: SKLabelNode!
     private var restartLabel: SKLabelNode!
+    private var menuLabel: SKLabelNode!
     private var round: Int = 1
     private var canJump: Bool = true
     private var jumping: Bool = false
     private var scorpionArray: [Scorpion] = []
     
-    private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
-    private var rightPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform(), Platform()]
+    private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
+    private var rightPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
     
     
     static var theme: Theme = .monkey // static so it can be modified from Main Menu
@@ -52,10 +53,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player = childNode(withName: "//player") as! Player
         dedLabel = childNode(withName: "dedLabel") as! SKLabelNode
         restartLabel = childNode(withName: "restartLabel") as! SKLabelNode
+        menuLabel = childNode(withName: "menuLabel") as! SKLabelNode
         
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
         dedLabel.isHidden = true
+        menuLabel.isHidden = true
         
         // Create Physics Body for frame
         setupPhysicsBody()
@@ -82,6 +85,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Did the user tap on the restart label? */
             if(touchedNode.name == "restartLabel"){
                 restartGame()
+            } else if touchedNode == menuLabel {
+                loadMenu()
             }
             
         }
@@ -302,9 +307,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Set gamestate to gameOver */
         gameState = .gameOver
         player.death()
-        dedLabel.text = "You made it to Round \(round)"
+        dedLabel.text = "0 points..." // TODO: Implement points
         dedLabel.isHidden = false
         restartLabel.isHidden = false
+        menuLabel.isHidden = false
+        
     }
     
     func restartGame() {
@@ -313,6 +320,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Load Game Scene */
         guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
+            return
+        }
+        
+        /* Reset outside variables */
+        Scorpion.totalSpawned = 0
+        Scorpion.totalAlive = 0
+        
+        /* Ensure correct aspect mode */
+        scene.scaleMode = .aspectFill
+        
+        /* Restart Game Scene */
+        skView?.presentScene(scene)
+    }
+    
+    func loadMenu() {
+        /* Grab reference to the SPriteKit view */
+        let skView = self.view as SKView!
+        
+        /* Load Game Scene */
+        guard let scene = MainMenu(fileNamed: "MainMenu") as MainMenu! else {
             return
         }
         
@@ -374,7 +401,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func positionPlatforms(side: Orientation) {
         let formation = arc4random_uniform(UInt32(2))
         
-        let x1 = 70
+        let x1 = 80
         let x2 = x1 * 2
         let width = Int(frame.width)
         
@@ -441,7 +468,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .bottom:
             player.physicsBody?.velocity.dx = characterSpeed
             
-            if player.position.x > self.frame.width * 0.6 { // MARK: Changed from -60
+            if player.position.x > self.frame.width * 0.5 {
                 
                 /* Change Gravity so right is down */
                 self.physicsWorld.gravity.dx = 9.8
@@ -472,7 +499,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .top:
             player.physicsBody?.velocity.dx = -1 * characterSpeed
             //print(player.position)
-            if player.position.x < frame.width * 0.4 { // MARK: Changed from 0
+            if player.position.x < frame.width * 0.5 { 
                 
                 /* Change Gravity so left is down */
                 self.physicsWorld.gravity.dx = -9.8

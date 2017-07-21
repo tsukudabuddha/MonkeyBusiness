@@ -11,9 +11,8 @@ import SpriteKit
 class MainMenu: SKScene, SKPhysicsContactDelegate {
     var playLabel: SKLabelNode!
     var creditLabel: SKLabelNode!
-    var monkeyLabel: SKLabelNode!
+    var themeLabel: SKLabelNode!
     var gameScene: GameScene!
-    var foxNode: SKSpriteNode!
     var player: Player!
     var characterSpeed = GameScene(fileNamed: "GameScene")?.characterSpeed
     
@@ -23,8 +22,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         /* Set UI connections */
         playLabel = self.childNode(withName: "playLabel") as! SKLabelNode
         creditLabel = self.childNode(withName: "creditLabel") as! SKLabelNode
-        monkeyLabel = childNode(withName: "\"monkey\"Label") as! SKLabelNode
-        foxNode = childNode(withName: "foxNode") as! SKSpriteNode
+        themeLabel = childNode(withName: "themeLabel") as! SKLabelNode
         gameScene = GameScene(fileNamed: "GameScene")!
         
         // Connect variables to code
@@ -124,13 +122,13 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         } else if(touchedNode.name == "playLabel"){
             self.loadGame()
             
-        } else if(touchedNode == foxNode){
+        } else if(touchedNode == themeLabel){
             if GameScene.theme == .monkey {
                 GameScene.theme = .fox
-                monkeyLabel.text = "Foxy"
+                themeLabel.text = "Foxy"
             } else {
                 GameScene.theme = .monkey
-                monkeyLabel.text = "Monkey"
+                themeLabel.text = "Monkey"
             }
         }
         
