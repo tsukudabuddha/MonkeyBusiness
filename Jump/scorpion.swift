@@ -15,12 +15,13 @@ enum Orientation {
     case bottom, right, top, left
 }
 
-class Scorpion: SKSpriteNode {
+class Enemy: SKSpriteNode {
     
     var orientation: Orientation = .bottom
     let enemySpeed = CGFloat(1)
     var spawned: Int = 0
     var canContact: Bool = true
+    var pointValue: Int = 10
     
     static var totalSpawned: Int = 0
     static var totalAlive: Int = 0
@@ -38,6 +39,7 @@ class Scorpion: SKSpriteNode {
         case .monkey:
             if random == 0 {
                 texture = SKTexture(imageNamed: "king-cobra-2")
+                self.pointValue = 40
             } else if random > 4{
                 texture = SKTexture(imageNamed: "Scorpion")
             } else {
@@ -63,8 +65,8 @@ class Scorpion: SKSpriteNode {
         physicsBody?.friction = 0
         physicsBody?.linearDamping = 0
         
-        Scorpion.totalSpawned += 1
-        Scorpion.totalAlive += 1
+        Enemy.totalSpawned += 1
+        Enemy.totalAlive += 1
         
         switch GameScene.theme {
         case .monkey:
@@ -102,15 +104,13 @@ class Scorpion: SKSpriteNode {
             let seq = SKAction.sequence([death, removeScorpion])
             self.run(seq)
             
-            Scorpion.totalAlive -= 1
+            Enemy.totalAlive -= 1
             self.isAlive = false
         }
         
         
-        
-        
     }
-    // TODO: Fix
+    
     func turnAround() {
         
         self.physicsBody?.velocity.dy = 0

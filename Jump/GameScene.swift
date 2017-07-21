@@ -23,13 +23,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private var player: Player!
     private var roundLabel: SKLabelNode! = SKLabelNode()
+    private var pointsLabel: SKLabelNode! = SKLabelNode()
     private var dedLabel: SKLabelNode!
     private var restartLabel: SKLabelNode!
     private var menuLabel: SKLabelNode!
     private var round: Int = 1
     private var canJump: Bool = true
     private var jumping: Bool = false
-    private var scorpionArray: [Scorpion] = []
+    private var enemyArray: [Enemy] = []
+    private var points: Int = 0
     
     private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
     private var rightPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
@@ -150,21 +152,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // MARK: Enemy Contact Functions
         if nodeB.physicsBody?.contactTestBitMask == 2 {
             if nodeA.name == "player" {
-                if (nodeB as! Scorpion).isAlive {
-                    checkScorpion(scorpion: nodeB as! Scorpion)
+                if (nodeB as! Enemy).isAlive {
+                    checkScorpion(scorpion: nodeB as! Enemy)
+                    points += (nodeB as! Enemy).pointValue
+                    pointsLabel.text = String(points)
                 }
             } else {
-                (nodeB as! Scorpion).turnAround()
+                (nodeB as! Enemy).turnAround()
             }
         }
         
         if nodeA.physicsBody?.contactTestBitMask == 2 {
             if nodeB.name == "player" {
-                if (nodeA as! Scorpion).isAlive {
-                    checkScorpion(scorpion: nodeA as! Scorpion)
+                if (nodeA as! Enemy).isAlive {
+                    checkScorpion(scorpion: nodeA as! Enemy)
+                    points += (nodeA as! Enemy).pointValue
+                    pointsLabel.text = String(points)
                 }
             } else {
-                (nodeA as! Scorpion).turnAround()
+                (nodeA as! Enemy).turnAround()
             }
         }
     }
@@ -208,7 +214,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func roundChecker() {
         
-        if Scorpion.totalAlive == 0 {
+        if Enemy.totalAlive == 0 {
             round += 1
             roundLabel.text = "Round \(round)"
             roundLabel.run(SKAction(named: "RoundLabel")!)
@@ -218,6 +224,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // TODO: Add portals after round 5/ at round 6
     }
     
+    // MARK: Setup Game
     func setupGame() {
         
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
@@ -236,6 +243,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         roundLabel.text = "Round \(round)"
         self.addChild(roundLabel)
         
+        /* Setup Points Label */
+        pointsLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2) + 20)
+        self.addChild(pointsLabel)
+        
         roundLabel.run(SKAction(named: "RoundLabel")!)
     }
   
@@ -250,8 +261,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 let side = arc4random_uniform(UInt32(2))
                 
-                let scorpion = Scorpion()
-                scorpionArray.append(scorpion)
+                let scorpion = Enemy()
+                enemyArray.append(scorpion)
                 addChild(scorpion)
                 if side == 0 {
                     scorpion.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
@@ -274,7 +285,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     /* Checks if player is above scorpion */
-    func checkScorpion(scorpion: Scorpion) {
+    func checkScorpion(scorpion: Enemy) {
         
         switch player.orientation {
         case .right:
@@ -324,8 +335,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         /* Reset outside variables */
-        Scorpion.totalSpawned = 0
-        Scorpion.totalAlive = 0
+        Enemy.totalSpawned = 0
+        Enemy.totalAlive = 0
         
         /* Ensure correct aspect mode */
         scene.scaleMode = .aspectFill
@@ -344,8 +355,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         /* Reset outside variables */
-        Scorpion.totalSpawned = 0
-        Scorpion.totalAlive = 0
+        Enemy.totalSpawned = 0
+        Enemy.totalAlive = 0
         
         /* Ensure correct aspect mode */
         scene.scaleMode = .aspectFill
