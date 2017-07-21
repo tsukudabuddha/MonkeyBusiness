@@ -1,0 +1,6 @@
+framework module Pods_MonkeyBusinessTests {
+  umbrella header "Pods-MonkeyBusinessTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
