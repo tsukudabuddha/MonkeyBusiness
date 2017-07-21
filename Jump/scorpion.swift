@@ -32,11 +32,13 @@ class Scorpion: SKSpriteNode {
 
     init() {
         // Make a texture from an image, a color, and size
-        let random = arc4random_uniform(UInt32(2))
+        let random = arc4random_uniform(UInt32(10))
         var texture = SKTexture()
         switch GameScene.theme {
         case .monkey:
             if random == 0 {
+                texture = SKTexture(imageNamed: "king-cobra-2")
+            } else if random > 4{
                 texture = SKTexture(imageNamed: "Scorpion")
             } else {
                 texture = SKTexture(imageNamed: "snake-1")
@@ -46,16 +48,16 @@ class Scorpion: SKSpriteNode {
             texture = SKTexture(imageNamed: "opossum-1")
         }
         let color = UIColor.clear
-        let size = CGSize(width: 50, height: 50)
+        let size = texture.size()
         
         // Call the designated initializer
         super.init(texture: texture, color: color, size: size)
         
         // Set physics properties
-        if GameScene.theme == .monkey && random == 0 {
+        if GameScene.theme == .monkey && random > 4 {
             physicsBody = SKPhysicsBody(texture: texture, size: size)
-        } else {
-            physicsBody = SKPhysicsBody(rectangleOf: CGSize(width: 50, height: 50))
+        } else { // TODO: change size of snakes
+            physicsBody = SKPhysicsBody(rectangleOf: texture.size())
         }
         
         physicsBody?.affectedByGravity = false
@@ -69,7 +71,10 @@ class Scorpion: SKSpriteNode {
         
         switch GameScene.theme {
         case .monkey:
+            
             if random == 0 {
+                self.run(SKAction(named: "cobraMovement")!)
+            } else if random > 4{
                 self.run(SKAction(named: "Scorpion")!)
             } else {
                 self.run(SKAction(named: "snakeMovement")!)

@@ -93,16 +93,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Checks if player is on the ground */
         if canJump && jumpTimer <= jumpTime {
-            // TODO: Turn Down jump height
+            // TODO: Possibly continue to tweak height
             switch player.orientation {
             case .bottom:
-                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 12.5))
+                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 12))
             case .right:
-                player.physicsBody?.applyImpulse(CGVector(dx: -12.5, dy: 0))
+                player.physicsBody?.applyImpulse(CGVector(dx: -12, dy: 0))
             case .top:
-                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -12.5))
+                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -12))
             case .left:
-                player.physicsBody?.applyImpulse(CGVector(dx: 12.5, dy: 0))
+                player.physicsBody?.applyImpulse(CGVector(dx: 12, dy: 0))
                 
             }
             
@@ -499,7 +499,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .top:
             player.physicsBody?.velocity.dx = -1 * characterSpeed
             //print(player.position)
-            if player.position.x < frame.width * 0.5 { 
+            if player.position.x < frame.width * 0.5 {
                 
                 /* Change Gravity so left is down */
                 self.physicsWorld.gravity.dx = -9.8
