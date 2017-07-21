@@ -54,11 +54,8 @@ class Scorpion: SKSpriteNode {
         super.init(texture: texture, color: color, size: size)
         
         // Set physics properties
-        if GameScene.theme == .monkey && random > 4 {
-            physicsBody = SKPhysicsBody(texture: texture, size: size)
-        } else { // TODO: change size of snakes
-            physicsBody = SKPhysicsBody(rectangleOf: texture.size())
-        }
+       
+        physicsBody = SKPhysicsBody(rectangleOf: texture.size())
         
         physicsBody?.affectedByGravity = false
         physicsBody?.allowsRotation = false
