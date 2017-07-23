@@ -28,9 +28,6 @@ class Player: SKSpriteNode {
     
     func death() {
         self.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
-        self.physicsBody?.contactTestBitMask = 0
-        self.physicsBody?.collisionBitMask = 0
-        self.physicsBody?.affectedByGravity = false
         self.removeAllActions()
         
         let turnRed = SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50)
