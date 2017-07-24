@@ -64,8 +64,9 @@ class CreditScene: SKScene {
         /* Ensure correct aspect mode */
         scene.scaleMode = .aspectFill
         
+        let doorsClose = SKTransition.doorsCloseHorizontal(withDuration: 0.5)
         /* Restart Game Scene */
-        skView?.presentScene(scene)
+        skView?.presentScene(scene, transition: doorsClose)
         
     }
     

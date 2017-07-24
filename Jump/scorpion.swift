@@ -92,22 +92,19 @@ class Enemy: SKSpriteNode {
     func die() {
         // Checks that scorpion has not already run death function
         
-        if self.isAlive {
-            
-            /* Pins animation to death spot then makes it so player cannot touch it */
-            self.physicsBody?.collisionBitMask = 0
-            self.physicsBody?.categoryBitMask = 0
-            self.physicsBody?.pinned = true
-            
-            let death = SKAction(named: "enemyDeath")!
-            let removeScorpion = SKAction.removeFromParent()
-            let seq = SKAction.sequence([death, removeScorpion])
-            self.run(seq)
-            
-            Enemy.totalAlive -= 1
-            self.isAlive = false
-        }
+        /* Pins animation to death spot then makes it so player cannot touch it */
+        self.physicsBody?.collisionBitMask = 0
+        self.physicsBody?.categoryBitMask = 0
+        self.physicsBody?.pinned = true
         
+        let death = SKAction(named: "enemyDeath")!
+        let removeScorpion = SKAction.removeFromParent()
+        let seq = SKAction.sequence([death, removeScorpion])
+        self.run(seq)
+        
+        Enemy.totalAlive -= 1
+        self.isAlive = false
+    
         
     }
     

@@ -5,6 +5,8 @@
 //  Created by Andrew Tsukuda on 7/3/17.
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
 //  MARK: The scene in relation to player position is 0 - 287
+//  TODO: Add coins
+//  TODO: Add more platform orientations
 
 import SpriteKit
 import GameplayKit
@@ -28,7 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var highScoreLabel: SKLabelNode!
     private var restartLabel: SKLabelNode!
     private var menuLabel: SKLabelNode!
-    private var round: Int = 1
+    private var round: Int = 0
     private var canJump: Bool = true
     private var jumping: Bool = false
     private var enemyArray: [Enemy] = []
@@ -135,9 +137,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             jumpTimer = 0
         }
         
-        //player.x = player.position.x + 15
-        print("player position: \(player.position)")
-        //print("player modified x: \(player.x)")
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -157,9 +156,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // MARK: Enemy Contact Functions
         if nodeB.physicsBody?.contactTestBitMask == 2 {
+            
             if nodeA.name == "player" {
                 if (nodeB as! Enemy).isAlive {
-                    checkScorpion(scorpion: nodeB as! Enemy)
+                    checkScorpion(scorpion: (nodeB as! Enemy), contactPoint: contact.contactPoint)
                 }
             } else {
                 (nodeB as! Enemy).turnAround()
@@ -169,12 +169,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if nodeA.physicsBody?.contactTestBitMask == 2 {
             if nodeB.name == "player" {
                 if (nodeA as! Enemy).isAlive {
-                    checkScorpion(scorpion: nodeA as! Enemy)
+                    checkScorpion(scorpion: (nodeA as! Enemy), contactPoint: contact.contactPoint)
                 }
             } else {
                 (nodeA as! Enemy).turnAround()
             }
         }
+        
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -190,23 +191,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .bottom:
             
             /* Position new platforms */
-            positionPlatforms(side: .left)
+            positionPlatforms(side: .right)
             /* Remove old platforms */
-            removePlatforms(side: .right)
+            removePlatforms(side: .left)
             
             /* Add platform to scene */
-            addPlatforms(side: .left)
+            addPlatforms(side: .right)
 
         case .top:
             
             /* Remove old platforms */
-            removePlatforms(side: .left)
+            removePlatforms(side: .right)
             
             /* position new platforms */
-            positionPlatforms(side: .right)
+            positionPlatforms(side: .left)
             
             /* Add new platforms */
-            addPlatforms(side: .right)
+            addPlatforms(side: .left)
             
         default:
             break
@@ -242,7 +243,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Initialize roundLabel object */
         roundLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2))
-        roundLabel.text = "Round \(round)"
+        roundLabel.run(SKAction.fadeOut(withDuration: 0))
         self.addChild(roundLabel)
         
         /* Setup Points Label */
@@ -257,9 +258,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var heightArray = [100,200,300,400,500]
         var sideArray = [15, 305]
         
-        var count = round
+        var count = round + 1
         
-        if round > 5 {
+        if round >= 5 {
             count = 5
         }
         
@@ -290,11 +291,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     /* Checks if player is above scorpion */
-    func checkScorpion(scorpion: Enemy) {
+    func checkScorpion(scorpion: Enemy, contactPoint: CGPoint) {
         
         switch player.orientation {
         case .right:
-            if player.position.x < scorpion.position.x {
+            if contactPoint.x - 5 < scorpion.position.x - (scorpion.size.height / 2) {
+                scorpion.isAlive = false
                 scorpion.die()
                 player.physicsBody?.velocity = CGVector.zero
                 player.physicsBody?.applyImpulse(CGVector(dx: -10, dy: 0))
@@ -305,7 +307,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 gameOver()
             }
         case .left:
-            if player.position.x + 25 > scorpion.position.x {
+            if contactPoint.x + 8 > scorpion.position.x + (scorpion.size.height / 2) {
+                scorpion.isAlive = false
                 scorpion.die()
                 player.physicsBody?.velocity = CGVector.zero
                 player.physicsBody?.applyImpulse(CGVector(dx: 10, dy: 0))
@@ -335,6 +338,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         restartLabel.isHidden = false
         menuLabel.isHidden = false
         highScoreLabel.isHidden = false
+        pointsLabel.isHidden = true
         
         let oldHigh = UserDefaults.standard.integer(forKey: "highScore")
         highScoreLabel.text = "High Score: \(oldHigh)"
@@ -342,7 +346,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             UserDefaults.standard.set(points, forKey: "highScore")
             highScoreLabel.text = String(points)
         }
-
+        
+        for scorpion in enemyArray {
+            scorpion.die()
+        }
         
     }
     
@@ -382,8 +389,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Ensure correct aspect mode */
         scene.scaleMode = .aspectFill
         
+        let transition = SKTransition.doorsCloseHorizontal(withDuration: 0.5)
         /* Restart Game Scene */
-        skView?.presentScene(scene)
+        skView?.presentScene(scene, transition: transition)
     }
     
     func addPlatforms(side: Orientation) {
@@ -425,7 +433,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func flipPlatforms() {
-        for platform in rightPlatforms {
+        for platform in leftPlatforms {
             platform.flip()
         }
     }
@@ -446,22 +454,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let oppositeX1 = width - x1
         let oppositeX2 = width - x2
         
+        var gem = Gem()
+        
+        if side == .right {
+            gem.zRotation = CGFloat(Double.pi * 0.5)
+        } else {
+            gem.zRotation = CGFloat(Double.pi * 1.5)
+        }
+        
         switch side {
         case .right:
             switch formation {
             case 0:
-                rightPlatforms[0].position = CGPoint(x: x1, y: y1)
-                rightPlatforms[1].position = CGPoint(x: x1, y: y2)
-                rightPlatforms[2].position = CGPoint(x: x1, y: y3)
-                rightPlatforms[3].position = CGPoint(x: x1, y: y4)
-                rightPlatforms[4].position = CGPoint(x: x1, y: y5)
+                leftPlatforms[0].position = CGPoint(x: x1, y: y1)
+                leftPlatforms[1].position = CGPoint(x: x1, y: y2)
+                leftPlatforms[2].position = CGPoint(x: x1, y: y3)
+                leftPlatforms[3].position = CGPoint(x: x1, y: y4)
+                leftPlatforms[4].position = CGPoint(x: x1, y: y5)
                 break
             case 1:
-                rightPlatforms[0].position = CGPoint(x: x1, y: y1)
-                rightPlatforms[1].position = CGPoint(x: x2, y: y2)
-                rightPlatforms[2].position = CGPoint(x: x1, y: y3)
-                rightPlatforms[3].position = CGPoint(x: x2, y: y4)
-                rightPlatforms[4].position = CGPoint(x: x1, y: y5)
+                leftPlatforms[0].position = CGPoint(x: x1, y: y1)
+                leftPlatforms[1].position = CGPoint(x: x2, y: y2)
+                leftPlatforms[2].position = CGPoint(x: x1, y: y3)
+                leftPlatforms[3].position = CGPoint(x: x2, y: y4)
+                leftPlatforms[4].position = CGPoint(x: x1, y: y5)
                 break
             default:
                 break
@@ -470,18 +486,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .left:
             switch formation {
             case 0:
-                leftPlatforms[0].position = CGPoint(x: oppositeX1, y: y1)
-                leftPlatforms[1].position = CGPoint(x: oppositeX1, y: y2)
-                leftPlatforms[2].position = CGPoint(x: oppositeX1, y: y3)
-                leftPlatforms[3].position = CGPoint(x: oppositeX1, y: y4)
-                leftPlatforms[4].position = CGPoint(x: oppositeX1, y: y5)
+                rightPlatforms[0].position = CGPoint(x: oppositeX1, y: y1)
+                rightPlatforms[1].position = CGPoint(x: oppositeX1, y: y2)
+                rightPlatforms[2].position = CGPoint(x: oppositeX1, y: y3)
+                rightPlatforms[3].position = CGPoint(x: oppositeX1, y: y4)
+                rightPlatforms[4].position = CGPoint(x: oppositeX1, y: y5)
                 break
             case 1:
-                leftPlatforms[0].position = CGPoint(x: oppositeX1, y: y1)
-                leftPlatforms[1].position = CGPoint(x: oppositeX2, y: y2)
-                leftPlatforms[2].position = CGPoint(x: oppositeX1, y: y3)
-                leftPlatforms[3].position = CGPoint(x: oppositeX2, y: y4)
-                leftPlatforms[4].position = CGPoint(x: oppositeX1, y: y5)
+                rightPlatforms[0].position = CGPoint(x: oppositeX1, y: y1)
+                rightPlatforms[1].position = CGPoint(x: oppositeX2, y: y2)
+                rightPlatforms[2].position = CGPoint(x: oppositeX1, y: y3)
+                rightPlatforms[3].position = CGPoint(x: oppositeX2, y: y4)
+                rightPlatforms[4].position = CGPoint(x: oppositeX1, y: y5)
                 break
             default:
                 break

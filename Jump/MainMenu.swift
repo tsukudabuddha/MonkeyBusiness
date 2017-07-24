@@ -145,7 +145,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         scene.scaleMode = .aspectFill
         
         /* Restart Game Scene */
-        let transition = SKTransition.doorsCloseHorizontal(withDuration: 0.5)
+        let transition = SKTransition.doorsOpenHorizontal(withDuration: 0.5)
         view?.presentScene(scene, transition: transition)
         
     }
@@ -160,8 +160,8 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         scene.scaleMode = .aspectFill
         
         /* Restart Game Scene */
-        let doorsClose = SKTransition.doorsCloseHorizontal(withDuration: 0.5)
-        view?.presentScene(scene, transition: doorsClose)
+        let doorsOpen = SKTransition.doorsOpenHorizontal(withDuration: 0.5)
+        view?.presentScene(scene, transition: doorsOpen)
         
     }
     
