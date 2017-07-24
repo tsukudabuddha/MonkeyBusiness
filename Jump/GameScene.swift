@@ -30,6 +30,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var highScoreLabel: SKLabelNode!
     private var restartLabel: SKLabelNode!
     private var menuLabel: SKLabelNode!
+    private var gameOverScreen: SKSpriteNode!
     private var round: Int = 0
     private var canJump: Bool = true
     private var jumping: Bool = false
@@ -56,10 +57,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
-        dedLabel = childNode(withName: "dedLabel") as! SKLabelNode
-        restartLabel = childNode(withName: "restartLabel") as! SKLabelNode
-        menuLabel = childNode(withName: "menuLabel") as! SKLabelNode
-        highScoreLabel = childNode(withName: "highScoreLabel") as! SKLabelNode
+        dedLabel = childNode(withName: "//dedLabel") as! SKLabelNode
+        restartLabel = childNode(withName: "//restartLabel") as! SKLabelNode
+        menuLabel = childNode(withName: "//menuLabel") as! SKLabelNode
+        highScoreLabel = childNode(withName: "//highScoreLabel") as! SKLabelNode
+        gameOverScreen = childNode(withName: "gameOverScreen") as! SKSpriteNode
         
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
@@ -333,6 +335,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Set gamestate to gameOver */
         gameState = .gameOver
         player.death()
+        gameOverScreen.run(SKAction.moveTo(y: 0, duration: 0.5))
+        
         dedLabel.text = "Your Score: \(points)"
         dedLabel.isHidden = false
         restartLabel.isHidden = false
@@ -368,6 +372,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Ensure correct aspect mode */
         scene.scaleMode = .aspectFill
+        
+        let moveTo = SKAction.moveTo(y: 568, duration: 0.5)
+        let wait = SKAction.wait(forDuration: 0.1)
+        let seq = SKAction.sequence([moveTo, wait])
+        
+        gameOverScreen.run(seq)
         
         /* Restart Game Scene */
         skView?.presentScene(scene)
