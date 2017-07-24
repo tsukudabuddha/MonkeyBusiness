@@ -4,7 +4,7 @@
 //
 //  Created by Andrew Tsukuda on 7/3/17.
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
-// Push Before Firebase
+//  MARK: The scene in relation to player position is 0 - 287
 
 import SpriteKit
 import GameplayKit
@@ -134,7 +134,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             player.physicsBody?.affectedByGravity = true
             jumpTimer = 0
         }
-
+        
+        //player.x = player.position.x + 15
+        print("player position: \(player.position)")
+        //print("player modified x: \(player.x)")
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -157,8 +160,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if nodeA.name == "player" {
                 if (nodeB as! Enemy).isAlive {
                     checkScorpion(scorpion: nodeB as! Enemy)
-                    points += (nodeB as! Enemy).pointValue
-                    pointsLabel.text = String(points)
                 }
             } else {
                 (nodeB as! Enemy).turnAround()
@@ -169,8 +170,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if nodeB.name == "player" {
                 if (nodeA as! Enemy).isAlive {
                     checkScorpion(scorpion: nodeA as! Enemy)
-                    points += (nodeA as! Enemy).pointValue
-                    pointsLabel.text = String(points)
                 }
             } else {
                 (nodeA as! Enemy).turnAround()
@@ -258,31 +257,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var heightArray = [100,200,300,400,500]
         var sideArray = [15, 305]
         
-        if round <= heightArray.count{ // Only 5 rounds
-            for _ in 0..<round {
-                let height = arc4random_uniform(UInt32(heightArray.count))
-                
-                let side = arc4random_uniform(UInt32(2))
-                
-                let scorpion = Enemy()
-                enemyArray.append(scorpion)
-                addChild(scorpion)
-                if side == 0 {
-                    scorpion.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
-                    scorpion.orientation = .left
-                    scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale * -1)
-                } else if side == 1 {
-                    scorpion.orientation = .right
-                    scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale)
-                }
-                scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
-                
-                
-                heightArray.remove(at: Int(height))
+        var count = round
+        
+        if round > 5 {
+            count = 5
         }
         
+        for _ in 0..<count {
+            let height = arc4random_uniform(UInt32(heightArray.count))
             
+            let side = arc4random_uniform(UInt32(2))
+            
+            let scorpion = Enemy()
+            enemyArray.append(scorpion)
+            addChild(scorpion)
+            if side == 0 {
+                scorpion.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
+                scorpion.orientation = .left
+                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale * -1)
+            } else if side == 1 {
+                scorpion.orientation = .right
+                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale)
+            }
+            scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
+            
+            
+            heightArray.remove(at: Int(height))
         }
+        
         
     }
     
@@ -292,9 +294,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         switch player.orientation {
         case .right:
-            if player.position.x + 33 < scorpion.position.x {
+            if player.position.x < scorpion.position.x {
                 scorpion.die()
+                player.physicsBody?.velocity = CGVector.zero
                 player.physicsBody?.applyImpulse(CGVector(dx: -10, dy: 0))
+                points += scorpion.pointValue
+                pointsLabel.text = String(points)
                 
             } else {
                 gameOver()
@@ -302,7 +307,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .left:
             if player.position.x + 25 > scorpion.position.x {
                 scorpion.die()
+                player.physicsBody?.velocity = CGVector.zero
                 player.physicsBody?.applyImpulse(CGVector(dx: 10, dy: 0))
+                points += scorpion.pointValue
+                pointsLabel.text = String(points)
                 
             } else {
                 gameOver()
@@ -315,13 +323,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func newRound(round: Int) {
         spawnEnemy(round: round)
         
+        
     }
     
     func gameOver() {
         /* Set gamestate to gameOver */
         gameState = .gameOver
         player.death()
-        dedLabel.text = "Your Score: \(points)" // TODO: Implement points
+        dedLabel.text = "Your Score: \(points)"
         dedLabel.isHidden = false
         restartLabel.isHidden = false
         menuLabel.isHidden = false
@@ -491,7 +500,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .bottom:
             player.physicsBody?.velocity.dx = characterSpeed
             
-            if player.position.x > self.frame.width * 0.5 {
+            if player.position.x > 287 * 0.5 {
                 
                 /* Change Gravity so right is down */
                 self.physicsWorld.gravity.dx = 9.8
@@ -522,7 +531,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .top:
             player.physicsBody?.velocity.dx = -1 * characterSpeed
             //print(player.position)
-            if player.position.x < frame.width * 0.5 {
+            if player.position.x < 287 * 0.5 {
                 
                 /* Change Gravity so left is down */
                 self.physicsWorld.gravity.dx = -9.8

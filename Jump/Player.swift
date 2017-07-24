@@ -13,6 +13,7 @@ enum characterOrientationState {
 }
 
 class Player: SKSpriteNode {
+    var x = CGFloat(0)
     
     var orientation: characterOrientationState = .bottom
     

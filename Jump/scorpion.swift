@@ -21,7 +21,7 @@ class Enemy: SKSpriteNode {
     let enemySpeed = CGFloat(1)
     var spawned: Int = 0
     var canContact: Bool = true
-    var pointValue: Int = 10
+    var pointValue: Int = 20
     
     static var totalSpawned: Int = 0
     static var totalAlive: Int = 0
@@ -39,7 +39,7 @@ class Enemy: SKSpriteNode {
         case .monkey:
             if random == 0 {
                 texture = SKTexture(imageNamed: "king-cobra-2")
-                self.pointValue = 40
+                self.pointValue = 50
             } else if random > 4{
                 texture = SKTexture(imageNamed: "Scorpion")
             } else {
