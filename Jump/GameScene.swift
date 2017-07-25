@@ -192,6 +192,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
+        if nodeA == gem || nodeB == gem {
+            gem.onContact()
+        }
+        
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -494,9 +498,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             gemSpawn = gemSpawn + 5
         }
         
-        print("gemSpawn number: \(gemSpawn)")
-        
-        
         switch side {
         case .right:
             switch formation {
@@ -542,6 +543,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             break
         }
         
+        /* Reset gem contact and stuffs */
+        gem.reset()
+    
         switch gemSpawn {
         case 0:
             gem.position = gemPositioner(random: 0, side: .left)

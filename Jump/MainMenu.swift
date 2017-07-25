@@ -9,20 +9,23 @@
 import SpriteKit
 
 class MainMenu: SKScene, SKPhysicsContactDelegate {
-    var playLabel: SKLabelNode!
-    var creditLabel: SKLabelNode!
-    var themeLabel: SKLabelNode!
+    private var playLabel: SKLabelNode!
+    private var creditLabel: SKLabelNode!
+    private var themeLabel: SKLabelNode!
+    private var gemLabel: SKLabelNode!
     var gameScene: GameScene!
     var player: Player!
     var characterSpeed = GameScene(fileNamed: "GameScene")?.characterSpeed
     
     static var character: Bool = false
+    static var gems: Int = 0
     
     override func didMove(to view: SKView) {
         /* Set UI connections */
         playLabel = self.childNode(withName: "playLabel") as! SKLabelNode
         creditLabel = self.childNode(withName: "creditLabel") as! SKLabelNode
         themeLabel = childNode(withName: "themeLabel") as! SKLabelNode
+        gemLabel = childNode(withName: "gemLabel") as! SKLabelNode
         gameScene = GameScene(fileNamed: "GameScene")!
         
         // Connect variables to code
@@ -30,6 +33,10 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         
         // Create Physics Body for frame
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
+        
+        // Gems
+        MainMenu.gems = UserDefaults.standard.integer(forKey: "gemCount")
+        gemLabel.text = "Gems: \(MainMenu.gems)"
         
         physicsWorld.contactDelegate = self
         beginningAnimation()
