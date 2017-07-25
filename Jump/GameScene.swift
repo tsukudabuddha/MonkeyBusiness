@@ -366,7 +366,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         highScoreLabel.text = "High Score: \(oldHigh)"
         if oldHigh < points {
             UserDefaults.standard.set(points, forKey: "highScore")
-            highScoreLabel.text = String(points)
+            highScoreLabel.text = "High Score: \(points)"
         }
         
         for scorpion in enemyArray {
@@ -664,9 +664,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var returnPoint = CGPoint()
         
         if side == .left {
-            returnPoint = CGPoint(x: leftPlatforms[random].position.x + 20, y: leftPlatforms[random].position.y)
+            returnPoint = CGPoint(x: leftPlatforms[random].position.x + 22, y: leftPlatforms[random].position.y)
         } else if side == .right {
-            returnPoint = CGPoint(x: rightPlatforms[random].position.x - 20, y: rightPlatforms[random].position.y)
+            returnPoint = CGPoint(x: rightPlatforms[random].position.x - 22, y: rightPlatforms[random].position.y)
         }
         
         return returnPoint

@@ -17,14 +17,14 @@ class Gem: SKSpriteNode {
     init() {
         let texture = SKTexture(imageNamed: "gem-1")
         let color = UIColor.clear
-        let size = texture.size()
+        let size = CGSize(width: texture.size().width + 2, height: texture.size().height + 2)
         
         // Call the designated initializer
         super.init(texture: texture, color: color, size: size)
         
         run(SKAction(named: "gemIdle")!)
       
-        physicsBody = SKPhysicsBody(texture: texture, size: texture.size())
+        physicsBody = SKPhysicsBody(rectangleOf: size)
         physicsBody?.collisionBitMask = 0
         physicsBody?.contactTestBitMask = 1
         physicsBody?.categoryBitMask = 1
