@@ -12,7 +12,7 @@ import SpriteKit
 import GameplayKit
 
 enum GameSceneState {
-    case active, gameOver
+    case active, gameOver, paused
 }
 
 enum Theme {
@@ -31,6 +31,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var restartLabel: SKLabelNode!
     private var menuLabel: SKLabelNode!
     private var gameOverScreen: SKSpriteNode!
+    private var playPauseButton: SKSpriteNode!
     private var round: Int = 0
     private var canJump: Bool = true
     private var jumping: Bool = false
@@ -42,6 +43,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     static var theme: Theme = .monkey // static so it can be modified from Main Menu
+    let generator = UINotificationFeedbackGenerator()
     
     
     // Create Timing Variables
@@ -62,6 +64,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         menuLabel = childNode(withName: "//menuLabel") as! SKLabelNode
         highScoreLabel = childNode(withName: "//highScoreLabel") as! SKLabelNode
         gameOverScreen = childNode(withName: "gameOverScreen") as! SKSpriteNode
+        playPauseButton = childNode(withName: "playPauseButton") as! SKSpriteNode
         
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
@@ -75,30 +78,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Make all the platforms */
         setupGame()
         flipPlatforms()
+        
+        generator.prepare()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         /* Called when a touch begins */
         
+        /* We only need a single touch here */
+        let touch = touches.first!
         
-        /* Checks to see if game is running */
-        if gameState != .active {
-            
-            /* We only need a single touch here */
-            let touch = touches.first!
-            
-            /* Get touch position in scene */
-            let location = touch.location(in: self)
-            let touchedNode = self.atPoint(location)
-            
-            /* Did the user tap on the restart label? */
-            if(touchedNode.name == "restartLabel"){
-                restartGame()
-            } else if touchedNode == menuLabel {
-                loadMenu()
+        /* Get touch position in scene */
+        let location = touch.location(in: self)
+        let touchedNode = self.atPoint(location)
+        
+        /* Did the user tap on the restart label? */
+        if(touchedNode.name == "restartLabel"){
+            restartGame()
+        } else if touchedNode == menuLabel {
+            loadMenu()
+        } else if touchedNode == playPauseButton {
+            if gameState == .active {
+                gameState = .paused
+                isPaused = true
+                playPauseButton.texture = SKTexture(imageNamed: "play")
+            } else if gameState == .paused {
+                gameState = .active
+                isPaused = false
+                playPauseButton.texture = SKTexture(imageNamed: "pause")
             }
-            
         }
+            
+       
         
         /* Checks if player is on the ground */
         if canJump && jumpTimer <= jumpTime {
@@ -125,7 +136,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        if gameState == .gameOver { return }
+        if gameState != .active { return }
 
         playerMovement()
         
@@ -297,7 +308,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         switch player.orientation {
         case .right:
-            if contactPoint.x - 5 < scorpion.position.x - (scorpion.size.height / 2) {
+            if contactPoint.x - 10 < scorpion.position.x - (scorpion.size.height / 2) {
                 scorpion.isAlive = false
                 scorpion.die()
                 player.physicsBody?.velocity = CGVector.zero
@@ -309,7 +320,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 gameOver()
             }
         case .left:
-            if contactPoint.x + 8 > scorpion.position.x + (scorpion.size.height / 2) {
+            if contactPoint.x + 12 > scorpion.position.x + (scorpion.size.height / 2) {
                 scorpion.isAlive = false
                 scorpion.die()
                 player.physicsBody?.velocity = CGVector.zero
@@ -354,6 +365,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for scorpion in enemyArray {
             scorpion.die()
         }
+        
+        /* Haptic Feeback */
+        
+        generator.notificationOccurred(.success)
         
     }
     

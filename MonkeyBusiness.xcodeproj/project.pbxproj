@@ -11,7 +11,6 @@
 		3B7695C6BBC3D3E046C1BDD9 /* Pods_MonkeyBusinessTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002EFA43FFFAF3EF5E41B94A /* Pods_MonkeyBusinessTests.framework */; };
 		4903D44E1F2284D20033A61F /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4903D44D1F2284D20033A61F /* AdSupport.framework */; };
 		49266ACB1F0F0D170035AF75 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49266ACA1F0F0D170035AF75 /* Platform.swift */; };
-		49266ACF1F0FFC770035AF75 /* deathEmitter.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49266ACE1F0FFC770035AF75 /* deathEmitter.sks */; };
 		49266AD11F11C8680035AF75 /* CreditScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49266AD01F11C8680035AF75 /* CreditScene.sks */; };
 		49266AD31F11C8DD0035AF75 /* CreditScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49266AD21F11C8DD0035AF75 /* CreditScene.swift */; };
 		494578F01F0B05E200267C4A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494578EF1F0B05E200267C4A /* AppDelegate.swift */; };
@@ -66,7 +65,6 @@
 		3ACD571A674A216DD7E8D1E5 /* Pods-MonkeyBusinessTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MonkeyBusinessTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MonkeyBusinessTests/Pods-MonkeyBusinessTests.release.xcconfig"; sourceTree = "<group>"; };
 		4903D44D1F2284D20033A61F /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		49266ACA1F0F0D170035AF75 /* Platform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
-		49266ACE1F0FFC770035AF75 /* deathEmitter.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = deathEmitter.sks; sourceTree = "<group>"; };
 		49266AD01F11C8680035AF75 /* CreditScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = CreditScene.sks; path = ../../CreditScene.sks; sourceTree = "<group>"; };
 		49266AD21F11C8DD0035AF75 /* CreditScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreditScene.swift; sourceTree = "<group>"; };
 		494578EC1F0B05E200267C4A /* MonkeyBusiness.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MonkeyBusiness.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -148,7 +146,6 @@
 			children = (
 				49D1D3451F0D55E800FCB951 /* monkey.sks */,
 				49D1D34F1F0DB72400FCB951 /* scorpion.sks */,
-				49266ACE1F0FFC770035AF75 /* deathEmitter.sks */,
 				49E21A201F140501009E4C88 /* ka1.ttf */,
 				49D1D3511F0EB71C00FCB951 /* go3v2.ttf */,
 				49D1D3471F0D615800FCB951 /* MSButtonNode.swift */,
@@ -390,7 +387,6 @@
 				494579001F0B05E200267C4A /* LaunchScreen.storyboard in Resources */,
 				49D1D34C1F0D9D7D00FCB951 /* MainMenu.sks in Resources */,
 				494578F41F0B05E200267C4A /* originalActions.sks in Resources */,
-				49266ACF1F0FFC770035AF75 /* deathEmitter.sks in Resources */,
 				49266AD11F11C8680035AF75 /* CreditScene.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
