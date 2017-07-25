@@ -35,8 +35,8 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         
         // Gems
-        MainMenu.gems = UserDefaults.standard.integer(forKey: "gemCount")
-        gemLabel.text = "\(MainMenu.gems)"
+//        MainMenu.gems = UserDefaults.standard.integer(forKey: "gemCount")
+//        gemLabel.text = "\(MainMenu.gems)"
         
         physicsWorld.contactDelegate = self
         beginningAnimation()

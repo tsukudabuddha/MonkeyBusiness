@@ -29,6 +29,8 @@ class Gem: SKSpriteNode {
         physicsBody?.contactTestBitMask = 1
         physicsBody?.categoryBitMask = 1
         physicsBody?.isDynamic = false
+        
+        position = CGPoint(x: -50, y: -50)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -42,9 +44,9 @@ class Gem: SKSpriteNode {
         let seq = SKAction.sequence([collectionAnimation, hide])
         run(seq)
         
-        MainMenu.gems += gemValue
-        UserDefaults.standard.set(MainMenu.gems, forKey: "gemCount")
-        gemValue = 0
+//        MainMenu.gems += gemValue
+//        UserDefaults.standard.set(MainMenu.gems, forKey: "gemCount")
+//        gemValue = 0
         
     }
     
