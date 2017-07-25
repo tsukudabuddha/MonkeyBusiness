@@ -37,6 +37,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var jumping: Bool = false
     private var enemyArray: [Enemy] = []
     private var points: Int = 0
+    private var gem = Gem()
     
     private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
     private var rightPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
@@ -65,6 +66,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         highScoreLabel = childNode(withName: "//highScoreLabel") as! SKLabelNode
         gameOverScreen = childNode(withName: "gameOverScreen") as! SKSpriteNode
         playPauseButton = childNode(withName: "playPauseButton") as! SKSpriteNode
+        
+        addChild(gem)
         
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
@@ -479,13 +482,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let oppositeX1 = width - x1
         let oppositeX2 = width - x2
         
-        var gem = Gem()
-        
         if side == .right {
             gem.zRotation = CGFloat(Double.pi * 0.5)
         } else {
             gem.zRotation = CGFloat(Double.pi * 1.5)
         }
+        
+        var gemSpawn = arc4random_uniform(5)
+        
+        if side == .right {
+            gemSpawn = gemSpawn + 5
+        }
+        
+        print("gemSpawn number: \(gemSpawn)")
+        
         
         switch side {
         case .right:
@@ -505,9 +515,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 leftPlatforms[4].position = CGPoint(x: x1, y: y5)
                 break
             default:
-                break
+                print("default ran")
             }
-            break
+            
         case .left:
             switch formation {
             case 0:
@@ -525,13 +535,47 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 rightPlatforms[4].position = CGPoint(x: oppositeX1, y: y5)
                 break
             default:
-                break
-
-        }
+                print("default ran")
+            }
 
         default:
             break
         }
+        
+        switch gemSpawn {
+        case 0:
+            gem.position = gemPositioner(random: 0, side: .left)
+            break
+        case 1:
+            gem.position = gemPositioner(random: 1, side: .left)
+            break
+        case 2:
+            gem.position = gemPositioner(random: 2, side: .left)
+            break
+        case 3:
+            gem.position = gemPositioner(random: 3, side: .left)
+            break
+        case 4:
+            gem.position = gemPositioner(random: 4, side: .left)
+        case 5:
+            gem.position = gemPositioner(random: 0, side: .right)
+            break
+        case 6:
+            gem.position = gemPositioner(random: 1, side: .right)
+            break
+        case 7:
+            gem.position = gemPositioner(random: 2, side: .right)
+            break
+        case 8:
+            gem.position = gemPositioner(random: 3, side: .right)
+            break
+        case 9:
+            gem.position = gemPositioner(random: 4, side: .right)
+            
+        default:
+            break
+        }
+        
     }
     
     // MARK: Player Auto Run and calls spawnObstacles()
@@ -610,6 +654,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsBody?.restitution = 0.15
         physicsBody?.friction = 0
         physicsWorld.contactDelegate = self
+    }
+    
+    func gemPositioner(random: Int, side: Orientation) -> CGPoint {
+        var returnPoint = CGPoint()
+        
+        if side == .left {
+            returnPoint = CGPoint(x: leftPlatforms[random].position.x + 20, y: leftPlatforms[random].position.y)
+        } else if side == .right {
+            returnPoint = CGPoint(x: rightPlatforms[random].position.x - 20, y: rightPlatforms[random].position.y)
+        }
+        
+        return returnPoint
     }
 
 
