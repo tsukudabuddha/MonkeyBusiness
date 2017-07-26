@@ -53,7 +53,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Create Timing Variables
     var jumpTimer: CFTimeInterval = 0
     var powerUpTimer: CFTimeInterval = 0
-    let powerUpTime: Double = 5
+    let powerUpTime: Double = 10
     let jumpTime: Double = 0.25
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */
 
@@ -162,15 +162,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if player.state == .superSaiyajin {
             
             if powerUpTimer == 0 {
-                player.powerUp()
-                print("Powering up")
+                player.run(SKAction(named: "powerUpRun")!)
             }
             
             powerUpTimer += fixedDelta
             
             if powerUpTimer >= powerUpTime {
                 player.state = .normal
-                print("Back to Normal")
+                player.run(SKAction(named: "Run")!)
             }
         }
         
@@ -227,11 +226,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if gem.gemValue == 1 {
                 gem.onContact()
                 sessionGemCounter += 1
-                if sessionGemCounter % 5 == 0 {
-                    player.state = .superSaiyajin
-                }
             }
             
+        }
+        
+        if nodeA == cherry || nodeB == cherry {
+            if !cherry.used {
+                cherry.onContact()
+                player.state = .superSaiyajin
+            }
         }
         
     }
@@ -509,32 +512,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func positionPlatforms(side: Orientation) {
-        let formation = arc4random_uniform(UInt32(2))
+        let formation = arc4random_uniform(UInt32(3))
         
-        let x1 = 80
-        let x2 = x1 * 2
-        let width = Int(frame.width)
+        let x1 = 80.0
+        let x2 = x1 * 1.5
+        let x3 = x2 * 1.5
+        let width = Double(frame.width)
         
-        let y1 = 120
-        let y2 = y1 + 90
-        let y3 = y2 + 90
-        let y4 = y3 + 90
-        let y5 = y4 + 90
+        let y1 = 100.0
+        let y2 = y1 + 95.0
+        let y3 = y2 + 95.0
+        let y4 = y3 + 95.0
+        let y5 = y4 + 95.0
         
         let oppositeX1 = width - x1
         let oppositeX2 = width - x2
+        let oppositeX3 = width - x3
         
         if side == .right {
             gem.zRotation = CGFloat(Double.pi * 0.5)
+            cherry.zRotation = CGFloat(Double.pi * 0.5)
         } else {
             gem.zRotation = CGFloat(Double.pi * 1.5)
+            cherry.zRotation = CGFloat(Double.pi * 1.5)
         }
         
-        var gemSpawn = arc4random_uniform(5)
-        
-        if side == .right {
-            gemSpawn = gemSpawn + 5
-        }
+        let gemSpawn = arc4random_uniform(5)
+        let cherrySpawn = arc4random_uniform(50)
         
         switch side {
         case .right:
@@ -550,6 +554,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 leftPlatforms[0].position = CGPoint(x: x1, y: y1)
                 leftPlatforms[1].position = CGPoint(x: x2, y: y2)
                 leftPlatforms[2].position = CGPoint(x: x1, y: y3)
+                leftPlatforms[3].position = CGPoint(x: x2, y: y4)
+                leftPlatforms[4].position = CGPoint(x: x1, y: y5)
+                break
+            case 2:
+                leftPlatforms[0].position = CGPoint(x: x3, y: y1)
+                leftPlatforms[1].position = CGPoint(x: x3, y: y2)
+                leftPlatforms[2].position = CGPoint(x: x3, y: y3)
                 leftPlatforms[3].position = CGPoint(x: x2, y: y4)
                 leftPlatforms[4].position = CGPoint(x: x1, y: y5)
                 break
@@ -573,6 +584,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 rightPlatforms[3].position = CGPoint(x: oppositeX2, y: y4)
                 rightPlatforms[4].position = CGPoint(x: oppositeX1, y: y5)
                 break
+            case 2:
+                rightPlatforms[0].position = CGPoint(x: oppositeX1, y: y1)
+                rightPlatforms[1].position = CGPoint(x: oppositeX2, y: y2)
+                rightPlatforms[2].position = CGPoint(x: oppositeX3, y: y3)
+                rightPlatforms[3].position = CGPoint(x: oppositeX3, y: y4)
+                rightPlatforms[4].position = CGPoint(x: oppositeX3, y: y5)
+                break
             default:
                 print("default ran")
             }
@@ -586,36 +604,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
         switch gemSpawn {
         case 0:
-            gem.position = gemPositioner(random: 0, side: .left)
+            gem.position = gemPositioner(random: 0, side: side)
             break
         case 1:
-            gem.position = gemPositioner(random: 1, side: .left)
+            gem.position = gemPositioner(random: 1, side: side)
             break
         case 2:
-            gem.position = gemPositioner(random: 2, side: .left)
+            gem.position = gemPositioner(random: 2, side: side)
             break
         case 3:
-            gem.position = gemPositioner(random: 3, side: .left)
+            gem.position = gemPositioner(random: 3, side: side)
             break
         case 4:
-            gem.position = gemPositioner(random: 4, side: .left)
-        case 5:
-            gem.position = gemPositioner(random: 0, side: .right)
-            break
-        case 6:
-            gem.position = gemPositioner(random: 1, side: .right)
-            break
-        case 7:
-            gem.position = gemPositioner(random: 2, side: .right)
-            break
-        case 8:
-            gem.position = gemPositioner(random: 3, side: .right)
-            break
-        case 9:
-            gem.position = gemPositioner(random: 4, side: .right)
+            gem.position = gemPositioner(random: 4, side: side)
             
         default:
             break
+            
+        }
+        
+        switch cherrySpawn {
+        case 0:
+            cherry.position = gemPositioner(random: 0, side: side)
+            break
+        case 1:
+            cherry.position = gemPositioner(random: 1, side: side)
+            break
+        case 2:
+            cherry.position = gemPositioner(random: 2, side: side)
+            break
+        case 3:
+            cherry.position = gemPositioner(random: 3, side: side)
+            break
+        case 4:
+            cherry.position = gemPositioner(random: 4, side: side)
+            
+        default:
+            cherry.position = CGPoint(x: -50, y: -50)
+            
         }
         
     }
@@ -702,9 +728,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var returnPoint = CGPoint()
         
         if side == .left {
-            returnPoint = CGPoint(x: leftPlatforms[random].position.x + 25, y: leftPlatforms[random].position.y)
+            returnPoint = CGPoint(x: leftPlatforms[random].position.x + 27, y: leftPlatforms[random].position.y)
         } else if side == .right {
-            returnPoint = CGPoint(x: rightPlatforms[random].position.x - 22, y: rightPlatforms[random].position.y)
+            returnPoint = CGPoint(x: rightPlatforms[random].position.x - 27, y: rightPlatforms[random].position.y)
         }
         
         return returnPoint

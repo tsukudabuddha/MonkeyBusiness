@@ -26,6 +26,7 @@
 		496483E01F26992D00A0ACA4 /* Gem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496483DF1F26992C00A0ACA4 /* Gem.swift */; };
 		49A143971F1EC99600CAA597 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49A143961F1EC99600CAA597 /* Actions.sks */; };
 		49C0D4831F292F55001D47A6 /* Cherry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C0D4821F292F55001D47A6 /* Cherry.swift */; };
+		49C0D4871F293E2B001D47A6 /* Congratulations.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49C0D4861F293E2B001D47A6 /* Congratulations.sks */; };
 		49D1D3461F0D55E800FCB951 /* monkey.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D3451F0D55E800FCB951 /* monkey.sks */; };
 		49D1D3481F0D615800FCB951 /* MSButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3471F0D615800FCB951 /* MSButtonNode.swift */; };
 		49D1D34A1F0D845000FCB951 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3491F0D845000FCB951 /* Player.swift */; };
@@ -87,6 +88,7 @@
 		496483DF1F26992C00A0ACA4 /* Gem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gem.swift; sourceTree = "<group>"; };
 		49A143961F1EC99600CAA597 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		49C0D4821F292F55001D47A6 /* Cherry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cherry.swift; sourceTree = "<group>"; };
+		49C0D4861F293E2B001D47A6 /* Congratulations.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = Congratulations.sks; path = ../Congratulations.sks; sourceTree = "<group>"; };
 		49D1D3451F0D55E800FCB951 /* monkey.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = monkey.sks; sourceTree = "<group>"; };
 		49D1D3471F0D615800FCB951 /* MSButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSButtonNode.swift; sourceTree = "<group>"; };
 		49D1D3491F0D845000FCB951 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				49D1D34F1F0DB72400FCB951 /* scorpion.sks */,
 				49E21A201F140501009E4C88 /* ka1.ttf */,
 				49D1D3511F0EB71C00FCB951 /* go3v2.ttf */,
+				49C0D4861F293E2B001D47A6 /* Congratulations.sks */,
 				49D1D3471F0D615800FCB951 /* MSButtonNode.swift */,
 				494578F31F0B05E200267C4A /* originalActions.sks */,
 				49A143961F1EC99600CAA597 /* Actions.sks */,
@@ -379,6 +382,7 @@
 			files = (
 				49F55E541F20155100E8553F /* sprites.atlas in Resources */,
 				49E21A211F14051B009E4C88 /* ka1.ttf in Resources */,
+				49C0D4871F293E2B001D47A6 /* Congratulations.sks in Resources */,
 				49F605581F227FD3007B7BBD /* GoogleService-Info.plist in Resources */,
 				49D1D3501F0DB72400FCB951 /* scorpion.sks in Resources */,
 				49D1D3461F0D55E800FCB951 /* monkey.sks in Resources */,

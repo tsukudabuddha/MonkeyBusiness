@@ -46,10 +46,6 @@ class Gem: SKSpriteNode {
         
         gemValue = 0
         
-//        MainMenu.gems += gemValue
-//        UserDefaults.standard.set(MainMenu.gems, forKey: "gemCount")
-//        gemValue = 0
-        
     }
     
     func reset() {

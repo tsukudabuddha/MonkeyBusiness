@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Congratulations.sks">
+   </FileRef>
+   <FileRef
+      location = "group:Assets.xcassets">
+   </FileRef>
+   <FileRef
       location = "group:MonkeyBusiness.xcodeproj">
    </FileRef>
    <FileRef

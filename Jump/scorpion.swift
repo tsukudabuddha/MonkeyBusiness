@@ -21,7 +21,7 @@ class Enemy: SKSpriteNode {
     let enemySpeed = CGFloat(1)
     var spawned: Int = 0
     var canContact: Bool = true
-    var pointValue: Int = 20
+    var pointValue: Int = 25
     
     static var totalSpawned: Int = 0
     static var totalAlive: Int = 0

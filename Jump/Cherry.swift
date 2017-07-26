@@ -30,7 +30,7 @@ class Cherry: SKSpriteNode {
         physicsBody?.categoryBitMask = 1
         physicsBody?.isDynamic = false
         
-        position = CGPoint(x: 50, y: 50)
+        position = CGPoint(x: -50, y: -50)
     }
     
     required init?(coder aDecoder: NSCoder) {
