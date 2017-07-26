@@ -44,7 +44,7 @@ class Player: SKSpriteNode {
     }
     
     func powerUp() {
-        let color = SKAction.colorize(with: UIColor.green , colorBlendFactor: 1.0, duration: 5)
+        let color = SKAction.colorize(with: UIColor.magenta , colorBlendFactor: 1.0, duration: 8)
         let uncolor = color.reversed()
         uncolor.duration = 1
         let seq = SKAction.sequence([color, uncolor])

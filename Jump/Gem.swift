@@ -17,7 +17,7 @@ class Gem: SKSpriteNode {
     init() {
         let texture = SKTexture(imageNamed: "gem-1")
         let color = UIColor.clear
-        let size = CGSize(width: texture.size().width + 2, height: texture.size().height + 2)
+        let size = CGSize(width: 18, height: 16)
         
         // Call the designated initializer
         super.init(texture: texture, color: color, size: size)

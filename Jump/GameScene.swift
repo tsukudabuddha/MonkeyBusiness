@@ -700,7 +700,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var returnPoint = CGPoint()
         
         if side == .left {
-            returnPoint = CGPoint(x: leftPlatforms[random].position.x + 22, y: leftPlatforms[random].position.y)
+            returnPoint = CGPoint(x: leftPlatforms[random].position.x + 25, y: leftPlatforms[random].position.y)
         } else if side == .right {
             returnPoint = CGPoint(x: rightPlatforms[random].position.x - 22, y: rightPlatforms[random].position.y)
         }
