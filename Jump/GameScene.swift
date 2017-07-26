@@ -39,6 +39,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var enemyArray: [Enemy] = []
     private var points: Int = 0
     private var gem = Gem()
+    private var cherry = Cherry()
     var sessionGemCounter: Int = 0 // public so that it can be changed by the gem.onContact()
     
     private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
@@ -72,6 +73,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playPauseButton = childNode(withName: "playPauseButton") as! SKSpriteNode
         
         addChild(gem)
+        addChild(cherry)
         
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
