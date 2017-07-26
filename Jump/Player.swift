@@ -12,10 +12,15 @@ enum characterOrientationState {
     case bottom, right, top, left
 }
 
+enum characterState {
+    case normal, superSaiyajin
+}
+
 class Player: SKSpriteNode {
     var x = CGFloat(0)
     
     var orientation: characterOrientationState = .bottom
+    var state: characterState = .normal
     
     /* You are required to implement this for your subclass to work */
     override init(texture: SKTexture?, color: UIColor, size: CGSize) {
@@ -35,6 +40,14 @@ class Player: SKSpriteNode {
         let turnRed = SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50)
         let removePlayer = SKAction.removeFromParent()
         let seq = SKAction.sequence([turnRed, removePlayer])
+        self.run(seq)
+    }
+    
+    func powerUp() {
+        let color = SKAction.colorize(with: UIColor.green , colorBlendFactor: 1.0, duration: 5)
+        let uncolor = color.reversed()
+        uncolor.duration = 1
+        let seq = SKAction.sequence([color, uncolor])
         self.run(seq)
     }
 

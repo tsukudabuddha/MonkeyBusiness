@@ -44,6 +44,8 @@ class Gem: SKSpriteNode {
         let seq = SKAction.sequence([collectionAnimation, hide])
         run(seq)
         
+        gemValue = 0
+        
 //        MainMenu.gems += gemValue
 //        UserDefaults.standard.set(MainMenu.gems, forKey: "gemCount")
 //        gemValue = 0
@@ -58,4 +60,5 @@ class Gem: SKSpriteNode {
         run(SKAction.fadeIn(withDuration: 0))
         gemValue = 1
     }
+    
 }

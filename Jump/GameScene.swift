@@ -7,6 +7,7 @@
 //  MARK: The scene in relation to player position is 0 - 287
 //  TODO: Add coins
 //  TODO: Add more platform orientations
+//  TODO: Add powerups
 
 import SpriteKit
 import GameplayKit
@@ -38,6 +39,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var enemyArray: [Enemy] = []
     private var points: Int = 0
     private var gem = Gem()
+    var sessionGemCounter: Int = 0 // public so that it can be changed by the gem.onContact()
     
     private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
     private var rightPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
@@ -49,6 +51,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // Create Timing Variables
     var jumpTimer: CFTimeInterval = 0
+    var powerUpTimer: CFTimeInterval = 0
+    let powerUpTime: Double = 5
     let jumpTime: Double = 0.25
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */
 
@@ -153,6 +157,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             jumpTimer = 0
         }
         
+        if player.state == .superSaiyajin {
+            
+            if powerUpTimer == 0 {
+                player.powerUp()
+                print("Powering up")
+            }
+            
+            powerUpTimer += fixedDelta
+            
+            if powerUpTimer >= powerUpTime {
+                player.state = .normal
+                print("Back to Normal")
+            }
+        }
+        
     }
     
     func didBegin(_ contact: SKPhysicsContact) {
@@ -175,7 +194,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             if nodeA.name == "player" {
                 if (nodeB as! Enemy).isAlive {
-                    checkScorpion(scorpion: (nodeB as! Enemy), contactPoint: contact.contactPoint)
+                    if (nodeA as! Player).state == .normal {
+                        checkScorpion(scorpion: (nodeB as! Enemy), contactPoint: contact.contactPoint)
+                    } else if (nodeA as! Player).state == .superSaiyajin {
+                        (nodeB as! Enemy).die()
+                    }
+                    
                 }
             } else {
                 (nodeB as! Enemy).turnAround()
@@ -185,7 +209,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if nodeA.physicsBody?.contactTestBitMask == 2 {
             if nodeB.name == "player" {
                 if (nodeA as! Enemy).isAlive {
-                    checkScorpion(scorpion: (nodeA as! Enemy), contactPoint: contact.contactPoint)
+                    if (nodeB as! Player).state == .normal {
+                        checkScorpion(scorpion: (nodeA as! Enemy), contactPoint: contact.contactPoint)
+                    } else if (nodeB as! Player).state == .superSaiyajin {
+                        (nodeA as! Enemy).die()
+                    }
+                    
                 }
             } else {
                 (nodeA as! Enemy).turnAround()
@@ -193,7 +222,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if nodeA == gem || nodeB == gem {
-            gem.onContact()
+            if gem.gemValue == 1 {
+                gem.onContact()
+                sessionGemCounter += 1
+                if sessionGemCounter % 5 == 0 {
+                    player.state = .superSaiyajin
+                }
+            }
+            
         }
         
     }
