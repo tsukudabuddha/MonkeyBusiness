@@ -7,16 +7,20 @@
 //
 
 import SpriteKit
+import Firebase
+import FirebaseDatabase
 
 class MainMenu: SKScene, SKPhysicsContactDelegate {
     private var playLabel: SKLabelNode!
     private var creditLabel: SKLabelNode!
     private var themeLabel: SKLabelNode!
     private var gemLabel: SKLabelNode!
+    private var leaderBoardLabel: SKLabelNode!
     var gameScene: GameScene!
     var player: Player!
     var characterSpeed = GameScene(fileNamed: "GameScene")?.characterSpeed
     
+    static var viewController: GameViewController!
     static var character: Bool = false
     static var gems: Int = 0
     
@@ -26,6 +30,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         creditLabel = self.childNode(withName: "creditLabel") as! SKLabelNode
         themeLabel = childNode(withName: "themeLabel") as! SKLabelNode
         gemLabel = childNode(withName: "gemLabel") as! SKLabelNode
+        leaderBoardLabel = childNode(withName: "leaderBoardLabel") as! SKLabelNode
         gameScene = GameScene(fileNamed: "GameScene")!
         
         // Connect variables to code
@@ -137,6 +142,8 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
                 GameScene.theme = .monkey
                 themeLabel.text = "Monkey"
             }
+        } else if touchedNode == leaderBoardLabel {
+            MainMenu.viewController.checkGCLeaderboard()
         }
         
     

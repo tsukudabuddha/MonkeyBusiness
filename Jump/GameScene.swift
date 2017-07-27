@@ -11,6 +11,8 @@
 
 import SpriteKit
 import GameplayKit
+import Firebase
+import FirebaseDatabase
 
 enum GameSceneState {
     case active, gameOver, paused
@@ -61,6 +63,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     private var gameState: GameSceneState = .active
     private var characterOrientation: characterOrientationState = .bottom
+    
+    var viewController: GameViewController!
     
     override func didMove(to view: SKView) {
         // Connect variables to code
@@ -417,6 +421,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             UserDefaults.standard.set(points, forKey: "highScore")
             highScoreLabel.text = "High Score: \(points)"
         }
+        
+        MainMenu.viewController.addScoreAndSubmitToGC(score: Int64(points))
         
         for scorpion in enemyArray {
             scorpion.die()

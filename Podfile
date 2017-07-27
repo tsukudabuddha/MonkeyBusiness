@@ -7,6 +7,7 @@ target 'MonkeyBusiness' do
 
   # Pods for MonkeyBusiness
   pod 'Firebase/Core'
+  pod 'Firebase/Database'
 
   target 'MonkeyBusinessTests' do
     inherit! :search_paths
