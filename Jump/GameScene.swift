@@ -15,7 +15,7 @@ import Firebase
 import FirebaseDatabase
 
 enum GameSceneState {
-    case active, gameOver, paused
+    case active, gameOver, paused, reversed
 }
 
 enum Theme {
@@ -70,6 +70,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 break
             case .paused:
                 isPaused = true
+                break
+            case .reversed:
+                player.xScale = -1
                 break
             case .gameOver:
                 gameOver()
@@ -168,7 +171,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
-        if gameState != .active { return }
+        if gameState == .gameOver || gameState == .paused { return }
 
         playerMovement()
         
@@ -322,7 +325,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             newRound(round: round)
         }
-        // TODO: Add portals after round 5/ at round 6
+        
+        /* The game will run in reverse if the round is a multiple of 5 */
+        if round % 5 == 0 {
+            gameState = .reversed
+        } else {
+            gameState = .active
+        }
     }
     
     // MARK: Setup Game
@@ -578,6 +587,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func positionPlatforms(side: Orientation) {
         
+        var convertedSide = side
+        if gameState == .reversed {
+            if side == .left {
+                convertedSide = .right
+            } else {
+                convertedSide = .left
+            }
+        }
         /* Create a random number variable to choose the formation of platforms */
         let formation = arc4random_uniform(UInt32(3)) // there are 3 formations
         
@@ -615,7 +632,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             gemSpawn = arc4random_uniform(5)
         }
         
-        switch side {
+        switch convertedSide {
         case .right:
             switch formation {
             case 0:
@@ -680,19 +697,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Use the randomly generated gemSpawn number to choose a platform to spawn above */
             switch gemSpawn {
             case 0:
-                gem.position = gemPositioner(random: 0, side: side)
+                gem.position = gemPositioner(random: 0, side: convertedSide)
                 break
             case 1:
-                gem.position = gemPositioner(random: 1, side: side)
+                gem.position = gemPositioner(random: 1, side: convertedSide)
                 break
             case 2:
-                gem.position = gemPositioner(random: 2, side: side)
+                gem.position = gemPositioner(random: 2, side: convertedSide)
                 break
             case 3:
-                gem.position = gemPositioner(random: 3, side: side)
+                gem.position = gemPositioner(random: 3, side: convertedSide)
                 break
             case 4:
-                gem.position = gemPositioner(random: 4, side: side)
+                gem.position = gemPositioner(random: 4, side: convertedSide)
                 
             default:
                 gem.position = CGPoint(x: -50, y: -50)
@@ -709,19 +726,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        /* Use the randomly generated cherrySpawn number to choose a platform to spawn above */
         switch cherrySpawn {
         case 0:
-            cherry.position = gemPositioner(random: 0, side: side)
+            cherry.position = gemPositioner(random: 0, side: convertedSide)
             break
         case 1:
-            cherry.position = gemPositioner(random: 1, side: side)
+            cherry.position = gemPositioner(random: 1, side: convertedSide)
             break
         case 2:
-            cherry.position = gemPositioner(random: 2, side: side)
+            cherry.position = gemPositioner(random: 2, side: convertedSide)
             break
         case 3:
-            cherry.position = gemPositioner(random: 3, side: side)
+            cherry.position = gemPositioner(random: 3, side: convertedSide)
             break
         case 4:
-            cherry.position = gemPositioner(random: 4, side: side)
+            cherry.position = gemPositioner(random: 4, side: convertedSide)
         /* If the randomly chosen number is not 0-4, which should happen often, the cherry is positioned off-screen */
         default:
             cherry.position = CGPoint(x: -50, y: -50)
@@ -732,70 +749,138 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // MARK: Player Auto Run and calls spawnObstacles()
     func playerMovement() {
+        if gameState == .active {
+            switch player.orientation {
+            case .bottom:
+                player.physicsBody?.velocity.dx = characterSpeed
+                
+                if player.position.x > 287 * 0.5 {
+                    
+                    /* Change Gravity so right is down */
+                    self.physicsWorld.gravity.dx = 9.8
+                    self.physicsWorld.gravity.dy = 0
+                    
+                    /* Change player orientation to work with new gravity */
+                    player.orientation = .right
+                    player.run(SKAction(named: "Rotate")!)
+                    
+                }
+            case .right:
+                player.physicsBody?.velocity.dy = characterSpeed
+                
+                if player.position.y > self.frame.height - 46 { // 46 is from math it good dont worry
+                    
+                    /* Change Gravity so top is down */
+                    self.physicsWorld.gravity.dx = 0
+                    self.physicsWorld.gravity.dy = 9.8
+                    
+                    /* Change player orientation to work with new gravity */
+                    player.orientation = .top
+                    player.run(SKAction(named: "Rotate")!)
+                    
+                    roundChecker()
+                    spawnObstacles(orientation: player.orientation)
+                    
+                }
+            case .top:
+                player.physicsBody?.velocity.dx = -1 * characterSpeed
+                //print(player.position)
+                if player.position.x < 287 * 0.5 {
+                    
+                    /* Change Gravity so left is down */
+                    self.physicsWorld.gravity.dx = -9.8
+                    self.physicsWorld.gravity.dy = 0
+                    
+                    /* Change player orientation to work with new gravity */
+                    player.orientation = .left
+                    player.run(SKAction(named: "Rotate")!)
+                }
+            case .left:
+                player.physicsBody?.velocity.dy = -1 * characterSpeed
+                //print(player.position)
+                if player.position.y < 10 {
+                    
+                    /* Change Gravity so bottom is down */
+                    self.physicsWorld.gravity.dx = 0
+                    self.physicsWorld.gravity.dy = -9.8
+                    
+                    /* Change player orientation to work with new gravity */
+                    player.orientation = .bottom
+                    player.run(SKAction(named: "Rotate")!)
+                    
+                    spawnObstacles(orientation: player.orientation)
+                    roundChecker()
+                    
+                }
+            }
+
+        } else if gameState == .reversed {
+            switch player.orientation {
+            case .bottom:
+                player.physicsBody?.velocity.dx = characterSpeed * -1
+                
+                if player.position.x < 287/2 * 0.5 {
+                    
+                    /* Change Gravity so left is down */
+                    self.physicsWorld.gravity.dx = -9.8
+                    self.physicsWorld.gravity.dy = 0
+                    
+                    /* Change player orientation to work with new gravity */
+                    player.orientation = .left
+                    player.run(SKAction(named: "FlipRotate")!)
+                    
+                }
+            case .left:
+                player.physicsBody?.velocity.dy = characterSpeed
+                
+                if player.position.y > self.frame.height - 46 { // 46 is from math it good dont worry
+                    
+                    /* Change Gravity so top is down */
+                    self.physicsWorld.gravity.dx = 0
+                    self.physicsWorld.gravity.dy = 9.8
+                    
+                    /* Change player orientation to work with new gravity */
+                    player.orientation = .top
+                    player.run(SKAction(named: "FlipRotate")!)
+                    
+                    roundChecker()
+                    spawnObstacles(orientation: player.orientation)
+                    
+                }
+            case .top:
+                player.physicsBody?.velocity.dx = characterSpeed
         
-        switch player.orientation {
-        case .bottom:
-            player.physicsBody?.velocity.dx = characterSpeed
-            
-            if player.position.x > 287 * 0.5 {
+                if player.position.x > 287 * 0.5 {
+                    
+                    /* Change Gravity so right is down */
+                    self.physicsWorld.gravity.dx = 9.8
+                    self.physicsWorld.gravity.dy = 0
+                    
+                    /* Change player orientation to work with new gravity */
+                    player.orientation = .right
+                    player.run(SKAction(named: "FlipRotate")!)
+                }
+            case .right:
+                player.physicsBody?.velocity.dy = -1 * characterSpeed
                 
-                /* Change Gravity so right is down */
-                self.physicsWorld.gravity.dx = 9.8
-                self.physicsWorld.gravity.dy = 0
-                
-                /* Change player orientation to work with new gravity */
-                player.orientation = .right
-                player.run(SKAction(named: "Rotate")!)
-                
+                if player.position.y < 10 {
+                    
+                    /* Change Gravity so bottom is down */
+                    self.physicsWorld.gravity.dx = 0
+                    self.physicsWorld.gravity.dy = -9.8
+                    
+                    /* Change player orientation to work with new gravity */
+                    player.orientation = .bottom
+                    player.run(SKAction(named: "FlipRotate")!)
+                    
+                    spawnObstacles(orientation: player.orientation)
+                    roundChecker()
+                    
+                }
             }
-        case .right:
-            player.physicsBody?.velocity.dy = characterSpeed
-            
-            if player.position.y > self.frame.height - 46 { // 46 is from math it good dont worry
-                
-                /* Change Gravity so top is down */
-                self.physicsWorld.gravity.dx = 0
-                self.physicsWorld.gravity.dy = 9.8
-                
-                /* Change player orientation to work with new gravity */
-                player.orientation = .top
-                player.run(SKAction(named: "Rotate")!)
-                
-                roundChecker()
-                spawnObstacles(orientation: player.orientation)
-                
-            }
-        case .top:
-            player.physicsBody?.velocity.dx = -1 * characterSpeed
-            //print(player.position)
-            if player.position.x < 287 * 0.5 {
-                
-                /* Change Gravity so left is down */
-                self.physicsWorld.gravity.dx = -9.8
-                self.physicsWorld.gravity.dy = 0
-                
-                /* Change player orientation to work with new gravity */
-                player.orientation = .left
-                player.run(SKAction(named: "Rotate")!)
-            }
-        case .left:
-            player.physicsBody?.velocity.dy = -1 * characterSpeed
-            //print(player.position)
-            if player.position.y < 10 {
-                
-                /* Change Gravity so bottom is down */
-                self.physicsWorld.gravity.dx = 0
-                self.physicsWorld.gravity.dy = -9.8
-                
-                /* Change player orientation to work with new gravity */
-                player.orientation = .bottom
-                player.run(SKAction(named: "Rotate")!)
-                
-                spawnObstacles(orientation: player.orientation)
-                roundChecker()
-                
-            }
+
         }
+        
         
     }
     
