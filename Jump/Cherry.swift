@@ -11,6 +11,7 @@ import SpriteKit
 class Cherry: SKSpriteNode {
     
     var used: Bool = false
+    var canSpawn: Bool = true
     
     
     

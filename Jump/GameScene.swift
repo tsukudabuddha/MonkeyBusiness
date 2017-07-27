@@ -199,6 +199,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         checkScorpion(scorpion: (nodeB as! Enemy), contactPoint: contact.contactPoint)
                     } else if (nodeA as! Player).state == .superSaiyajin {
                         (nodeB as! Enemy).die()
+                        points += (nodeB as! Enemy).pointValue
+                        pointsLabel.text = String(points)
                     }
                     
                 }
@@ -214,6 +216,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         checkScorpion(scorpion: (nodeA as! Enemy), contactPoint: contact.contactPoint)
                     } else if (nodeB as! Player).state == .superSaiyajin {
                         (nodeA as! Enemy).die()
+                        points += (nodeA as! Enemy).pointValue
+                        pointsLabel.text = String(points)
                     }
                     
                 }
@@ -387,6 +391,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func newRound(round: Int) {
         spawnEnemy(round: round)
         
+        /* Reset gem contact and stuffs */
+        gem.reset()
+        gem.canSpawn = true
+        
         
     }
     
@@ -537,8 +545,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             cherry.zRotation = CGFloat(Double.pi * 1.5)
         }
         
-        let gemSpawn = arc4random_uniform(5)
-        let cherrySpawn = arc4random_uniform(50)
+        var gemSpawn = arc4random_uniform(5)
+        let cherrySpawn = arc4random_uniform(30)
+        
+        if cherrySpawn == gemSpawn {
+            gemSpawn = arc4random_uniform(5)
+        }
         
         switch side {
         case .right:
@@ -599,30 +611,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             break
         }
         
-        /* Reset gem contact and stuffs */
-        gem.reset()
-    
-        switch gemSpawn {
-        case 0:
-            gem.position = gemPositioner(random: 0, side: side)
-            break
-        case 1:
-            gem.position = gemPositioner(random: 1, side: side)
-            break
-        case 2:
-            gem.position = gemPositioner(random: 2, side: side)
-            break
-        case 3:
-            gem.position = gemPositioner(random: 3, side: side)
-            break
-        case 4:
-            gem.position = gemPositioner(random: 4, side: side)
+        if gem.canSpawn {
             
-        default:
-            break
+            switch gemSpawn {
+            case 0:
+                gem.position = gemPositioner(random: 0, side: side)
+                break
+            case 1:
+                gem.position = gemPositioner(random: 1, side: side)
+                break
+            case 2:
+                gem.position = gemPositioner(random: 2, side: side)
+                break
+            case 3:
+                gem.position = gemPositioner(random: 3, side: side)
+                break
+            case 4:
+                gem.position = gemPositioner(random: 4, side: side)
+                
+            default:
+                gem.position = CGPoint(x: -50, y: -50)
+                
+            }
+            gem.canSpawn = false
             
+        } else {
+            gem.position = CGPoint(x: -50, y: -50)
         }
-        
+    
+       
         switch cherrySpawn {
         case 0:
             cherry.position = gemPositioner(random: 0, side: side)

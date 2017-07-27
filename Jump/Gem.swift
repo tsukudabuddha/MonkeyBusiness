@@ -11,6 +11,7 @@ import SpriteKit
 class Gem: SKSpriteNode {
     
     var gemValue: Int = 1
+    var canSpawn: Bool = true
     
     
     
