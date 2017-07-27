@@ -8,6 +8,8 @@
 //  TODO: Add coins
 //  TODO: Add more platform orientations
 //  TODO: Add powerups
+//  TODO: Running Backwrds the jump is janky
+//  TODO: Add reverse animation to let uers know wtf is going on
 
 import SpriteKit
 import GameplayKit
@@ -36,6 +38,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var gameOverScreen: SKSpriteNode!
     private var pauseScreen: SKSpriteNode!
     private var playPauseButton: SKSpriteNode!
+    private var pauseScoreLabel: SKLabelNode!
     private var round: Int = 0
     private var canJump: Bool = true
     private var jumping: Bool = false
@@ -67,6 +70,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             switch gameState {
             case .active:
                 isPaused = false
+                player.xScale = 1
                 break
             case .paused:
                 isPaused = true
@@ -93,6 +97,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverScreen = childNode(withName: "gameOverScreen") as! SKSpriteNode
         playPauseButton = childNode(withName: "playPauseButton") as! SKSpriteNode
         pauseScreen = childNode(withName: "pauseScreen") as! SKSpriteNode
+        pauseScoreLabel = childNode(withName: "//pauseScoreLabel") as! SKLabelNode
         
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
@@ -135,12 +140,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 gameState = .paused
                 playPauseButton.texture = SKTexture(imageNamed: "play")
                 pauseScreen.position.x = 0
-                print("pauseScreen: \(pauseScreen.debugDescription)")
-                dedLabel.text = "Your Score: \(points)"
+                pauseScoreLabel.text = "Your Score: \(points)"
+                pointsLabel.isHidden = true
             } else if gameState == .paused {
                 gameState = .active
                 playPauseButton.texture = SKTexture(imageNamed: "pause")
                 pauseScreen.run(SKAction.moveTo(x: 320, duration: 0.25))
+                pointsLabel.isHidden = false
             }
         }
             
@@ -380,7 +386,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             /* Create the random numbers to pick heght and side */
             let height = arc4random_uniform(UInt32(heightArray.count))
-            let side = arc4random_uniform(UInt32(2))
+            var side = arc4random_uniform(UInt32(2))
+            
+            if ((round - 1) % 5 == 0) && round > 0 {
+                if player.orientation == .right {
+                    side = 0
+                } else {
+                    side = 1
+                }
+                
+            }
+            
             
             /* Create an enemy object and add it to the scene and enemy array */
             let scorpion = Enemy()
