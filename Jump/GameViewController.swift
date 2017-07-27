@@ -17,7 +17,7 @@ class GameViewController: UIViewController, GKGameCenterControllerDelegate {
     var gcEnabled = Bool() // Check if the user has Game Center enabled
     var gcDefaultLeaderBoard = String() // Check the default leaderboardID
     
-    // IMPORTANT: replace the red string below with your own Leaderboard ID (the one you've set in iTunes Connect)
+    // The leaderboard ID is the one on itunes connect... I think
     let LEADERBOARD_ID = "globalLeaderBoard.RunThePhone"
     
 
