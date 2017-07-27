@@ -44,6 +44,8 @@ class Gem: SKSpriteNode {
         let hide = SKAction.fadeOut(withDuration: 0)
         let seq = SKAction.sequence([collectionAnimation, hide])
         run(seq)
+        let oldGemCount = UserDefaults.standard.integer(forKey: "gemCount")
+        UserDefaults.standard.set((oldGemCount + 1), forKey: "gemCount")
         
         gemValue = 0
         

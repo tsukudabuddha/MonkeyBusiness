@@ -22,7 +22,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     
     static var viewController: GameViewController!
     static var character: Bool = false
-    static var gems: Int = 0
+    var gems: Int = UserDefaults.standard.integer(forKey: "gemCount")
     
     override func didMove(to view: SKView) {
         /* Set UI connections */
@@ -40,8 +40,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         
         // Gems
-//        MainMenu.gems = UserDefaults.standard.integer(forKey: "gemCount")
-//        gemLabel.text = "\(MainMenu.gems)"
+        gemLabel.text = "\(gems)"
         
         physicsWorld.contactDelegate = self
         beginningAnimation()

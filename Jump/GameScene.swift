@@ -445,7 +445,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func gameOver() {
         /* Set gamestate to gameOver and run player death animation */
-        gameState = .gameOver
         player.death()
         gameOverScreen.run(SKAction.moveTo(y: 0, duration: 0.5))
         
