@@ -5,11 +5,11 @@
 //  Created by Andrew Tsukuda on 7/3/17.
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
 //  MARK: The scene in relation to player position is 0 - 287
-//  TODO: Add coins
 //  TODO: Add more platform orientations
-//  TODO: Add powerups
-//  TODO: Running Backwrds the jump is janky
 //  TODO: Add reverse animation to let uers know wtf is going on
+//  TODO: Add spikes 
+//  TODO: Powerup that auto shoots
+//  TOOD: Make gems exist for a reason
 
 import SpriteKit
 import GameplayKit
@@ -284,7 +284,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         /* Checks to see if game is running */
-        if gameState != .active { return }
+        if gameState == .gameOver || gameState == .paused { return }
         
         /* The player is now affected by gravity again and the timer is reset */
         player.physicsBody?.affectedByGravity = true
@@ -332,9 +332,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             newRound(round: round)
         }
         
+        let color = SKAction.colorize(with: UIColor.purple, colorBlendFactor: 1.0, duration: 0.25)
+        let uncolor = SKAction.colorize(with: self.backgroundColor, colorBlendFactor: 1.0, duration: 0.25)
+        let seq = SKAction.sequence([color, uncolor])
+        
         /* The game will run in reverse if the round is a multiple of 5 */
         if round % 5 == 0 {
+            if gameState == .active {
+                run(seq)
+            }
             gameState = .reversed
+
+        } else if (round - 1) % 5 == 0 {
+            if gameState == .reversed {
+                run(seq)
+            }
+            gameState = .active
         } else {
             gameState = .active
         }
@@ -603,14 +616,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func positionPlatforms(side: Orientation) {
         
-        var convertedSide = side
-        if gameState == .reversed {
-            if side == .left {
-                convertedSide = .right
-            } else {
-                convertedSide = .left
-            }
-        }
         /* Create a random number variable to choose the formation of platforms */
         let formation = arc4random_uniform(UInt32(3)) // there are 3 formations
         
@@ -648,7 +653,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             gemSpawn = arc4random_uniform(5)
         }
         
-        switch convertedSide {
+        switch side {
         case .right:
             switch formation {
             case 0:
@@ -713,19 +718,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Use the randomly generated gemSpawn number to choose a platform to spawn above */
             switch gemSpawn {
             case 0:
-                gem.position = gemPositioner(random: 0, side: convertedSide)
+                gem.position = gemPositioner(random: 0, side: side)
                 break
             case 1:
-                gem.position = gemPositioner(random: 1, side: convertedSide)
+                gem.position = gemPositioner(random: 1, side: side)
                 break
             case 2:
-                gem.position = gemPositioner(random: 2, side: convertedSide)
+                gem.position = gemPositioner(random: 2, side: side)
                 break
             case 3:
-                gem.position = gemPositioner(random: 3, side: convertedSide)
+                gem.position = gemPositioner(random: 3, side: side)
                 break
             case 4:
-                gem.position = gemPositioner(random: 4, side: convertedSide)
+                gem.position = gemPositioner(random: 4, side: side)
                 
             default:
                 gem.position = CGPoint(x: -50, y: -50)
@@ -742,19 +747,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        /* Use the randomly generated cherrySpawn number to choose a platform to spawn above */
         switch cherrySpawn {
         case 0:
-            cherry.position = gemPositioner(random: 0, side: convertedSide)
+            cherry.position = gemPositioner(random: 0, side: side)
             break
         case 1:
-            cherry.position = gemPositioner(random: 1, side: convertedSide)
+            cherry.position = gemPositioner(random: 1, side: side)
             break
         case 2:
-            cherry.position = gemPositioner(random: 2, side: convertedSide)
+            cherry.position = gemPositioner(random: 2, side: side)
             break
         case 3:
-            cherry.position = gemPositioner(random: 3, side: convertedSide)
+            cherry.position = gemPositioner(random: 3, side: side)
             break
         case 4:
-            cherry.position = gemPositioner(random: 4, side: convertedSide)
+            cherry.position = gemPositioner(random: 4, side: side)
         /* If the randomly chosen number is not 0-4, which should happen often, the cherry is positioned off-screen */
         default:
             cherry.position = CGPoint(x: -50, y: -50)
