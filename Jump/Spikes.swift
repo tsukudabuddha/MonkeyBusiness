@@ -21,7 +21,7 @@ class Spikes: SKSpriteNode {
         
         physicsBody = SKPhysicsBody(rectangleOf: size)
         physicsBody?.collisionBitMask = 0
-        physicsBody?.contactTestBitMask = 1
+        physicsBody?.contactTestBitMask = 2
         physicsBody?.categoryBitMask = 1
         physicsBody?.isDynamic = false
         
