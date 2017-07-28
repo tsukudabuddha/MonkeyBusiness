@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "backGround.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "crank-down.png",
       "scale" : "2x"
     },
     {
