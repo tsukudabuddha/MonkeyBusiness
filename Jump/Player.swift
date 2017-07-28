@@ -13,7 +13,7 @@ enum characterOrientationState {
 }
 
 enum characterState {
-    case normal, superSaiyajin
+    case normal, superSaiyajin, rambo
 }
 
 class Player: SKSpriteNode {
@@ -45,6 +45,10 @@ class Player: SKSpriteNode {
     
     func powerUp() {
         run(SKAction(named: "powerUpRun", duration: 10)!)
+        
+    }
+    
+    func rambo() {
         
     }
 

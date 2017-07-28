@@ -25,6 +25,7 @@
 		494579161F0B05E200267C4A /* JumpUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494579151F0B05E200267C4A /* JumpUITests.swift */; };
 		496483E01F26992D00A0ACA4 /* Gem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496483DF1F26992C00A0ACA4 /* Gem.swift */; };
 		4967AC631F2ABFCE00926E83 /* Spikes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4967AC621F2ABFCE00926E83 /* Spikes.swift */; };
+		498FC4A31F2B909300F3DB98 /* Banana.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498FC4A21F2B909300F3DB98 /* Banana.swift */; };
 		49A143971F1EC99600CAA597 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49A143961F1EC99600CAA597 /* Actions.sks */; };
 		49C0D4831F292F55001D47A6 /* Cherry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C0D4821F292F55001D47A6 /* Cherry.swift */; };
 		49C0D4891F297288001D47A6 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49C0D4881F297288001D47A6 /* GameKit.framework */; };
@@ -88,6 +89,7 @@
 		494579171F0B05E200267C4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		496483DF1F26992C00A0ACA4 /* Gem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gem.swift; sourceTree = "<group>"; };
 		4967AC621F2ABFCE00926E83 /* Spikes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Spikes.swift; sourceTree = "<group>"; };
+		498FC4A21F2B909300F3DB98 /* Banana.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Banana.swift; sourceTree = "<group>"; };
 		49A143961F1EC99600CAA597 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		49C0D4821F292F55001D47A6 /* Cherry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cherry.swift; sourceTree = "<group>"; };
 		49C0D4881F297288001D47A6 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -171,6 +173,7 @@
 				494578F51F0B05E200267C4A /* GameScene.swift */,
 				4967AC621F2ABFCE00926E83 /* Spikes.swift */,
 				496483DF1F26992C00A0ACA4 /* Gem.swift */,
+				498FC4A21F2B909300F3DB98 /* Banana.swift */,
 				49C0D4821F292F55001D47A6 /* Cherry.swift */,
 				49266AD21F11C8DD0035AF75 /* CreditScene.swift */,
 				49D1D3541F0EC5CE00FCB951 /* Scorpion.swift */,
@@ -563,6 +566,7 @@
 				49D1D34A1F0D845000FCB951 /* Player.swift in Sources */,
 				49D1D34E1F0D9E6700FCB951 /* MainMenu.swift in Sources */,
 				494578F61F0B05E200267C4A /* GameScene.swift in Sources */,
+				498FC4A31F2B909300F3DB98 /* Banana.swift in Sources */,
 				494578F81F0B05E200267C4A /* GameViewController.swift in Sources */,
 				494578F01F0B05E200267C4A /* AppDelegate.swift in Sources */,
 				49D1D3481F0D615800FCB951 /* MSButtonNode.swift in Sources */,

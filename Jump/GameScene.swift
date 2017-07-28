@@ -46,6 +46,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var points: Int = 0
     private var gem = Gem()
     private var cherry = Cherry()
+    private var banana = Banana()
     var sessionGemCounter: Int = 0 // public so that it can be changed by the gem.onContact()
     
     private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
@@ -115,6 +116,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Adds collectible items to gameScene */
         addChild(gem)
         addChild(cherry)
+        addChild(banana)
         
         /* This helps reduce the vibration lag when the player dies */
         generator.prepare()
@@ -207,7 +209,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.state = .normal
                 player.run(SKAction(named: "Run")!)
             }
+        } else if player.state == .rambo {
+            /* Check to see if the player is in rambo mode, if so run the animation */
+            if powerUpTimer == 0 {
+                // player.run(SKAction(named: "powerUpRun")!)
+            }
+            /* Update powerUp timer */
+            powerUpTimer += fixedDelta
+            
+            /* Reset player state and visual to match */
+            if powerUpTimer >= powerUpTime {
+                player.state = .normal
+                player.run(SKAction(named: "Run")!)
+            }
         }
+        
         
     }
     
@@ -278,6 +294,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 cherry.onContact()
                 player.state = .superSaiyajin
             }
+        }
+        
+        /* Checks if contact is made between Enemy and banana */
+        if nodeA == banana && nodeB.physicsBody?.contactTestBitMask == 2 {
+            (nodeB as! Enemy).die()
+        } else if nodeB == banana && nodeA.physicsBody?.contactTestBitMask == 2 {
+            (nodeA as! Enemy).die()
+        }
+        
+        if nodeA == banana && nodeB == player {
+            banana.onContact()
+            player.state = .rambo
+        }
+        if nodeA == player && nodeB == banana {
+            banana.onContact()
+            player.state = .rambo
         }
         
     }
@@ -402,9 +434,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             var side = arc4random_uniform(UInt32(2))
             
             if ((round - 1) % 5 == 0) && round > 0 {
-                if player.orientation == .right {
+                if player.orientation == .bottom {
                     side = 0
-                } else {
+                } else if player.orientation == .top {
                     side = 1
                 }
                 
@@ -639,14 +671,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if side == .right {
             gem.zRotation = CGFloat(Double.pi * 0.5)
             cherry.zRotation = CGFloat(Double.pi * 0.5)
+            banana.zRotation = CGFloat(Double.pi * 0.5)
         } else {
             gem.zRotation = CGFloat(Double.pi * 1.5)
             cherry.zRotation = CGFloat(Double.pi * 1.5)
+            banana.zRotation = CGFloat(Double.pi * 1.5)
         }
         
         /* Random numbers to choose spawn rate and location of collectibles */
         var gemSpawn = arc4random_uniform(5)
         let cherrySpawn = arc4random_uniform(30)
+        let bananaSpawn = arc4random_uniform(5)
         
         /* Makes sure that the cherries and gems don't spawn on top of each other */
         if cherrySpawn == gemSpawn {
@@ -765,6 +800,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             cherry.position = CGPoint(x: -50, y: -50)
             
         }
+        
+        /* Use the randomly generated cherrySpawn number to choose a platform to spawn above */
+        if !banana.used {
+            switch bananaSpawn {
+            case 0:
+                banana.position = gemPositioner(random: 0, side: side)
+                break
+            case 1:
+                banana.position = gemPositioner(random: 1, side: side)
+                break
+            case 2:
+                banana.position = gemPositioner(random: 2, side: side)
+                break
+            case 3:
+                banana.position = gemPositioner(random: 3, side: side)
+                break
+            case 4:
+                banana.position = gemPositioner(random: 4, side: side)
+                /* If the randomly chosen number is not 0-4, which should happen often, the cherry is positioned off-screen */
+            default:
+                banana.position = banana.position
+                
+            }
+        }
+        
+
         
     }
     
@@ -926,6 +987,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         return returnPoint
+    }
+    
+    func drawPauseMenu() {
+  
+    
+    
+    
+    
     }
 
 
