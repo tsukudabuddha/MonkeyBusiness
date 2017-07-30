@@ -73,10 +73,9 @@ class CreditScene: SKScene {
     func playerMovement() {
         /* Called if player is on bottom of screen */
         if player.orientation == .bottom {
-            
             player.physicsBody?.velocity.dx = characterSpeed!
             
-            if player.position.x > self.frame.width - 60 {
+            if player.position.x > self.frame.width - 50 {
                 
                 /* Change Gravity so right is down */
                 self.physicsWorld.gravity.dx = 9.8
@@ -85,16 +84,14 @@ class CreditScene: SKScene {
                 /* Change player orientation to work with new gravity */
                 player.orientation = .right
                 player.run(SKAction(named: "Rotate")!)
-                
             }
         }
         
         /* Called if the player is on right-side of screen */
         if player.orientation == .right {
-            
             player.physicsBody?.velocity.dy = characterSpeed!
             
-            if player.position.y > self.frame.height - 50 {
+            if player.position.y > self.frame.height - 70 {
                 
                 /* Change Gravity so top is down */
                 self.physicsWorld.gravity.dx = 0
@@ -103,14 +100,11 @@ class CreditScene: SKScene {
                 /* Change player orientation to work with new gravity */
                 player.orientation = .top
                 player.run(SKAction(named: "Rotate")!)
-                
             }
-            
         }
         
         /* Called if the player is on top of screen */
         if player.orientation == .top {
-            
             player.physicsBody?.velocity.dx = -1 * characterSpeed!
             
             if player.position.x < 0 {
@@ -123,14 +117,12 @@ class CreditScene: SKScene {
                 player.orientation = .left
                 player.run(SKAction(named: "Rotate")!)
             }
-            
         }
         
         /* Called if the player is on left-side of screen */
         if player.orientation == .left {
-            
             player.physicsBody?.velocity.dy = -1 * characterSpeed!
-            //print(player.position)
+            
             if player.position.y < 10 {
                 
                 /* Change Gravity so bottom is down */
@@ -140,16 +132,17 @@ class CreditScene: SKScene {
                 /* Change player orientation to work with new gravity */
                 player.orientation = .bottom
                 player.run(SKAction(named: "Rotate")!)
-                
             }
         }
+        
         
     }
     
     func beginningAnimation() {
-        player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
-        player.run(SKAction(named: "beginAnimationMonkey")!)
-        player.run(SKAction(named: "Run")!)
+        
+        // Just to change up sprite
+        player.run(SKAction(named: "powerUpRun")!)
+
     }
 
     

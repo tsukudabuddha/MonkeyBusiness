@@ -6,10 +6,12 @@
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
 //  MARK: The scene in relation to player position is 0 - 287
 //  TODO: Add more platform orientations
-//  TODO: Add reverse animation to let uers know wtf is going on
 //  TODO: Add spikes 
 //  TODO: Powerup that auto shoots
 //  TOOD: Make gems exist for a reason
+//  TODO: Add progress bar
+//  TODO: Make character physicsbody rectangle so that it no longer gets stuck on platforms
+//  TODO: Fix the game playing behind pause screen when returning froma another app
 
 import SpriteKit
 import GameplayKit
@@ -39,6 +41,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var pauseScreen: SKSpriteNode!
     private var playPauseButton: SKSpriteNode!
     private var pauseScoreLabel: SKLabelNode!
+    private var timerBar: SKSpriteNode!
     private var round: Int = 0
     private var canJump: Bool = true
     private var jumping: Bool = false
@@ -46,13 +49,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var points: Int = 0
     private var gem = Gem()
     private var cherry = Cherry()
-    var sessionGemCounter: Int = 0 // public so that it can be changed by the gem.onContact()
+    var sessionGemCounter: Int = 0 // Public so that it can be changed by the gem.onContact()
     
     private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
     private var rightPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
     
     
-    static var theme: Theme = .monkey // static so it can be modified from Main Menu
+    static var theme: Theme = .monkey // Static so it can be modified from Main Menu
     let generator = UINotificationFeedbackGenerator()
     
     
@@ -63,9 +66,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let jumpTime: Double = 0.25
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */
 
+    
+    var health: CGFloat = 1.0 {
+        didSet {
+            
+            /* Set upper limit on bar */
+            if health > 1 { health = 1}
+            /* Scale health bar between 0.0 -> 1.0 e.g 0 -> 100% */
+            timerBar.xScale = health
+            
+        }
+    }
+    
     var characterSpeed: CGFloat = 150
 
-    private var gameState: GameSceneState = .active {
+    private var gameState: GameSceneState = .paused {
         didSet {
             switch gameState {
             case .active:
@@ -98,6 +113,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playPauseButton = childNode(withName: "playPauseButton") as! SKSpriteNode
         pauseScreen = childNode(withName: "pauseScreen") as! SKSpriteNode
         pauseScoreLabel = childNode(withName: "//pauseScoreLabel") as! SKLabelNode
+        timerBar = childNode(withName: "timerBar") as! SKSpriteNode
         
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
@@ -187,6 +203,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             jumpTimer += fixedDelta
         }
         
+        /* Only countdown death timer when there are still enemies alive */
+        if Enemy.totalAlive > 0 {
+            health -= 0.001 // MARK: Tweak speed of rounds
+        }
+        
+        
+        if health <= 0 {
+            gameState = .gameOver
+        }
+        
         /* Once the jumpTimer is complete, the player falls to the ground and the timer is reset */
         if jumpTimer > jumpTime{
             player.physicsBody?.affectedByGravity = true
@@ -235,6 +261,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         checkScorpion(scorpion: (nodeB as! Enemy), contactPoint: contact.contactPoint)
                     } else if (nodeA as! Player).state == .superSaiyajin {
                         (nodeB as! Enemy).die()
+                        health += CGFloat(0.1 + 0.05 * Double((nodeB as! Enemy).pointValue))
                         points += (nodeB as! Enemy).pointValue
                         pointsLabel.text = String(points)
                     }
@@ -252,6 +279,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         checkScorpion(scorpion: (nodeA as! Enemy), contactPoint: contact.contactPoint)
                     } else if (nodeB as! Player).state == .superSaiyajin {
                         (nodeA as! Enemy).die()
+                        health += CGFloat(0.1 + 0.05 * Double((nodeA as! Enemy).pointValue))
                         points += (nodeA as! Enemy).pointValue
                         pointsLabel.text = String(points)
                     }
@@ -292,7 +320,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func spawnObstacles(orientation: characterOrientationState) {
-        switch orientation {
+        var fixedOrientation = orientation
+        
+        removePlatforms(side: .left)
+        removePlatforms(side: .right)
+        
+        if gameState == .reversed {
+            
+            if fixedOrientation == .bottom {
+                fixedOrientation = .top
+            } else {
+                fixedOrientation = .bottom
+            }
+        }
+        switch fixedOrientation {
         case .bottom:
             
             /* Position new platforms */
@@ -357,6 +398,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func setupGame() {
         /* Called in the didMove function */
         
+        /* Sets the game to load active gamestate, because it is set to paused originally for pause menu stuffs */
+        gameState = .active
+        
         /* Makes the player "Jump" to begin the game */
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
         
@@ -372,7 +416,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Initialize roundLabel object */
         roundLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2))
-        roundLabel.run(SKAction.fadeOut(withDuration: 0))
+        roundLabel.text = "Defeat All the Enemies!!!"
+        roundLabel.run(SKAction.sequence([SKAction.fadeIn(withDuration: 0.5), SKAction.fadeOut(withDuration: 0.5)]))
+        roundLabel.zPosition = 5
         self.addChild(roundLabel)
         
         /* Setup Points Label */
@@ -401,13 +447,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let height = arc4random_uniform(UInt32(heightArray.count))
             var side = arc4random_uniform(UInt32(2))
             
+            /* Spawns enemies on otherside of game as player */
             if ((round - 1) % 5 == 0) && round > 0 {
-                if player.orientation == .right {
+                if player.orientation == .bottom {
                     side = 0
                 } else {
                     side = 1
                 }
                 
+            } else if round % 5 == 0 && round > 0 {
+                if player.orientation == .top {
+                    side = 0
+                } else {
+                    side = 1
+                }
             }
             
             
@@ -439,7 +492,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     /* Checks if player is above scorpion */
     func checkScorpion(scorpion: Enemy, contactPoint: CGPoint) {
         
-        switch player.orientation {
+        switch scorpion.orientation {
         case .right:
             if contactPoint.x - 10 < scorpion.position.x - (scorpion.size.height / 2) {
                 scorpion.isAlive = false
@@ -448,6 +501,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.physicsBody?.applyImpulse(CGVector(dx: -10, dy: 0))
                 points += scorpion.pointValue
                 pointsLabel.text = String(points)
+                health += CGFloat(0.005 * Double(scorpion.pointValue))
                 
             } else {
                 gameOver()
@@ -460,6 +514,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.physicsBody?.applyImpulse(CGVector(dx: 10, dy: 0))
                 points += scorpion.pointValue
                 pointsLabel.text = String(points)
+                health += CGFloat(0.005 * Double(scorpion.pointValue))
                 
             } else {
                 gameOver()
@@ -477,6 +532,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Reset gem contact and stuffs */
         gem.reset()
         gem.canSpawn = true
+        
+        /* Reset Health */
+        health = 1
         
         
     }
