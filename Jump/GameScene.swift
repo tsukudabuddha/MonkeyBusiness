@@ -42,6 +42,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var playPauseButton: SKSpriteNode!
     private var pauseScoreLabel: SKLabelNode!
     private var timerBar: SKSpriteNode!
+    private var slidingBarTop: SKSpriteNode!
+    private var slidingBarBottom: SKSpriteNode!
     private var round: Int = 0
     private var canJump: Bool = true
     private var jumping: Bool = false
@@ -85,12 +87,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             switch gameState {
             case .active:
                 isPaused = false
+                slidingBarBottom.position.x = 291
+                slidingBarTop.position.x = 29
                 player.xScale = 1
                 break
             case .paused:
                 isPaused = true
                 break
             case .reversed:
+                slidingBarBottom.position.x = 29
+                slidingBarTop.position.x = 291
                 player.xScale = -1
                 break
             case .gameOver:
@@ -114,6 +120,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         pauseScreen = childNode(withName: "pauseScreen") as! SKSpriteNode
         pauseScoreLabel = childNode(withName: "//pauseScoreLabel") as! SKLabelNode
         timerBar = childNode(withName: "timerBar") as! SKSpriteNode
+        slidingBarTop = childNode(withName: "slidingWallTop") as! SKSpriteNode
+        slidingBarBottom = childNode(withName: "slidingWallBottom") as! SKSpriteNode
         
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
@@ -436,7 +444,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   
     func spawnEnemy(round: Int) {
         /* Create arrays of different spawn locations */
-        var heightArray = [100,200,300,400,500]
+        var heightArray = [100,200,300,400,480]
         var sideArray = [15, 305]
         
         var count = round + 1 // The round begins at 1 and we want 2 enemies to spawn in that round
@@ -850,7 +858,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     
                 }
             case .right:
-                player.physicsBody?.velocity.dy = characterSpeed
+                /* Make it so the player falls down and hits ground before moving forward */
+                if player.position.x > 285 {
+                    player.physicsBody?.velocity.dy = characterSpeed
+                } else if player.position.y > 40 {
+                    player.physicsBody?.velocity.dy = characterSpeed
+                }
+                
                 
                 if player.position.y > self.frame.height - 46 { // 46 is from math it good dont worry
                     
@@ -880,8 +894,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     player.run(SKAction(named: "Rotate")!)
                 }
             case .left:
-                player.physicsBody?.velocity.dy = -1 * characterSpeed
-                //print(player.position)
+                /* Make it so the player falls down and hits ground before moving forward */
+                if player.position.x < 5 {
+                    player.physicsBody?.velocity.dy = -1 * characterSpeed
+                } else if player.position.y < 515 { // MARK: Get height and change
+                    player.physicsBody?.velocity.dy = -1 * characterSpeed
+                }
+                
+                
                 if player.position.y < 10 {
                     
                     /* Change Gravity so bottom is down */
@@ -915,6 +935,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     
                 }
             case .left:
+                /* Make it so the player falls down and hits ground before moving forward */
+                if player.position.x < 5 {
+                    player.physicsBody?.velocity.dy = characterSpeed
+                } else if player.position.y > 58 {
+                    player.physicsBody?.velocity.dy = characterSpeed
+                }
                 player.physicsBody?.velocity.dy = characterSpeed
                 
                 if player.position.y > self.frame.height - 46 { // 46 is from math it good dont worry
@@ -945,7 +971,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     player.run(SKAction(named: "FlipRotate")!)
                 }
             case .right:
-                player.physicsBody?.velocity.dy = -1 * characterSpeed
+                /* Make it so the player falls down and hits ground before moving forward */
+                if player.position.x > 285 {
+                    player.physicsBody?.velocity.dy = -1 * characterSpeed
+                } else if player.position.y < 515 { // MARK: Get height and change
+                    player.physicsBody?.velocity.dy = -1 * characterSpeed
+                }
                 
                 if player.position.y < 10 {
                     
@@ -972,7 +1003,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         physicsBody?.categoryBitMask = 2
         physicsBody?.contactTestBitMask = 4294967295
-        physicsBody?.collisionBitMask = 1
+        physicsBody?.collisionBitMask = 4294967295
         physicsBody?.restitution = 0.15
         physicsBody?.friction = 0
         physicsWorld.contactDelegate = self
