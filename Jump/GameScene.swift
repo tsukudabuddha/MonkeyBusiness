@@ -246,8 +246,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Get references to the phyiscs body parent SKSpriteNode */
         let nodeA = contactA.node! //as! SKSpriteNode
         let nodeB = contactB.node!//as! SKSpriteNode
+
         
-        if nodeA.name == "player" || nodeB.name == "player"{
+        /* Check that player has landed on ground or platform */
+        if nodeA.name == "player" && nodeB.physicsBody?.contactTestBitMask != 3 {
+            canJump = true
+            jumpTimer = 0
+        } else if nodeB.name == "player" && nodeA.physicsBody?.contactTestBitMask != 3 {
             canJump = true
             jumpTimer = 0
         }
@@ -466,7 +471,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             /* Create an enemy object and add it to the scene and enemy array */
             let scorpion = Enemy()
-            enemyArray.append(scorpion)
+            enemyArray.append(scorpion) // MARK: Remove enemyArray
             addChild(scorpion)
             
             /* Check to see which side the enemy is on, then rotate and set velcoity accordingly */

@@ -35,7 +35,7 @@
 		49D1D34E1F0D9E6700FCB951 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */; };
 		49D1D3501F0DB72400FCB951 /* scorpion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D34F1F0DB72400FCB951 /* scorpion.sks */; };
 		49D1D3521F0EB73000FCB951 /* go3v2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D3511F0EB71C00FCB951 /* go3v2.ttf */; };
-		49D1D3551F0EC5CE00FCB951 /* Scorpion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3541F0EC5CE00FCB951 /* Scorpion.swift */; };
+		49D1D3551F0EC5CE00FCB951 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3541F0EC5CE00FCB951 /* Enemy.swift */; };
 		49E21A211F14051B009E4C88 /* ka1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49E21A201F140501009E4C88 /* ka1.ttf */; };
 		49F55E541F20155100E8553F /* sprites.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 49F55E531F20155100E8553F /* sprites.atlas */; };
 		49F605581F227FD3007B7BBD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 49F605571F227FD3007B7BBD /* GoogleService-Info.plist */; };
@@ -98,7 +98,7 @@
 		49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
 		49D1D34F1F0DB72400FCB951 /* scorpion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = scorpion.sks; sourceTree = "<group>"; };
 		49D1D3511F0EB71C00FCB951 /* go3v2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = go3v2.ttf; sourceTree = "<group>"; };
-		49D1D3541F0EC5CE00FCB951 /* Scorpion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Scorpion.swift; sourceTree = "<group>"; };
+		49D1D3541F0EC5CE00FCB951 /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
 		49E21A201F140501009E4C88 /* ka1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ka1.ttf; sourceTree = "<group>"; };
 		49F55E531F20155100E8553F /* sprites.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = sprites.atlas; sourceTree = "<group>"; };
 		49F605571F227FD3007B7BBD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -173,7 +173,7 @@
 				496483DF1F26992C00A0ACA4 /* Gem.swift */,
 				49C0D4821F292F55001D47A6 /* Cherry.swift */,
 				49266AD21F11C8DD0035AF75 /* CreditScene.swift */,
-				49D1D3541F0EC5CE00FCB951 /* Scorpion.swift */,
+				49D1D3541F0EC5CE00FCB951 /* Enemy.swift */,
 				49266ACA1F0F0D170035AF75 /* Platform.swift */,
 				49D1D3491F0D845000FCB951 /* Player.swift */,
 			);
@@ -569,7 +569,7 @@
 				49266ACB1F0F0D170035AF75 /* Platform.swift in Sources */,
 				49C0D4831F292F55001D47A6 /* Cherry.swift in Sources */,
 				49266AD31F11C8DD0035AF75 /* CreditScene.swift in Sources */,
-				49D1D3551F0EC5CE00FCB951 /* Scorpion.swift in Sources */,
+				49D1D3551F0EC5CE00FCB951 /* Enemy.swift in Sources */,
 				4967AC631F2ABFCE00926E83 /* Spikes.swift in Sources */,
 				496483E01F26992D00A0ACA4 /* Gem.swift in Sources */,
 			);

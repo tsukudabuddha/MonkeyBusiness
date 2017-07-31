@@ -25,6 +25,7 @@ class Enemy: SKSpriteNode {
     
     static var totalSpawned: Int = 0
     static var totalAlive: Int = 0
+    
     var isAlive = true
     
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */

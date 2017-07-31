@@ -8,6 +8,24 @@
 
 import SpriteKit
 
+/*
+ struct ContactConstants{
+ 
+  static let PLAYER : UInt32 = 1
+  static let SNAKE : UInt32 = 2
+  static let BUG : UInt32 = 3
+ 
+ }
+ 
+ //Usage
+ player.physicsBody?.contactFieldBitMask = ContactConstants.PLAYER
+ 
+ player.physicsBody?.contactTestBitMask = ContactConstants.SNAKE | ConstactConstants.BUG
+ 
+ 
+ */
+
+
 enum characterOrientationState {
     case bottom, right, top, left
 }
