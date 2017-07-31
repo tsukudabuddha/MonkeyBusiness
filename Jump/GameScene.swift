@@ -9,7 +9,6 @@
 //  TODO: Add spikes 
 //  TODO: Powerup that auto shoots
 //  TOOD: Make gems exist for a reason
-//  TODO: Add progress bar
 //  TODO: Make character physicsbody rectangle so that it no longer gets stuck on platforms
 //  TODO: Fix the game playing behind pause screen when returning froma another app
 
@@ -38,6 +37,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var restartLabel: SKLabelNode!
     private var menuLabel: SKLabelNode!
     private var gameOverScreen: SKSpriteNode!
+    private var instructionOverlay: SKSpriteNode!
     private var pauseScreen: SKSpriteNode!
     private var playPauseButton: SKSpriteNode!
     private var pauseScoreLabel: SKLabelNode!
@@ -116,6 +116,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         menuLabel = childNode(withName: "//menuLabel") as! SKLabelNode
         highScoreLabel = childNode(withName: "//highScoreLabel") as! SKLabelNode
         gameOverScreen = childNode(withName: "gameOverScreen") as! SKSpriteNode
+        instructionOverlay = childNode(withName: "startingOverlay") as! SKSpriteNode
         playPauseButton = childNode(withName: "playPauseButton") as! SKSpriteNode
         pauseScreen = childNode(withName: "pauseScreen") as! SKSpriteNode
         pauseScoreLabel = childNode(withName: "//pauseScoreLabel") as! SKLabelNode
@@ -136,6 +137,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupGame()
         flipPlatforms()
         
+        dedLabel.text = "Your Score: \(points)"
+        dedLabel.isHidden = false
+        restartLabel.isHidden = false
+        menuLabel.isHidden = false
+        highScoreLabel.isHidden = false
+        pointsLabel.isHidden = true
+        
+        /* Use UserDefaults to see if we should show the instruction screen */
+//        let showScreen = UserDefaults.standard.bool(forKey: "showScreen")
+//
+//        if showScreen {
+//            instructionOverlay.run(SKAction.moveTo(x: 0, duration: 0))
+//            gameState = .paused
+//        }
         /* Adds collectible items to gameScene */
         addChild(gem)
         addChild(cherry)
@@ -172,6 +187,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 pauseScreen.run(SKAction.moveTo(x: 320, duration: 0.25))
                 pointsLabel.isHidden = false
             }
+        } else if touchedNode == instructionOverlay {
+            gameState = .active
+            instructionOverlay.run(SKAction.fadeOut(withDuration: 0.25))
         }
             
        
@@ -413,6 +431,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Sets the game to load active gamestate, because it is set to paused originally for pause menu stuffs */
         gameState = .active
+        print("bottom thing: \(slidingBarBottom.position.x)")
         
         /* Makes the player "Jump" to begin the game */
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
