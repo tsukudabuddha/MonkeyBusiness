@@ -53,8 +53,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var cherry = Cherry()
     var sessionGemCounter: Int = 0 // Public so that it can be changed by the gem.onContact()
     
-    private var leftPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
-    private var rightPlatforms = [Platform(), Platform(), Platform(), Platform(), Platform()]
+    private var leftPlatforms = [Platform(), Platform(), Platform(), Platform()]
+    private var rightPlatforms = [Platform(), Platform(), Platform(), Platform()]
     
     
     static var theme: Theme = .monkey // Static so it can be modified from Main Menu
@@ -714,12 +714,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let x2 = x1 * 1.5
         let x3 = x2 * 1.5
         let width = Double(frame.width)
+        let spacing = 110.0
         
-        let y1 = 100.0
-        let y2 = y1 + 95.0
-        let y3 = y2 + 95.0
-        let y4 = y3 + 95.0
-        let y5 = y4 + 95.0
+        let y1 = 120.0
+        let y2 = y1 + spacing
+        let y3 = y2 + spacing
+        let y4 = y3 + spacing
         
         let oppositeX1 = width - x1
         let oppositeX2 = width - x2
@@ -751,21 +751,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 leftPlatforms[1].position = CGPoint(x: x1, y: y2)
                 leftPlatforms[2].position = CGPoint(x: x1, y: y3)
                 leftPlatforms[3].position = CGPoint(x: x1, y: y4)
-                leftPlatforms[4].position = CGPoint(x: x1, y: y5)
                 break
             case 1:
                 leftPlatforms[0].position = CGPoint(x: x1, y: y1)
                 leftPlatforms[1].position = CGPoint(x: x2, y: y2)
                 leftPlatforms[2].position = CGPoint(x: x1, y: y3)
                 leftPlatforms[3].position = CGPoint(x: x2, y: y4)
-                leftPlatforms[4].position = CGPoint(x: x1, y: y5)
                 break
             case 2:
                 leftPlatforms[0].position = CGPoint(x: x3, y: y1)
                 leftPlatforms[1].position = CGPoint(x: x3, y: y2)
                 leftPlatforms[2].position = CGPoint(x: x3, y: y3)
                 leftPlatforms[3].position = CGPoint(x: x2, y: y4)
-                leftPlatforms[4].position = CGPoint(x: x1, y: y5)
                 break
             default:
                 print("default ran")
@@ -778,21 +775,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 rightPlatforms[1].position = CGPoint(x: oppositeX1, y: y2)
                 rightPlatforms[2].position = CGPoint(x: oppositeX1, y: y3)
                 rightPlatforms[3].position = CGPoint(x: oppositeX1, y: y4)
-                rightPlatforms[4].position = CGPoint(x: oppositeX1, y: y5)
                 break
             case 1:
                 rightPlatforms[0].position = CGPoint(x: oppositeX1, y: y1)
                 rightPlatforms[1].position = CGPoint(x: oppositeX2, y: y2)
                 rightPlatforms[2].position = CGPoint(x: oppositeX1, y: y3)
                 rightPlatforms[3].position = CGPoint(x: oppositeX2, y: y4)
-                rightPlatforms[4].position = CGPoint(x: oppositeX1, y: y5)
                 break
             case 2:
                 rightPlatforms[0].position = CGPoint(x: oppositeX1, y: y1)
                 rightPlatforms[1].position = CGPoint(x: oppositeX2, y: y2)
                 rightPlatforms[2].position = CGPoint(x: oppositeX3, y: y3)
                 rightPlatforms[3].position = CGPoint(x: oppositeX3, y: y4)
-                rightPlatforms[4].position = CGPoint(x: oppositeX3, y: y5)
                 break
             default:
                 print("default ran")
