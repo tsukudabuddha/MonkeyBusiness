@@ -32,10 +32,20 @@ class Enemy: SKSpriteNode {
             case .snake:
                 self.texture = SKTexture(imageNamed: "snake-1")
                 physicsBody = SKPhysicsBody(rectangleOf: (self.texture?.size())!)
+                physicsBody?.affectedByGravity = false
+                physicsBody?.allowsRotation = false
+                physicsBody?.contactTestBitMask = 2
+                physicsBody?.friction = 0
+                physicsBody?.linearDamping = 0
                 break
             case .scorpion:
                 self.texture = SKTexture(imageNamed: "Scorpion")
                 physicsBody = SKPhysicsBody(rectangleOf: (self.texture?.size())!)
+                physicsBody?.affectedByGravity = false
+                physicsBody?.allowsRotation = false
+                physicsBody?.contactTestBitMask = 2
+                physicsBody?.friction = 0
+                physicsBody?.linearDamping = 0
                 break
             default:
                 break

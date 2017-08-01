@@ -133,14 +133,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupGame()
         flipPlatforms()
         
-        dedLabel.text = "Your Score: \(points)"
-        dedLabel.isHidden = false
-        restartLabel.isHidden = false
-        menuLabel.isHidden = false
-        highScoreLabel.isHidden = false
-        pointsLabel.isHidden = true
-        
-        
         /* Use UserDefaults to see if we should show the instruction screen */
 //        let showScreen = UserDefaults.standard.bool(forKey: "showScreen")
 //
@@ -196,13 +188,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Switch statement to determine where the player is so that it can apply the correct impulse */
             switch player.orientation {
             case .bottom:
-                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 12))
+                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 15))
             case .right:
-                player.physicsBody?.applyImpulse(CGVector(dx: -12, dy: 0))
+                player.physicsBody?.applyImpulse(CGVector(dx: -15, dy: 0))
             case .top:
-                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -12))
+                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -15))
             case .left:
-                player.physicsBody?.applyImpulse(CGVector(dx: 12, dy: 0))
+                player.physicsBody?.applyImpulse(CGVector(dx: 15, dy: 0))
                 
             }
             
@@ -255,6 +247,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if powerUpTimer >= powerUpTime {
                 player.state = .normal
                 player.run(SKAction(named: "Run")!)
+            }
+        }
+        
+        for enemy in enemyArray {
+            switch enemy.orientation {
+            case .right:
+                enemy.physicsBody?.applyForce(CGVector(dx: 9.8, dy: 0))
+                break
+            case .left:
+                enemy.physicsBody?.applyForce(CGVector(dx: -9.8, dy: 0))
+            default:
+                break
             }
         }
         
@@ -448,7 +452,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         /* Initialize roundLabel object */
-        roundLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2))
+        roundLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2) - 20)
         roundLabel.text = "Defeat All the Enemies!!!"
         roundLabel.run(SKAction.sequence([SKAction.fadeIn(withDuration: 0.5), SKAction.fadeOut(withDuration: 0.5)]))
         roundLabel.zPosition = 5
@@ -456,7 +460,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Setup Points Label */
         pointsLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2) + 20)
+        pointsLabel.isHidden = false
+        pointsLabel.fontName = "Gang of Three"
         self.addChild(pointsLabel)
+        
+        dedLabel.text = "Your Score: \(points)"
+        dedLabel.isHidden = false
+        restartLabel.isHidden = false
+        menuLabel.isHidden = false
+        highScoreLabel.isHidden = false
         
         /* This is a fadeIn and fadeOut animation */
         roundLabel.run(SKAction(named: "RoundLabel")!)
@@ -464,7 +476,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   
     func spawnEnemy(round: Int) {
         /* Create arrays of different spawn locations */
-        var heightArray = [120,220,320,420]
+        var heightArray = [140,220,300,380]
         var sideArray = [15, 305]
         
         var count = round + 1 // The round begins at 1 and we want 2 enemies to spawn in that round
@@ -674,7 +686,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .left:
             for platform in leftPlatforms {
                 addChild(platform)
-                print("platform position: \(platform.position)")
             }
 
         default:
@@ -721,7 +732,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let x2 = x1 * 1.5
         let x3 = x2 * 1.5
         let width = Double(frame.width)
-        let spacing = 95.0
+        let spacing = 92.0
         
         let y1 = 150.0
         let y2 = y1 + spacing
@@ -760,10 +771,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 leftPlatforms[3].position = CGPoint(x: x1, y: y4)
                 break
             case 1:
-                leftPlatforms[0].position = CGPoint(x: x1, y: y1)
-                leftPlatforms[1].position = CGPoint(x: x2, y: y2)
-                leftPlatforms[2].position = CGPoint(x: x1, y: y3)
-                leftPlatforms[3].position = CGPoint(x: x2, y: y4)
+                leftPlatforms[0].position = CGPoint(x: x2, y: y1)
+                leftPlatforms[1].position = CGPoint(x: x1, y: y2)
+                leftPlatforms[2].position = CGPoint(x: x2, y: y3)
+                leftPlatforms[3].position = CGPoint(x: x1, y: y4)
                 break
             case 2:
                 leftPlatforms[0].position = CGPoint(x: x3, y: y1)
