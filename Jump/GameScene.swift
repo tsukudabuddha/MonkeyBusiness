@@ -250,6 +250,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
+        /* Add 'gravity' to enemies */
         for enemy in enemyArray {
             switch enemy.orientation {
             case .right:
@@ -299,7 +300,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     }
                     
                 }
-            } else {
+            } else if nodeA.physicsBody?.contactTestBitMask == 2 || nodeA.physicsBody?.contactTestBitMask == 3 {
                 (nodeB as! Enemy).turnAround()
             }
         }
@@ -317,7 +318,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     }
                     
                 }
-            } else {
+            } else if nodeB.physicsBody?.contactTestBitMask == 2 || nodeB.physicsBody?.contactTestBitMask == 3 {
                 (nodeA as! Enemy).turnAround()
             }
         }
@@ -477,7 +478,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func spawnEnemy(round: Int) {
         /* Create arrays of different spawn locations */
         var heightArray = [140,220,300,380]
-        var sideArray = [15, 305]
+        var sideArray = [20, 305]
         
         var count = round + 1 // The round begins at 1 and we want 2 enemies to spawn in that round
         
@@ -514,7 +515,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             enemyArray.append(enemy) // MARK: Remove enemyArray
             
             if (height == 0 || height == UInt32(heightArray.count - 1)) && enemy.type == .cobra {
-                enemy.type = .snake
+                if enemy.orientation == .right {
+                    enemy.position.x -= 10
+                } else if enemy.orientation == .left {
+                    enemy.position.x += 10
+                }
             }
             addChild(enemy)
             
