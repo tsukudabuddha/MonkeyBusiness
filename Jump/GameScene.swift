@@ -87,16 +87,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             switch gameState {
             case .active:
                 isPaused = false
-                slidingBarBottom.position.x = 291
-                slidingBarTop.position.x = 29
                 player.xScale = 1
                 break
             case .paused:
                 isPaused = true
                 break
             case .reversed:
-                slidingBarBottom.position.x = 29
-                slidingBarTop.position.x = 291
                 player.xScale = -1
                 break
             case .gameOver:
@@ -143,6 +139,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         menuLabel.isHidden = false
         highScoreLabel.isHidden = false
         pointsLabel.isHidden = true
+        
         
         /* Use UserDefaults to see if we should show the instruction screen */
 //        let showScreen = UserDefaults.standard.bool(forKey: "showScreen")
@@ -364,27 +361,32 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 fixedOrientation = .bottom
             }
         }
+        
         switch fixedOrientation {
         case .bottom:
             
             /* Position new platforms */
             positionPlatforms(side: .right)
-            /* Remove old platforms */
-            removePlatforms(side: .left)
             
             /* Add platform to scene */
             addPlatforms(side: .right)
+            
+            /* Remove old platforms */
+            removePlatforms(side: .left)
+            
 
         case .top:
             
             /* Remove old platforms */
             removePlatforms(side: .right)
             
+            /* Add new platforms */
+            addPlatforms(side: .left)
+            
             /* Position new platforms */
             positionPlatforms(side: .left)
             
-            /* Add new platforms */
-            addPlatforms(side: .left)
+            
             
         default:
             break
@@ -463,13 +465,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   
     func spawnEnemy(round: Int) {
         /* Create arrays of different spawn locations */
-        var heightArray = [100,200,300,400,480]
+        var heightArray = [120,220,320,420]
         var sideArray = [15, 305]
         
         var count = round + 1 // The round begins at 1 and we want 2 enemies to spawn in that round
         
-        if round >= 5 { // Don't want to get an indexOutOfBounds exception
-            count = 5
+        if round >= heightArray.count { // Don't want to get an indexOutOfBounds exception
+            count = heightArray.count
         }
         
         for _ in 0..<count {
@@ -480,7 +482,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             var side = arc4random_uniform(UInt32(2))
             
             /* Spawns enemies on otherside of game as player */
-            if ((round - 1) % 5 == 0) && round > 0 {
+            if ((round - 1) % 5 == 0) && round > 1 {
                 if player.orientation == .bottom {
                     side = 0
                 } else {
@@ -669,7 +671,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .left:
             for platform in leftPlatforms {
                 addChild(platform)
+                print("platform position: \(platform.position)")
             }
+
         default:
             break
         }
@@ -714,9 +718,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let x2 = x1 * 1.5
         let x3 = x2 * 1.5
         let width = Double(frame.width)
-        let spacing = 110.0
+        let spacing = 95.0
         
-        let y1 = 120.0
+        let y1 = 150.0
         let y2 = y1 + spacing
         let y3 = y2 + spacing
         let y4 = y3 + spacing
@@ -760,9 +764,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 break
             case 2:
                 leftPlatforms[0].position = CGPoint(x: x3, y: y1)
-                leftPlatforms[1].position = CGPoint(x: x3, y: y2)
-                leftPlatforms[2].position = CGPoint(x: x3, y: y3)
-                leftPlatforms[3].position = CGPoint(x: x2, y: y4)
+                leftPlatforms[1].position = CGPoint(x: x2, y: y2)
+                leftPlatforms[2].position = CGPoint(x: x1, y: y3)
+                leftPlatforms[3].position = CGPoint(x: x1, y: y4)
                 break
             default:
                 print("default ran")
@@ -784,8 +788,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 break
             case 2:
                 rightPlatforms[0].position = CGPoint(x: oppositeX1, y: y1)
-                rightPlatforms[1].position = CGPoint(x: oppositeX2, y: y2)
-                rightPlatforms[2].position = CGPoint(x: oppositeX3, y: y3)
+                rightPlatforms[1].position = CGPoint(x: oppositeX1, y: y2)
+                rightPlatforms[2].position = CGPoint(x: oppositeX2, y: y3)
                 rightPlatforms[3].position = CGPoint(x: oppositeX3, y: y4)
                 break
             default:
@@ -813,8 +817,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case 3:
                 gem.position = gemPositioner(random: 3, side: side)
                 break
-            case 4:
-                gem.position = gemPositioner(random: 4, side: side)
                 
             default:
                 gem.position = CGPoint(x: -50, y: -50)
@@ -842,8 +844,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case 3:
             cherry.position = gemPositioner(random: 3, side: side)
             break
-        case 4:
-            cherry.position = gemPositioner(random: 4, side: side)
         /* If the randomly chosen number is not 0-4, which should happen often, the cherry is positioned off-screen */
         default:
             cherry.position = CGPoint(x: -50, y: -50)
@@ -859,7 +859,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case .bottom:
                 player.physicsBody?.velocity.dx = characterSpeed
                 
-                if player.position.x > 287 * 0.5 {
+                if player.position.x > 277 {
                     
                     /* Change Gravity so right is down */
                     self.physicsWorld.gravity.dx = 9.8
@@ -896,7 +896,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case .top:
                 player.physicsBody?.velocity.dx = -1 * characterSpeed
                 //print(player.position)
-                if player.position.x < 287 * 0.5 {
+                if player.position.x < 10 {
                     
                     /* Change Gravity so left is down */
                     self.physicsWorld.gravity.dx = -9.8
