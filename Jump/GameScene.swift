@@ -433,7 +433,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Sets the game to load active gamestate, because it is set to paused originally for pause menu stuffs */
         gameState = .active
-        print("bottom thing: \(slidingBarBottom.position.x)")
         
         /* Makes the player "Jump" to begin the game */
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
@@ -499,21 +498,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             
             /* Create an enemy object and add it to the scene and enemy array */
-            let scorpion = Enemy()
-            enemyArray.append(scorpion) // MARK: Remove enemyArray
-            addChild(scorpion)
+            let enemy = Enemy(round: round)
+            enemyArray.append(enemy) // MARK: Remove enemyArray
+            
+            if (height == 0 || height == UInt32(heightArray.count - 1)) && enemy.type == .cobra {
+                enemy.type = .snake
+            }
+            addChild(enemy)
             
             /* Check to see which side the enemy is on, then rotate and set velcoity accordingly */
             if side == 0 {
-                scorpion.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
-                scorpion.orientation = .left
-                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale * -1)
+                enemy.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
+                enemy.orientation = .left
+                enemy.physicsBody?.velocity.dy = CGFloat(50.0 * enemy.xScale * -1)
             } else if side == 1 {
-                scorpion.orientation = .right
-                scorpion.physicsBody?.velocity.dy = CGFloat(50.0 * scorpion.xScale)
+                enemy.orientation = .right
+                enemy.physicsBody?.velocity.dy = CGFloat(50.0 * enemy.xScale)
             }
             /* Move the scorpion to the randomly chosen spawn point */
-            scorpion.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
+            enemy.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
             
             /* Prevent scorpios from being spawned at the same spots */
             heightArray.remove(at: Int(height))

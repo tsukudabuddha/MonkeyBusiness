@@ -14,6 +14,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     private var playLabel: SKLabelNode!
     private var creditLabel: SKLabelNode!
     private var themeLabel: SKLabelNode!
+    private var businessLabel: SKLabelNode!
     private var gemLabel: SKLabelNode!
     private var leaderBoardLabel: SKLabelNode!
     var gameScene: GameScene!
@@ -31,6 +32,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         themeLabel = childNode(withName: "themeLabel") as! SKLabelNode
         gemLabel = childNode(withName: "gemLabel") as! SKLabelNode
         leaderBoardLabel = childNode(withName: "leaderBoardLabel") as! SKLabelNode
+        businessLabel = childNode(withName: "\"business\"Label") as! SKLabelNode
         gameScene = GameScene(fileNamed: "GameScene")!
         
         // Connect variables to code
@@ -143,6 +145,13 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
             }
         } else if touchedNode == leaderBoardLabel {
             MainMenu.viewController.checkGCLeaderboard()
+        } else if touchedNode == businessLabel {
+            /* 1) Grab reference to our spriteKit view */
+            guard let skView = self.view as SKView! else {
+                print("Could not get SkView")
+                return
+            }
+            skView.showsPhysics = !(skView.showsPhysics)
         }
         
     

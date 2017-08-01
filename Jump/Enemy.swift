@@ -15,6 +15,10 @@ enum Orientation {
     case bottom, right, top, left
 }
 
+enum EnemyType {
+    case scorpion, snake, cobra
+}
+
 class Enemy: SKSpriteNode {
     
     var orientation: Orientation = .bottom
@@ -22,6 +26,22 @@ class Enemy: SKSpriteNode {
     var spawned: Int = 0
     var canContact: Bool = true
     var pointValue: Int = 25
+    var type: EnemyType = .snake {
+        didSet {
+            switch type {
+            case .snake:
+                self.texture = SKTexture(imageNamed: "snake-1")
+                physicsBody = SKPhysicsBody(rectangleOf: (self.texture?.size())!)
+                break
+            case .scorpion:
+                self.texture = SKTexture(imageNamed: "Scorpion")
+                physicsBody = SKPhysicsBody(rectangleOf: (self.texture?.size())!)
+                break
+            default:
+                break
+            }
+        }
+    }
     
     static var totalSpawned: Int = 0
     static var totalAlive: Int = 0
@@ -32,19 +52,25 @@ class Enemy: SKSpriteNode {
     
     var turnTimer: CFTimeInterval = 0
 
-    init() {
+    init(round: Int) {
         // Make a texture from an image, a color, and size
-        let random = arc4random_uniform(UInt32(10))
+        var random = arc4random_uniform(UInt32(10))
         var texture = SKTexture()
         switch GameScene.theme {
         case .monkey:
+            if round < 3 && random == 0 {
+                random = 1
+            }
             if random == 0 {
                 texture = SKTexture(imageNamed: "king-cobra-2")
                 self.pointValue = 50
+                type = .cobra
             } else if random > 4{
                 texture = SKTexture(imageNamed: "Scorpion")
+                type = .scorpion
             } else {
                 texture = SKTexture(imageNamed: "snake-1")
+                type = .snake
             }
             
         case .fox:

@@ -33,7 +33,6 @@
 		49D1D34A1F0D845000FCB951 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3491F0D845000FCB951 /* Player.swift */; };
 		49D1D34C1F0D9D7D00FCB951 /* MainMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D34B1F0D9D7D00FCB951 /* MainMenu.sks */; };
 		49D1D34E1F0D9E6700FCB951 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */; };
-		49D1D3501F0DB72400FCB951 /* scorpion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D34F1F0DB72400FCB951 /* scorpion.sks */; };
 		49D1D3521F0EB73000FCB951 /* go3v2.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D3511F0EB71C00FCB951 /* go3v2.ttf */; };
 		49D1D3551F0EC5CE00FCB951 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3541F0EC5CE00FCB951 /* Enemy.swift */; };
 		49E21A211F14051B009E4C88 /* ka1.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 49E21A201F140501009E4C88 /* ka1.ttf */; };
@@ -96,7 +95,6 @@
 		49D1D3491F0D845000FCB951 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		49D1D34B1F0D9D7D00FCB951 /* MainMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MainMenu.sks; sourceTree = "<group>"; };
 		49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
-		49D1D34F1F0DB72400FCB951 /* scorpion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = scorpion.sks; sourceTree = "<group>"; };
 		49D1D3511F0EB71C00FCB951 /* go3v2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = go3v2.ttf; sourceTree = "<group>"; };
 		49D1D3541F0EC5CE00FCB951 /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
 		49E21A201F140501009E4C88 /* ka1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ka1.ttf; sourceTree = "<group>"; };
@@ -153,7 +151,6 @@
 			isa = PBXGroup;
 			children = (
 				49D1D3451F0D55E800FCB951 /* monkey.sks */,
-				49D1D34F1F0DB72400FCB951 /* scorpion.sks */,
 				49E21A201F140501009E4C88 /* ka1.ttf */,
 				49D1D3511F0EB71C00FCB951 /* go3v2.ttf */,
 				49D1D3471F0D615800FCB951 /* MSButtonNode.swift */,
@@ -387,7 +384,6 @@
 				49F55E541F20155100E8553F /* sprites.atlas in Resources */,
 				49E21A211F14051B009E4C88 /* ka1.ttf in Resources */,
 				49F605581F227FD3007B7BBD /* GoogleService-Info.plist in Resources */,
-				49D1D3501F0DB72400FCB951 /* scorpion.sks in Resources */,
 				49D1D3461F0D55E800FCB951 /* monkey.sks in Resources */,
 				494578FB1F0B05E200267C4A /* Main.storyboard in Resources */,
 				49D1D3521F0EB73000FCB951 /* go3v2.ttf in Resources */,
