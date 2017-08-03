@@ -43,6 +43,7 @@ class Enemy: SKSpriteNode {
     
     static var totalSpawned: Int = 0
     static var totalAlive: Int = 0
+    static var totalPointValue: Int = 0
     
     var isAlive = true
     
@@ -108,6 +109,7 @@ class Enemy: SKSpriteNode {
             self.run(SKAction(named: "opposumMovement")!)
         }
         
+        Enemy.totalPointValue += pointValue
         
         run(SKAction(named: "Rotate")!)
         
@@ -127,6 +129,7 @@ class Enemy: SKSpriteNode {
         let seq = SKAction.sequence([death, removeScorpion])
         self.run(seq)
         
+        Enemy.totalPointValue -= pointValue
         Enemy.totalAlive -= 1
         self.isAlive = false
     

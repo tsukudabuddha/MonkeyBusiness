@@ -17,6 +17,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     private var businessLabel: SKLabelNode!
     private var gemLabel: SKLabelNode!
     private var leaderBoardLabel: SKLabelNode!
+    private var labelArray: [SKLabelNode]! = []
     var gameScene: GameScene!
     var player: Player!
     var characterSpeed = GameScene(fileNamed: "GameScene")?.characterSpeed
@@ -35,6 +36,13 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         businessLabel = childNode(withName: "\"business\"Label") as! SKLabelNode
         gameScene = GameScene(fileNamed: "GameScene")!
         
+        /* Create label array to make edits to all of them */
+        labelArray.append(playLabel)
+        labelArray.append(creditLabel)
+        labelArray.append(themeLabel)
+        labelArray.append(businessLabel)
+        labelArray.append(leaderBoardLabel)
+        
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
         
@@ -48,6 +56,86 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         beginningAnimation()
         
         
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        /* Called when a touch begins */
+        
+        /* We only need a single touch here */
+        let touch = touches.first!
+        
+        /* Get touch position in scene */
+        let location = touch.location(in: self)
+        let touchedNode = self.atPoint(location)
+        
+        /* This if let makes sure label is only of type SKLabelNode */
+        if let label = touchedNode as? SKLabelNode {
+            if labelArray.contains(label) {
+                label.fontColor = UIColor.gray
+            }
+        } else { // If the touchedNode is not a label node this runs
+            for label in labelArray {
+                label.fontColor = UIColor.white
+            }
+        }
+        
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        /* We only need a single touch here */
+        let touch = touches.first!
+        
+        /* Get touch position in scene */
+        let location = touch.location(in: self)
+        let touchedNode = self.atPoint(location)
+        
+        /* This if let makes sure label is only of type SKLabelNode */
+        if let label = touchedNode as? SKLabelNode {
+            if labelArray.contains(label) {
+                label.fontColor = UIColor.gray
+            }
+        } else { // If the touchedNode is not a label node this runs
+            for label in labelArray {
+                label.fontColor = UIColor.white
+            }
+        }
+
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        let touch = touches.first!
+        let location = touch.location(in: self)
+        
+        let touchedNode = self.atPoint(location)
+        
+        if(touchedNode.name == "creditLabel"){
+            self.loadCredits()
+            
+        } else if(touchedNode.name == "playLabel"){
+            self.loadGame()
+            
+        } else if(touchedNode == themeLabel){
+            if GameScene.theme == .monkey {
+                GameScene.theme = .fox
+                themeLabel.text = "Foxy"
+            } else {
+                GameScene.theme = .monkey
+                themeLabel.text = "Monkey"
+            }
+        } else if touchedNode == leaderBoardLabel {
+            MainMenu.viewController.checkGCLeaderboard()
+        } else if touchedNode == businessLabel {
+            /* 1) Grab reference to our spriteKit view */
+            guard let skView = self.view as SKView! else {
+                print("Could not get SkView")
+                return
+            }
+            skView.showsPhysics = !(skView.showsPhysics)
+        }
+        for label in labelArray {
+            label.fontColor = UIColor.white
+        }
+
     }
     
     
@@ -118,44 +206,6 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        /* Called when a touch begins */
-        
-        /* We only need a single touch here */
-        let touch = touches.first!
-        
-        /* Get touch position in scene */
-        let location = touch.location(in: self)
-        let touchedNode = self.atPoint(location)
-        
-        if(touchedNode.name == "creditLabel"){
-            self.loadCredits()
-            
-        } else if(touchedNode.name == "playLabel"){
-            self.loadGame()
-            
-        } else if(touchedNode == themeLabel){
-            if GameScene.theme == .monkey {
-                GameScene.theme = .fox
-                themeLabel.text = "Foxy"
-            } else {
-                GameScene.theme = .monkey
-                themeLabel.text = "Monkey"
-            }
-        } else if touchedNode == leaderBoardLabel {
-            MainMenu.viewController.checkGCLeaderboard()
-        } else if touchedNode == businessLabel {
-            /* 1) Grab reference to our spriteKit view */
-            guard let skView = self.view as SKView! else {
-                print("Could not get SkView")
-                return
-            }
-            skView.showsPhysics = !(skView.showsPhysics)
-        }
-        
-    
-    }
     
     func loadGame() {
         /* Load Game Scene */

@@ -91,11 +91,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 break
             case .paused:
                 isPaused = true
+                menuLabel = pauseScreen.childNode(withName: "menuLabel") as! SKLabelNode
+                restartLabel = pauseScreen.childNode(withName: "restartLabel") as! SKLabelNode
                 break
             case .reversed:
                 player.xScale = -1
                 break
             case .gameOver:
+                menuLabel = gameOverScreen.childNode(withName: "menuLabel") as! SKLabelNode
+                restartLabel = gameOverScreen.childNode(withName: "restartLabel") as! SKLabelNode
                 gameOver()
             }
         }
@@ -132,15 +136,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Make all the platforms */
         setupGame()
         flipPlatforms()
-        
-        /* Use UserDefaults to see if we should show the instruction screen */
-//        let showScreen = UserDefaults.standard.bool(forKey: "showScreen")
-//
-//        if showScreen {
-//            instructionOverlay.run(SKAction.moveTo(x: 0, duration: 0))
-//            gameState = .paused
-//        }
-        /* Adds collectible items to gameScene */
+    
         addChild(gem)
         addChild(cherry)
         
@@ -151,6 +147,55 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         /* Called when a touch begins */
         
+        /* Only runs fucntion if the game is paused or over */
+        if gameState == .paused || gameState == .gameOver {
+            /* We only need a single touch here */
+            let touch = touches.first!
+            
+            /* Get touch position in scene */
+            let location = touch.location(in: self)
+            let touchedNode = self.atPoint(location)
+            
+            /* touch stuff :: will fix comment eventually*/
+            if touchedNode == menuLabel || touchedNode == restartLabel {
+                (touchedNode as! SKLabelNode).fontColor = UIColor.lightGray
+                
+            } else { // If the touchedNode is not a label node this runs
+                menuLabel.fontColor = UIColor.white
+                restartLabel.fontColor = UIColor.white
+            }
+        }
+        
+        
+        
+        
+        
+        /* Checks if player is on the ground */
+        if canJump && jumpTimer <= jumpTime {
+            /* Switch statement to determine where the player is so that it can apply the correct impulse */
+            switch player.orientation {
+            case .bottom:
+                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 17))
+            case .right:
+                player.physicsBody?.applyImpulse(CGVector(dx: -17, dy: 0))
+            case .top:
+                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -17))
+            case .left:
+                player.physicsBody?.applyImpulse(CGVector(dx: 17, dy: 0))
+                
+            }
+            
+            player.physicsBody?.affectedByGravity = false
+            canJump = false
+            
+        }
+        
+    }
+    
+    /* Literally only for buttons */
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        if gameState == .reversed || gameState == .active { return } // Doesn't run code if game is running
         /* We only need a single touch here */
         let touch = touches.first!
         
@@ -158,49 +203,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let location = touch.location(in: self)
         let touchedNode = self.atPoint(location)
         
-        /* Did the user tap on the restart label? */
-        if(touchedNode.name == "restartLabel"){
-            restartGame()
-        } else if touchedNode.name == "menuLabel" {
-            loadMenu()
-        } else if touchedNode == playPauseButton {
-            if gameState == .active {
-                gameState = .paused
-                playPauseButton.texture = SKTexture(imageNamed: "play")
-                pauseScreen.position.x = 0
-                pauseScoreLabel.text = "Your Score: \(points)"
-                pointsLabel.isHidden = true
-            } else if gameState == .paused {
-                gameState = .active
-                playPauseButton.texture = SKTexture(imageNamed: "pause")
-                pauseScreen.run(SKAction.moveTo(x: 320, duration: 0.25))
-                pointsLabel.isHidden = false
-            }
-        } else if touchedNode == instructionOverlay {
-            gameState = .active
-            instructionOverlay.run(SKAction.fadeOut(withDuration: 0.25))
-        }
+        /* touch stuff :: will cfix comment eventually*/
+        if touchedNode == menuLabel || touchedNode == restartLabel {
+            (touchedNode as! SKLabelNode).fontColor = UIColor.lightGray
             
-       
-        
-        /* Checks if player is on the ground */
-        if canJump && jumpTimer <= jumpTime {
-            /* Switch statement to determine where the player is so that it can apply the correct impulse */
-            switch player.orientation {
-            case .bottom:
-                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 15))
-            case .right:
-                player.physicsBody?.applyImpulse(CGVector(dx: -15, dy: 0))
-            case .top:
-                player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: -15))
-            case .left:
-                player.physicsBody?.applyImpulse(CGVector(dx: 15, dy: 0))
-                
-            }
-            
-            player.physicsBody?.affectedByGravity = false
-            canJump = false
-            
+        } else { // If the touchedNode is not a label node this runs
+            menuLabel.fontColor = UIColor.white
+            restartLabel.fontColor = UIColor.white
         }
         
     }
@@ -220,7 +229,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Only countdown death timer when there are still enemies alive */
         if Enemy.totalAlive > 0 {
-            health -= 0.001 // MARK: Tweak speed of rounds
+            health -= 0.0008 // MARK: Tweak speed of rounds
         }
         
         
@@ -294,7 +303,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         checkScorpion(scorpion: (nodeB as! Enemy), contactPoint: contact.contactPoint)
                     } else if (nodeA as! Player).state == .superSaiyajin {
                         (nodeB as! Enemy).die()
-                        health += CGFloat(0.1 + 0.05 * Double((nodeB as! Enemy).pointValue))
+                        health += CGFloat(Double((nodeB as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
                         points += (nodeB as! Enemy).pointValue
                         pointsLabel.text = String(points)
                     }
@@ -312,7 +321,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         checkScorpion(scorpion: (nodeA as! Enemy), contactPoint: contact.contactPoint)
                     } else if (nodeB as! Player).state == .superSaiyajin {
                         (nodeA as! Enemy).die()
-                        health += CGFloat(0.1 + 0.05 * Double((nodeA as! Enemy).pointValue))
+                        health += CGFloat(Double((nodeA as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
                         points += (nodeA as! Enemy).pointValue
                         pointsLabel.text = String(points)
                     }
@@ -345,11 +354,52 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         /* Checks to see if game is running */
-        if gameState == .gameOver || gameState == .paused { return }
+        
+        let touch  = touches.first!
+        let location = touch.location(in: self)
+        let touchedNode = self.atPoint(location)
+        
+        if gameState == .gameOver || gameState == .paused {
+            
+            /* "Button" Code */
+            if(touchedNode == restartLabel){
+                restartGame()
+            } else if touchedNode == menuLabel {
+                loadMenu()
+            } else if touchedNode == playPauseButton {
+                if gameState == .active {
+                    gameState = .paused
+                    playPauseButton.texture = SKTexture(imageNamed: "play")
+                    pauseScreen.position.x = 0
+                    pauseScoreLabel.text = "Your Score: \(points)"
+                    pointsLabel.isHidden = true
+                } else if gameState == .paused {
+                    gameState = .active
+                    playPauseButton.texture = SKTexture(imageNamed: "pause")
+                    pauseScreen.run(SKAction.moveTo(x: 320, duration: 0.25))
+                    pointsLabel.isHidden = false
+                }
+            }
+            print("touchedNode: \(touchedNode)")
+        } else if touchedNode == playPauseButton {
+            if gameState == .active {
+                gameState = .paused
+                playPauseButton.texture = SKTexture(imageNamed: "play")
+                pauseScreen.position.x = 0
+                pauseScoreLabel.text = "Your Score: \(points)"
+                pointsLabel.isHidden = true
+            } else if gameState == .paused {
+                gameState = .active
+                playPauseButton.texture = SKTexture(imageNamed: "pause")
+                pauseScreen.run(SKAction.moveTo(x: 320, duration: 0.25))
+                pointsLabel.isHidden = false
+            }
+        }
         
         /* The player is now affected by gravity again and the timer is reset */
         player.physicsBody?.affectedByGravity = true
         jumpTimer = 0
+        
     }
     
     func spawnObstacles(orientation: characterOrientationState) {
@@ -482,14 +532,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         var count = round + 1 // The round begins at 1 and we want 2 enemies to spawn in that round
         
-        if round >= heightArray.count { // Don't want to get an indexOutOfBounds exception
+        if round % 5 == 0 && round > 0 {
+            count = (round / 5) + 1
+        }
+        
+        if count >= heightArray.count { // Don't want to get an indexOutOfBounds exception
             count = heightArray.count
         }
+        
+        
         
         for _ in 0..<count {
             /* This for loop is what spawns an enemy */
             
-            /* Create the random numbers to pick heght and side */
+            /* Create the random numbers to pick height and side */
             let height = arc4random_uniform(UInt32(heightArray.count))
             var side = arc4random_uniform(UInt32(2))
             
@@ -558,7 +614,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 health += CGFloat(0.005 * Double(scorpion.pointValue))
                 
             } else {
-                gameOver()
+                gameState = .gameOver
             }
         case .left:
             if contactPoint.x + 12 > scorpion.position.x + (scorpion.size.height / 2) {
@@ -571,7 +627,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 health += CGFloat(0.005 * Double(scorpion.pointValue))
                 
             } else {
-                gameOver()
+                gameState = .gameOver
             }
         default:
             break
@@ -613,8 +669,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             highScoreLabel.text = "High Score: \(points)"
         }
         
+        let currentHigh = UserDefaults.standard.integer(forKey: "highScore")
+        
         /* Submit high score to Game Center leaderboard */
-        MainMenu.viewController.addScoreAndSubmitToGC(score: Int64(points))
+        MainMenu.viewController.addScoreAndSubmitToGC(score: Int64(currentHigh))
         
         /* Remove all scorpions from scene */
         for scorpion in enemyArray {
