@@ -208,6 +208,10 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     
     
     func loadGame() {
+        /* Play gameStart audio */
+        let sound = SKAction.playSoundFileNamed("gameStart", waitForCompletion: true)
+        run(sound)
+        
         /* Load Game Scene */
         guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
             return
