@@ -35,6 +35,8 @@ class Platform: SKSpriteNode {
         /* Position the unused platforms off screen */
         position = CGPoint(x: -20, y: -20)
         
+        zPosition = 1
+        
 
     }
     

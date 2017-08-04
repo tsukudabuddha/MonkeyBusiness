@@ -16,7 +16,7 @@ enum Orientation {
 }
 
 enum EnemyType {
-    case scorpion, snake, cobra
+    case scorpion, snake, cobra, opossum
 }
 
 class Enemy: SKSpriteNode {
@@ -37,7 +37,7 @@ class Enemy: SKSpriteNode {
                 break
             default:
                 break
-            }
+            } 
         }
     }
     
@@ -74,9 +74,14 @@ class Enemy: SKSpriteNode {
             
         case .fox:
             texture = SKTexture(imageNamed: "opossum-1")
+            type = .opossum
         }
         let color = UIColor.clear
-        let size = texture.size()
+        var size = texture.size()
+        
+        if texture == SKTexture(imageNamed: "king-cobra-2") {
+            size = CGSize(width: size.width - 5, height: size.height - 5)
+        }
         
         // Call the designated initializer
         super.init(texture: texture, color: color, size: size)
@@ -96,15 +101,16 @@ class Enemy: SKSpriteNode {
         
         switch GameScene.theme {
         case .monkey:
-            
-            if random == 0 {
+            switch type {
+            case .cobra:
                 self.run(SKAction(named: "cobraMovement")!)
-            } else if random > 4{
-                self.run(SKAction(named: "Scorpion")!)
-            } else {
+            case .snake:
                 self.run(SKAction(named: "snakeMovement")!)
+            case .scorpion:
+                self.run(SKAction(named: "Scorpion")!)
+            default:
+                break
             }
-            
         case .fox:
             self.run(SKAction(named: "opposumMovement")!)
         }

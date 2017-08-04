@@ -11,6 +11,7 @@
 //  TOOD: Make gems exist for a reason
 //  TODO: Make character physicsbody rectangle so that it no longer gets stuck on platforms
 //  TODO: Fix the game playing behind pause screen when returning froma another app
+//  TODO: Defeat all the enemies in animation for,
 
 import SpriteKit
 import GameplayKit
@@ -82,7 +83,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var characterSpeed: CGFloat = 150
 
-    private var gameState: GameSceneState = .paused {
+    var gameState: GameSceneState = .active {
         didSet {
             switch gameState {
             case .active:
@@ -91,15 +92,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 break
             case .paused:
                 isPaused = true
-                menuLabel = pauseScreen.childNode(withName: "menuLabel") as! SKLabelNode
-                restartLabel = pauseScreen.childNode(withName: "restartLabel") as! SKLabelNode
                 break
             case .reversed:
                 player.xScale = -1
                 break
             case .gameOver:
-                menuLabel = gameOverScreen.childNode(withName: "menuLabel") as! SKLabelNode
-                restartLabel = gameOverScreen.childNode(withName: "restartLabel") as! SKLabelNode
                 gameOver()
             }
         }
@@ -107,6 +104,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var characterOrientation: characterOrientationState = .bottom
     
     var viewController: GameViewController!
+    
+    static var stayPaused = false as Bool
+    
+    override var isPaused: Bool {
+        get {
+            return super.isPaused
+        }
+        set {
+            if (newValue || !GameScene.stayPaused) {
+                super.isPaused = newValue
+            }
+            GameScene.stayPaused = false
+        }
+    }
     
     override func didMove(to view: SKView) {
         // Connect variables to code
@@ -142,11 +153,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* This helps reduce the vibration lag when the player dies */
         generator.prepare()
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         /* Called when a touch begins */
-        
+
         /* Only runs fucntion if the game is paused or over */
         if gameState == .paused || gameState == .gameOver {
             /* We only need a single touch here */
@@ -157,12 +169,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let touchedNode = self.atPoint(location)
             
             /* touch stuff :: will fix comment eventually*/
-            if touchedNode == menuLabel || touchedNode == restartLabel {
+            if touchedNode.name == "menuLabel" || touchedNode.name == "restartLabel" {
                 (touchedNode as! SKLabelNode).fontColor = UIColor.lightGray
                 
             } else { // If the touchedNode is not a label node this runs
-                menuLabel.fontColor = UIColor.white
-                restartLabel.fontColor = UIColor.white
+                (gameOverScreen.childNode(withName: "menuLabel") as! SKLabelNode).fontColor = UIColor.white
+                (gameOverScreen.childNode(withName: "restartLabel") as! SKLabelNode).fontColor = UIColor.white
+                (pauseScreen.childNode(withName: "menuLabel") as! SKLabelNode).fontColor = UIColor.white
+                (pauseScreen.childNode(withName: "restartLabel") as! SKLabelNode).fontColor = UIColor.white
             }
         }
         
@@ -204,12 +218,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let touchedNode = self.atPoint(location)
         
         /* touch stuff :: will cfix comment eventually*/
-        if touchedNode == menuLabel || touchedNode == restartLabel {
+        if touchedNode.name == "menuLabel" || touchedNode.name == "restartLabel" {
             (touchedNode as! SKLabelNode).fontColor = UIColor.lightGray
             
         } else { // If the touchedNode is not a label node this runs
-            menuLabel.fontColor = UIColor.white
-            restartLabel.fontColor = UIColor.white
+            (gameOverScreen.childNode(withName: "menuLabel") as! SKLabelNode).fontColor = UIColor.white
+            (gameOverScreen.childNode(withName: "restartLabel") as! SKLabelNode).fontColor = UIColor.white
+            (pauseScreen.childNode(withName: "menuLabel") as! SKLabelNode).fontColor = UIColor.white
+            (pauseScreen.childNode(withName: "restartLabel") as! SKLabelNode).fontColor = UIColor.white
         }
         
     }
@@ -217,8 +233,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+        
         if gameState == .gameOver || gameState == .paused { return }
-
+        
         playerMovement()
         
         /* Checks to see if the player is on the ground, if not, the jump timer starts */
@@ -362,9 +379,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if gameState == .gameOver || gameState == .paused {
             
             /* "Button" Code */
-            if(touchedNode == restartLabel){
+            if(touchedNode.name == "restartLabel"){
                 restartGame()
-            } else if touchedNode == menuLabel {
+            } else if touchedNode.name == "menuLabel" {
                 loadMenu()
             } else if touchedNode == playPauseButton {
                 if gameState == .active {
@@ -380,7 +397,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     pointsLabel.isHidden = false
                 }
             }
-            print("touchedNode: \(touchedNode)")
+        
         } else if touchedNode == playPauseButton {
             if gameState == .active {
                 gameState = .paused
@@ -486,9 +503,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func setupGame() {
         /* Called in the didMove function */
         
-        /* Sets the game to load active gamestate, because it is set to paused originally for pause menu stuffs */
-        gameState = .active
-        
         /* Makes the player "Jump" to begin the game */
         player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
         
@@ -512,6 +526,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Setup Points Label */
         pointsLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2) + 20)
         pointsLabel.isHidden = false
+        pointsLabel.zPosition = 0
         pointsLabel.fontName = "Gang of Three"
         self.addChild(pointsLabel)
         
@@ -877,54 +892,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             break
         }
         
-        /* First check to see if the gem can spawn */
-        if gem.canSpawn {
+        /* Checks that gemSpawn is less than the number of platforms to preven index out of bounds and that it can spawn */
+        if Int(gemSpawn) < rightPlatforms.count && gem.canSpawn {
+            gem.position = gemPositioner(random: Int(gemSpawn), side: side)
             
-            /* Use the randomly generated gemSpawn number to choose a platform to spawn above */
-            switch gemSpawn {
-            case 0:
-                gem.position = gemPositioner(random: 0, side: side)
-                break
-            case 1:
-                gem.position = gemPositioner(random: 1, side: side)
-                break
-            case 2:
-                gem.position = gemPositioner(random: 2, side: side)
-                break
-            case 3:
-                gem.position = gemPositioner(random: 3, side: side)
-                break
-                
-            default:
-                gem.position = CGPoint(x: -50, y: -50)
-                
-            }
-            /* Mark that the gem has already been spawned */
+            /* Mark that the gem has been spawned already */
             gem.canSpawn = false
-            
-        } else {
-            /* If the gem has already been spawned, then set it off-screen */
+        } else { // If the gem has already spawned or the random number is off, run this
             gem.position = CGPoint(x: -50, y: -50)
         }
-    
-       /* Use the randomly generated cherrySpawn number to choose a platform to spawn above */
-        switch cherrySpawn {
-        case 0:
-            cherry.position = gemPositioner(random: 0, side: side)
-            break
-        case 1:
-            cherry.position = gemPositioner(random: 1, side: side)
-            break
-        case 2:
-            cherry.position = gemPositioner(random: 2, side: side)
-            break
-        case 3:
-            cherry.position = gemPositioner(random: 3, side: side)
-            break
-        /* If the randomly chosen number is not 0-4, which should happen often, the cherry is positioned off-screen */
-        default:
+        
+        /* This statement places a cherry above a platform if the random number correlates to a platform */
+        if Int(cherrySpawn) < rightPlatforms.count {
+            cherry.position = gemPositioner(random: Int(cherrySpawn), side: side)
+        } else {
             cherry.position = CGPoint(x: -50, y: -50)
-            
         }
         
     }
