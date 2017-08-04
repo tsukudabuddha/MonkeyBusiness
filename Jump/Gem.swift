@@ -13,7 +13,7 @@ class Gem: SKSpriteNode {
     var gemValue: Int = 1
     var canSpawn: Bool = true
     
-    
+    private var collectionSound: SKAction!
     
     init() {
         let texture = SKTexture(imageNamed: "gem-1")
@@ -22,6 +22,10 @@ class Gem: SKSpriteNode {
         
         // Call the designated initializer
         super.init(texture: texture, color: color, size: size)
+        
+        /* Instantiate Pickuo Sound */
+        collectionSound = SKAction.playSoundFileNamed("coinPickup", waitForCompletion: false)
+        
         
         run(SKAction(named: "gemIdle")!)
       
@@ -47,6 +51,7 @@ class Gem: SKSpriteNode {
         let oldGemCount = UserDefaults.standard.integer(forKey: "gemCount")
         UserDefaults.standard.set((oldGemCount + 1), forKey: "gemCount")
         
+        run(collectionSound)
         gemValue = 0
         
     }

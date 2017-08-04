@@ -61,9 +61,5 @@ class Player: SKSpriteNode {
         self.run(seq)
     }
     
-    func powerUp() {
-        run(SKAction(named: "powerUpRun", duration: 10)!)
-        
-    }
 
 }

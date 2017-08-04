@@ -8,7 +8,7 @@
 
 import SpriteKit
 import Firebase
-import FirebaseDatabase
+import AVFoundation
 
 class MainMenu: SKScene, SKPhysicsContactDelegate {
     private var playLabel: SKLabelNode!
@@ -18,9 +18,11 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     private var gemLabel: SKLabelNode!
     private var leaderBoardLabel: SKLabelNode!
     private var labelArray: [SKLabelNode]! = []
+    private var gameStartSound: SKAction!
+    private var backgroundMusic: SKAudioNode!
     var gameScene: GameScene!
     var player: Player!
-    var characterSpeed = GameScene(fileNamed: "GameScene")?.characterSpeed
+    var characterSpeed: CGFloat = 150
     
     static var viewController: GameViewController!
     static var character: Bool = false
@@ -43,6 +45,12 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         labelArray.append(businessLabel)
         labelArray.append(leaderBoardLabel)
         
+        /* Audio */
+//        if let musicURL = Bundle.main.url(forResource: "menuBackgroundMusic", withExtension: "mp3") {
+//            backgroundMusic = SKAudioNode(url: musicURL)
+//            addChild(backgroundMusic)
+//        }
+        
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
         
@@ -51,6 +59,9 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         
         // Gems
         gemLabel.text = "\(gems)"
+        
+        /* Instantiate Game Audio */
+        gameStartSound = SKAction.playSoundFileNamed("gameStart", waitForCompletion: false)
         
         physicsWorld.contactDelegate = self
         beginningAnimation()
@@ -118,9 +129,14 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
             if GameScene.theme == .monkey {
                 GameScene.theme = .fox
                 themeLabel.text = "Foxy"
+                player.run(SKAction(named: "characterRun")!)
+                player.run(SKAction.scale(to: CGSize(width: SKTexture(imageNamed: "player-idle-1").size().width , height: SKTexture(imageNamed: "player-idle-1").size().height), duration: 0))
+                
             } else {
                 GameScene.theme = .monkey
                 themeLabel.text = "Monkey"
+                player.run(SKAction(named: "Run")!)
+                player.run(SKAction.scale(to: CGSize(width: SKTexture(imageNamed: "Side1").size().width , height: SKTexture(imageNamed: "Side1").size().height), duration: 0))
             }
         } else if touchedNode == leaderBoardLabel {
             MainMenu.viewController.checkGCLeaderboard()
@@ -142,7 +158,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     override func update(_ currentTime: TimeInterval) {
         /* Called if player is on bottom of screen */
         if player.orientation == .bottom {
-            player.physicsBody?.velocity.dx = characterSpeed!
+            player.physicsBody?.velocity.dx = characterSpeed
         
             if player.position.x > self.frame.width - 50 {
                 
@@ -158,7 +174,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         
         /* Called if the player is on right-side of screen */
         if player.orientation == .right {
-            player.physicsBody?.velocity.dy = characterSpeed!
+            player.physicsBody?.velocity.dy = characterSpeed
             
             if player.position.y > self.frame.height - 70 {
                 
@@ -174,7 +190,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         
         /* Called if the player is on top of screen */
         if player.orientation == .top {
-            player.physicsBody?.velocity.dx = -1 * characterSpeed!
+            player.physicsBody?.velocity.dx = -1 * characterSpeed
             
             if player.position.x < 0 {
                 
@@ -190,7 +206,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         
         /* Called if the player is on left-side of screen */
         if player.orientation == .left {
-            player.physicsBody?.velocity.dy = -1 * characterSpeed!
+            player.physicsBody?.velocity.dy = -1 * characterSpeed
            
             if player.position.y < 10 {
                 
@@ -209,8 +225,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     
     func loadGame() {
         /* Play gameStart audio */
-        let sound = SKAction.playSoundFileNamed("gameStart", waitForCompletion: true)
-        run(sound)
+        run(gameStartSound)
         
         /* Load Game Scene */
         guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {

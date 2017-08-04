@@ -15,7 +15,7 @@
 import SpriteKit
 import GameplayKit
 import Firebase
-import FirebaseDatabase
+import AVFoundation
 
 enum GameSceneState {
     case active, gameOver, paused, reversed
@@ -52,6 +52,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var points: Int = 0
     private var gem = Gem()
     private var cherry = Cherry()
+    private var backgroundMusic: SKAudioNode!
+    private var powerUpMusic: SKAudioNode!
+    
     var sessionGemCounter: Int = 0 // Public so that it can be changed by the gem.onContact()
     
     private var leftPlatforms = [Platform(), Platform(), Platform(), Platform()]
@@ -77,6 +80,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if health > 1 { health = 1}
             /* Scale health bar between 0.0 -> 1.0 e.g 0 -> 100% */
             timerBar.xScale = health
+            player.alpha = health
             
         }
     }
@@ -136,13 +140,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         slidingBarBottom = childNode(withName: "slidingWallBottom") as! SKSpriteNode
         resumeLabel = pauseScreen.childNode(withName: "resumeLabel") as! SKLabelNode
         
+        /* Audio */
+        if let musicURL = Bundle.main.url(forResource: "backgroundMusic", withExtension: "mp3") {
+            backgroundMusic = SKAudioNode(url: musicURL)
+            addChild(backgroundMusic)
+        }
+        
+        if let musicURL = Bundle.main.url(forResource: "powerUpMusic", withExtension: "wav") {
+            powerUpMusic = SKAudioNode(url: musicURL)
+        }
+        
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
         dedLabel.isHidden = true
         menuLabel.isHidden = true
         highScoreLabel.isHidden = true
         
-        // Create Physics Body for frame
+        /* Create Physics Body for frame */
         setupPhysicsBody()
         
         /* Make all the platforms */
@@ -268,6 +282,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Check to see if the player just went SSJ, if so run the animation */
             if powerUpTimer == 0 {
                 player.run(SKAction(named: "powerUpRun")!)
+                addChild(powerUpMusic)
+                characterSpeed = 200
             }
             /* Update SSJ timer */
             powerUpTimer += fixedDelta
@@ -276,6 +292,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if powerUpTimer >= powerUpTime {
                 player.state = .normal
                 player.run(SKAction(named: "Run")!)
+                powerUpMusic.removeFromParent()
+                characterSpeed = 150
             }
         }
         
@@ -518,6 +536,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         roundLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2) - 20)
         roundLabel.text = "Defeat All the Enemies!!!"
         roundLabel.run(SKAction.sequence([SKAction.fadeIn(withDuration: 0.5), SKAction.fadeOut(withDuration: 0.5)]))
+        roundLabel.fontName = "Gang of Three"
         roundLabel.zPosition = 5
         self.addChild(roundLabel)
         
@@ -666,6 +685,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Set gamestate to gameOver and run player death animation */
         player.death()
         gameOverScreen.run(SKAction.moveTo(y: 0, duration: 0.5))
+        
+        /* End background music */
+        backgroundMusic.removeFromParent()
         
         dedLabel.text = "Your Score: \(points)"
         dedLabel.isHidden = false
