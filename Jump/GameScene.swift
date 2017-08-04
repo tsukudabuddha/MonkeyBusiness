@@ -10,8 +10,7 @@
 //  TODO: Powerup that auto shoots
 //  TOOD: Make gems exist for a reason
 //  TODO: Make character physicsbody rectangle so that it no longer gets stuck on platforms
-//  TODO: Fix the game playing behind pause screen when returning froma another app
-//  TODO: Defeat all the enemies in animation for,
+//  TODO: Defeat all the enemies in animation for
 
 import SpriteKit
 import GameplayKit
@@ -45,6 +44,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var timerBar: SKSpriteNode!
     private var slidingBarTop: SKSpriteNode!
     private var slidingBarBottom: SKSpriteNode!
+    private var resumeLabel: SKLabelNode!
     private var round: Int = 0
     private var canJump: Bool = true
     private var jumping: Bool = false
@@ -134,6 +134,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         timerBar = childNode(withName: "timerBar") as! SKSpriteNode
         slidingBarTop = childNode(withName: "slidingWallTop") as! SKSpriteNode
         slidingBarBottom = childNode(withName: "slidingWallBottom") as! SKSpriteNode
+        resumeLabel = pauseScreen.childNode(withName: "resumeLabel") as! SKLabelNode
         
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
@@ -169,7 +170,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let touchedNode = self.atPoint(location)
             
             /* touch stuff :: will fix comment eventually*/
-            if touchedNode.name == "menuLabel" || touchedNode.name == "restartLabel" {
+            if touchedNode.name == "menuLabel" || touchedNode.name == "restartLabel" || touchedNode == resumeLabel {
                 (touchedNode as! SKLabelNode).fontColor = UIColor.lightGray
                 
             } else { // If the touchedNode is not a label node this runs
@@ -177,6 +178,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 (gameOverScreen.childNode(withName: "restartLabel") as! SKLabelNode).fontColor = UIColor.white
                 (pauseScreen.childNode(withName: "menuLabel") as! SKLabelNode).fontColor = UIColor.white
                 (pauseScreen.childNode(withName: "restartLabel") as! SKLabelNode).fontColor = UIColor.white
+                resumeLabel.fontColor = UIColor.white
             }
         }
         
@@ -217,8 +219,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let location = touch.location(in: self)
         let touchedNode = self.atPoint(location)
         
-        /* touch stuff :: will cfix comment eventually*/
-        if touchedNode.name == "menuLabel" || touchedNode.name == "restartLabel" {
+        /* touch stuff :: will fix comment eventually*/
+        if touchedNode.name == "menuLabel" || touchedNode.name == "restartLabel" || touchedNode == resumeLabel {
             (touchedNode as! SKLabelNode).fontColor = UIColor.lightGray
             
         } else { // If the touchedNode is not a label node this runs
@@ -226,6 +228,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             (gameOverScreen.childNode(withName: "restartLabel") as! SKLabelNode).fontColor = UIColor.white
             (pauseScreen.childNode(withName: "menuLabel") as! SKLabelNode).fontColor = UIColor.white
             (pauseScreen.childNode(withName: "restartLabel") as! SKLabelNode).fontColor = UIColor.white
+            resumeLabel.fontColor = UIColor.white
         }
         
     }
@@ -354,6 +357,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if nodeA == gem || nodeB == gem {
             if gem.gemValue == 1 {
                 gem.onContact()
+                health += ((1 - health) / 2) // Gives player health so they can go for it without losing too much time
                 sessionGemCounter += 1
             }
             
@@ -363,6 +367,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if nodeA == cherry || nodeB == cherry {
             if !cherry.used {
                 cherry.onContact()
+                health += ((1 - health) / 2) // Gives player health so they can go for it without losing too much time
                 player.state = .superSaiyajin
             }
         }
@@ -383,19 +388,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 restartGame()
             } else if touchedNode.name == "menuLabel" {
                 loadMenu()
-            } else if touchedNode == playPauseButton {
-                if gameState == .active {
-                    gameState = .paused
-                    playPauseButton.texture = SKTexture(imageNamed: "play")
-                    pauseScreen.position.x = 0
-                    pauseScoreLabel.text = "Your Score: \(points)"
-                    pointsLabel.isHidden = true
-                } else if gameState == .paused {
-                    gameState = .active
-                    playPauseButton.texture = SKTexture(imageNamed: "pause")
-                    pauseScreen.run(SKAction.moveTo(x: 320, duration: 0.25))
-                    pointsLabel.isHidden = false
-                }
+            } else if touchedNode == resumeLabel {
+                gameState = .active
+                playPauseButton.texture = SKTexture(imageNamed: "pause")
+                pauseScreen.run(SKAction.moveTo(x: 320, duration: 0.25))
+                pointsLabel.isHidden = false
+                resumeLabel.fontColor = UIColor.white
             }
         
         } else if touchedNode == playPauseButton {
@@ -526,7 +524,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Setup Points Label */
         pointsLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2) + 20)
         pointsLabel.isHidden = false
-        pointsLabel.zPosition = 0
+        pointsLabel.zPosition = -1
         pointsLabel.fontName = "Gang of Three"
         self.addChild(pointsLabel)
         
@@ -810,9 +808,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let x2 = x1 * 1.5
         let x3 = x2 * 1.5
         let width = Double(frame.width)
-        let spacing = 92.0
+        let spacing = 94.0
         
-        let y1 = 150.0
+        let y1 = 140.0
         let y2 = y1 + spacing
         let y3 = y2 + spacing
         let y4 = y3 + spacing
