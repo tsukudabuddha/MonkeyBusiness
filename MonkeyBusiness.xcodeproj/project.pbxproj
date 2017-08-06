@@ -29,7 +29,7 @@
 		494F1A6C1F352D18004FC2D6 /* powerUpMusic.wav in Resources */ = {isa = PBXBuildFile; fileRef = 494F1A6B1F352D18004FC2D6 /* powerUpMusic.wav */; };
 		49551DE51F36D6EB002FFC8A /* PimPoyPocket.wav in Resources */ = {isa = PBXBuildFile; fileRef = 49551DE41F36D6EB002FFC8A /* PimPoyPocket.wav */; };
 		49551DE71F36D8F0002FFC8A /* collisionNoise.wav in Resources */ = {isa = PBXBuildFile; fileRef = 49551DE61F36D8F0002FFC8A /* collisionNoise.wav */; };
-		49551DE91F36E000002FFC8A /* gameOver.wav in Resources */ = {isa = PBXBuildFile; fileRef = 49551DE81F36E000002FFC8A /* gameOver.wav */; };
+		49551DEB1F36E1AC002FFC8A /* gameOver.wav in Resources */ = {isa = PBXBuildFile; fileRef = 49551DEA1F36E1AC002FFC8A /* gameOver.wav */; };
 		496483E01F26992D00A0ACA4 /* Gem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496483DF1F26992C00A0ACA4 /* Gem.swift */; };
 		4967AC631F2ABFCE00926E83 /* Spikes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4967AC621F2ABFCE00926E83 /* Spikes.swift */; };
 		49A143971F1EC99600CAA597 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49A143961F1EC99600CAA597 /* Actions.sks */; };
@@ -98,7 +98,7 @@
 		494F1A6B1F352D18004FC2D6 /* powerUpMusic.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = powerUpMusic.wav; sourceTree = "<group>"; };
 		49551DE41F36D6EB002FFC8A /* PimPoyPocket.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = PimPoyPocket.wav; sourceTree = "<group>"; };
 		49551DE61F36D8F0002FFC8A /* collisionNoise.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = collisionNoise.wav; sourceTree = "<group>"; };
-		49551DE81F36E000002FFC8A /* gameOver.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gameOver.wav; sourceTree = "<group>"; };
+		49551DEA1F36E1AC002FFC8A /* gameOver.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gameOver.wav; sourceTree = "<group>"; };
 		496483DF1F26992C00A0ACA4 /* Gem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gem.swift; sourceTree = "<group>"; };
 		4967AC621F2ABFCE00926E83 /* Spikes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Spikes.swift; sourceTree = "<group>"; };
 		49A143961F1EC99600CAA597 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
@@ -176,8 +176,8 @@
 				494F1A691F351CBC004FC2D6 /* menuBackgroundMusic.mp3 */,
 				494F1A6B1F352D18004FC2D6 /* powerUpMusic.wav */,
 				49551DE61F36D8F0002FFC8A /* collisionNoise.wav */,
-				49551DE81F36E000002FFC8A /* gameOver.wav */,
 				49551DE41F36D6EB002FFC8A /* PimPoyPocket.wav */,
+				49551DEA1F36E1AC002FFC8A /* gameOver.wav */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -404,6 +404,7 @@
 			files = (
 				49F55E541F20155100E8553F /* sprites.atlas in Resources */,
 				494F1A681F351287004FC2D6 /* coinPickup.mp3 in Resources */,
+				49551DEB1F36E1AC002FFC8A /* gameOver.wav in Resources */,
 				494F1A641F34ED7B004FC2D6 /* gameStart.mp3 in Resources */,
 				49E21A211F14051B009E4C88 /* ka1.ttf in Resources */,
 				49F605581F227FD3007B7BBD /* GoogleService-Info.plist in Resources */,
@@ -413,7 +414,6 @@
 				49132D8C1F303FC100AE22AC /* CreditScene.sks in Resources */,
 				494578F21F0B05E200267C4A /* GameScene.sks in Resources */,
 				49551DE71F36D8F0002FFC8A /* collisionNoise.wav in Resources */,
-				49551DE91F36E000002FFC8A /* gameOver.wav in Resources */,
 				49551DE51F36D6EB002FFC8A /* PimPoyPocket.wav in Resources */,
 				494F1A6C1F352D18004FC2D6 /* powerUpMusic.wav in Resources */,
 				49A143971F1EC99600CAA597 /* Actions.sks in Resources */,
