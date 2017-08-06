@@ -61,6 +61,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var cherry = Cherry()
     private var backgroundMusic: SKAudioNode!
     private var powerUpMusic: SKAudioNode!
+    private var gameOverNoise: SKAction!
     
     var sessionGemCounter: Int = 0 // Public so that it can be changed by the gem.onContact()
     
@@ -156,6 +157,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if let musicURL = Bundle.main.url(forResource: "powerUpMusic", withExtension: "wav") {
             powerUpMusic = SKAudioNode(url: musicURL)
         }
+        
+        /* Instantiate GameOver Sound */
+        gameOverNoise = SKAction.playSoundFileNamed("gameOver", waitForCompletion: false)
         
         /* Set Labels to be hidden */
         restartLabel.isHidden = true
@@ -722,6 +726,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* End background music */
         backgroundMusic.removeFromParent()
+        
+        /* Wha Wha Noise */
+        run(gameOverNoise)
         
         dedLabel.text = "Your Score: \(points)"
         dedLabel.isHidden = false
