@@ -55,7 +55,7 @@ class Player: SKSpriteNode {
         image = childNode(withName: "playerImage") as! SKSpriteNode
         
         self.physicsBody?.pinned = true
-        self.removeAllActions()
+        image.removeAllActions()
         
         let turnRed = SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50)
         let removePlayer = SKAction.removeFromParent()
