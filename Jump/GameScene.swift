@@ -545,11 +545,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Initialize roundLabel object */
         roundLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2) - 20)
-        roundLabel.text = "Defeat All the Enemies!!!"
+        roundLabel.text = ""
         roundLabel.run(SKAction.sequence([SKAction.fadeIn(withDuration: 0.5), SKAction.fadeOut(withDuration: 0.5)]))
         roundLabel.fontName = "Gang of Three"
         roundLabel.zPosition = 5
         self.addChild(roundLabel)
+        
+        /* Instuction Label */
+        let instructionLabel = SKLabelNode()
+        instructionLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2) - 20)
+        instructionLabel.text = "Defeat All the"
+        instructionLabel.run(SKAction.sequence([SKAction.fadeIn(withDuration: 0.5), SKAction.fadeOut(withDuration: 0.5)]))
+        instructionLabel.fontName = "Gang of Three"
+        instructionLabel.zPosition = 5
+        self.addChild(instructionLabel)
+        
+        /* Instuction Label pt 2 */
+        let instructionLabelp2 = SKLabelNode()
+        instructionLabelp2.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2) - 50)
+        instructionLabelp2.text = "Enemies!!!"
+        instructionLabelp2.run(SKAction.sequence([SKAction.fadeIn(withDuration: 0.5), SKAction.fadeOut(withDuration: 0.5)]))
+        instructionLabelp2.fontName = "Gang of Three"
+        instructionLabelp2.zPosition = 5
+        self.addChild(instructionLabelp2)
+        
+        
         
         /* Setup Points Label */
         pointsLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2) + 20)
