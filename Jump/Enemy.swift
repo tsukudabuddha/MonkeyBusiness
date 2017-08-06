@@ -26,6 +26,10 @@ class Enemy: SKSpriteNode {
     var spawned: Int = 0
     var canContact: Bool = true
     var pointValue: Int = 25
+    
+    private var collisionNoise: SKAction!
+    
+    
     var type: EnemyType = .snake {
         didSet {
             switch type {
@@ -96,6 +100,9 @@ class Enemy: SKSpriteNode {
         physicsBody?.friction = 0
         physicsBody?.linearDamping = 0
         
+        /* Instantiate Pickuo Sound */
+        collisionNoise = SKAction.playSoundFileNamed("collisionNoise", waitForCompletion: false)
+        
         Enemy.totalSpawned += 1
         Enemy.totalAlive += 1
         
@@ -134,6 +141,8 @@ class Enemy: SKSpriteNode {
         let removeScorpion = SKAction.removeFromParent()
         let seq = SKAction.sequence([death, removeScorpion])
         self.run(seq)
+        
+        run(collisionNoise)
         
         Enemy.totalPointValue -= pointValue
         Enemy.totalAlive -= 1

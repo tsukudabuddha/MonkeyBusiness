@@ -5,12 +5,19 @@
 //  Created by Andrew Tsukuda on 7/3/17.
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
 //  MARK: The scene in relation to player position is 0 - 287
-//  TODO: Add more platform orientations
-//  TODO: Add spikes 
-//  TODO: Powerup that auto shoots
-//  TOOD: Make gems exist for a reason
-//  TODO: Make character physicsbody rectangle so that it no longer gets stuck on platforms
-//  TODO: Defeat all the enemies in animation for
+
+
+/* To-Do List */
+
+// TODO: Add more platform orientations
+// TODO: Add spikes
+// TODO: Powerup that auto shoots
+// TOOD: Make gems exist for a reason
+// TODO: Make character physicsbody rectangle so that it no longer gets stuck on platforms
+// TODO: Defeat all the enemies in animation for
+// TODO: Fix reverse movement
+// TODO: Add more enemies
+// TODO: Dress up monkey
 
 import SpriteKit
 import GameplayKit
@@ -78,9 +85,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             /* Set upper limit on bar */
             if health > 1 { health = 1}
+            
             /* Scale health bar between 0.0 -> 1.0 e.g 0 -> 100% */
             timerBar.xScale = health
-            player.alpha = health
             
         }
     }
@@ -141,7 +148,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         resumeLabel = pauseScreen.childNode(withName: "resumeLabel") as! SKLabelNode
         
         /* Audio */
-        if let musicURL = Bundle.main.url(forResource: "backgroundMusic", withExtension: "mp3") {
+        if let musicURL = Bundle.main.url(forResource: "PimPoyPocket", withExtension: "wav") {
             backgroundMusic = SKAudioNode(url: musicURL)
             addChild(backgroundMusic)
         }
@@ -562,38 +569,63 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var heightArray = [140,220,300,380]
         var sideArray = [20, 305]
         
+        // var positionArray = [[Int]]()
+        
+        
+        /* 2 dimensional array of arrays of Ints set to 0. Arrays size is 2x4 */
+        var positionArray = Array(repeating: Array(repeating: 0, count: 2), count: 8)
+        
+        var x = 0
+        
+        while x < sideArray.count * heightArray.count {
+            if x < 4 {
+                positionArray[x] = [sideArray[0], heightArray[x]]
+            } else {
+                positionArray[x] = [sideArray[1], heightArray[x - 4]]
+            }
+            x += 1
+        }
+    
         var count = round + 1 // The round begins at 1 and we want 2 enemies to spawn in that round
         
         if round % 5 == 0 && round > 0 {
             count = (round / 5) + 1
-        }
-        
-        if count >= heightArray.count { // Don't want to get an indexOutOfBounds exception
+        } else if( (round - 1) % 5 == 0) && round > 1 {
             count = heightArray.count
         }
         
+        if count >= positionArray.count { // Don't want to get an indexOutOfBounds exception
+            count = positionArray.count
+        }
         
         
         for _ in 0..<count {
             /* This for loop is what spawns an enemy */
             
             /* Create the random numbers to pick height and side */
-            let height = arc4random_uniform(UInt32(heightArray.count))
-            var side = arc4random_uniform(UInt32(2))
+            var spawnPoint = arc4random_uniform(UInt32(positionArray.count))
             
             /* Spawns enemies on otherside of game as player */
             if ((round - 1) % 5 == 0) && round > 1 {
                 if player.orientation == .bottom {
-                    side = 0
+                    if spawnPoint >= 4 {
+                        spawnPoint -= 4
+                    }
                 } else {
-                    side = 1
+                    if spawnPoint < 4 {
+                        spawnPoint += 4
+                    }
                 }
                 
             } else if round % 5 == 0 && round > 0 {
                 if player.orientation == .top {
-                    side = 0
+                    if spawnPoint >= 4 {
+                        spawnPoint -= 4
+                    }
                 } else {
-                    side = 1
+                    if spawnPoint < 4 {
+                        spawnPoint += 4
+                    }
                 }
             }
             
@@ -602,7 +634,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let enemy = Enemy(round: round)
             enemyArray.append(enemy) // MARK: Remove enemyArray
             
-            if (height == 0 || height == UInt32(heightArray.count - 1)) && enemy.type == .cobra {
+            if (positionArray[Int(spawnPoint)][1] == 0 || (positionArray[Int(spawnPoint)][1] == heightArray[heightArray.count - 1]) && enemy.type == .cobra) {
+                
                 if enemy.orientation == .right {
                     enemy.position.x -= 10
                 } else if enemy.orientation == .left {
@@ -612,19 +645,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             addChild(enemy)
             
             /* Check to see which side the enemy is on, then rotate and set velcoity accordingly */
-            if side == 0 {
+            if positionArray[Int(spawnPoint)][0] == sideArray[0] {
                 enemy.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
                 enemy.orientation = .left
                 enemy.physicsBody?.velocity.dy = CGFloat(50.0 * enemy.xScale * -1)
-            } else if side == 1 {
+            } else if positionArray[Int(spawnPoint)][0] == sideArray[1] {
                 enemy.orientation = .right
                 enemy.physicsBody?.velocity.dy = CGFloat(50.0 * enemy.xScale)
             }
             /* Move the scorpion to the randomly chosen spawn point */
-            enemy.position = CGPoint(x: Int(sideArray[Int(side)]), y: Int(heightArray[Int(height)]))
+            enemy.position = CGPoint(x: positionArray[Int(spawnPoint)][0], y: positionArray[Int(spawnPoint)][1])
+
             
             /* Prevent scorpios from being spawned at the same spots */
-            heightArray.remove(at: Int(height))
+            positionArray.remove(at: Int(spawnPoint))
         }
         
         
