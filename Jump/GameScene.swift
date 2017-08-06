@@ -37,6 +37,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // Declare GameScene objects
     
     private var player: Player!
+    private var playerImage: SKSpriteNode!
     private var roundLabel: SKLabelNode! = SKLabelNode()
     private var pointsLabel: SKLabelNode! = SKLabelNode()
     private var dedLabel: SKLabelNode!
@@ -134,6 +135,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
+        playerImage = childNode(withName: "//playerImage") as! SKSpriteNode
         dedLabel = childNode(withName: "//dedLabel") as! SKLabelNode
         restartLabel = childNode(withName: "//restartLabel") as! SKLabelNode
         menuLabel = childNode(withName: "//menuLabel") as! SKLabelNode
@@ -292,7 +294,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if player.state == .superSaiyajin {
             /* Check to see if the player just went SSJ, if so run the animation */
             if powerUpTimer == 0 {
-                player.run(SKAction(named: "powerUpRun")!)
+                playerImage.run(SKAction(named: "powerUpRun")!)
                 addChild(powerUpMusic)
                 characterSpeed = 200
             }
@@ -302,7 +304,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Reset player state and visual to match */
             if powerUpTimer >= powerUpTime {
                 player.state = .normal
-                player.run(SKAction(named: "Run")!)
+                playerImage.run(SKAction(named: "Run")!)
                 powerUpMusic.removeFromParent()
                 characterSpeed = 150
             }
@@ -537,10 +539,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         switch GameScene.theme {
         case .fox:
             player.size = CGSize(width: 28, height: 30)
-            player.run(SKAction(named: "characterRun")!)
+            playerImage.run(SKAction(named: "characterRun")!)
             break
         case .monkey:
-            player.run(SKAction(named: "Run")!)
+            playerImage.run(SKAction(named: "Run")!)
         }
         
         /* Initialize roundLabel object */
@@ -1008,6 +1010,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .right
                     player.run(SKAction(named: "Rotate")!)
+
                     
                 }
             case .right:
@@ -1028,6 +1031,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .top
                     player.run(SKAction(named: "Rotate")!)
+             
                     
                     roundChecker()
                     spawnObstacles(orientation: player.orientation)
@@ -1045,6 +1049,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .left
                     player.run(SKAction(named: "Rotate")!)
+                   
                 }
             case .left:
                 /* Make it so the player falls down and hits ground before moving forward */
@@ -1064,6 +1069,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .bottom
                     player.run(SKAction(named: "Rotate")!)
+                 
                     
                     spawnObstacles(orientation: player.orientation)
                     roundChecker()
@@ -1085,6 +1091,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .left
                     player.run(SKAction(named: "FlipRotate")!)
+
                     
                 }
             case .left:
@@ -1105,6 +1112,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .top
                     player.run(SKAction(named: "FlipRotate")!)
+      
                     
                     roundChecker()
                     spawnObstacles(orientation: player.orientation)
@@ -1122,6 +1130,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .right
                     player.run(SKAction(named: "FlipRotate")!)
+              
                 }
             case .right:
                 /* Make it so the player falls down and hits ground before moving forward */

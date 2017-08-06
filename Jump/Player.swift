@@ -39,6 +39,7 @@ class Player: SKSpriteNode {
     
     var orientation: characterOrientationState = .bottom
     var state: characterState = .normal
+    var image: SKSpriteNode!
     
     /* You are required to implement this for your subclass to work */
     override init(texture: SKTexture?, color: UIColor, size: CGSize) {
@@ -51,14 +52,15 @@ class Player: SKSpriteNode {
     }
     
     func death() {
-        //self.physicsBody?.velocity = CGVector(dx: 0, dy: 0)
+        image = childNode(withName: "playerImage") as! SKSpriteNode
+        
         self.physicsBody?.pinned = true
         self.removeAllActions()
         
         let turnRed = SKAction.colorize(with: UIColor.red, colorBlendFactor: 1.0, duration: 0.50)
         let removePlayer = SKAction.removeFromParent()
         let seq = SKAction.sequence([turnRed, removePlayer])
-        self.run(seq)
+        image.run(seq)
     }
     
 
