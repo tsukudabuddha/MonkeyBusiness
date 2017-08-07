@@ -80,7 +80,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let powerUpTime: Double = 10
     let jumpTime: Double = 0.25
     let fixedDelta: CFTimeInterval = 1.0 / 60.0 /* 60 FPS */
-
+    
     
     var health: CGFloat = 1.0 {
         didSet {
@@ -95,7 +95,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     var characterSpeed: CGFloat = 150
-
+    
     var gameState: GameSceneState = .active {
         didSet {
             switch gameState {
@@ -175,7 +175,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Make all the platforms */
         setupGame()
         flipPlatforms()
-    
+        
         addChild(gem)
         addChild(cherry)
         
@@ -186,7 +186,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         /* Called when a touch begins */
-
+        
         /* Only runs fucntion if the game is paused or over */
         if gameState == .paused || gameState == .gameOver {
             /* We only need a single touch here */
@@ -334,103 +334,43 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Get references to the phyiscs body parent SKSpriteNode */
         let nodeA = contactA.node! //as! SKSpriteNode
         let nodeB = contactB.node!//as! SKSpriteNode
-
+        
         
         /* Check that player has landed on ground or platform */
-        if nodeA.name == "playerKillNode" && nodeB.physicsBody?.contactTestBitMask != 3 {
+        if nodeA.name == "player" && nodeB.physicsBody?.contactTestBitMask != 3 {
             canJump = true
             jumpTimer = 0
-        } else if nodeB.name == "playerKillNode" && nodeA.physicsBody?.contactTestBitMask != 3 {
+        } else if nodeB.name == "player" && nodeA.physicsBody?.contactTestBitMask != 3 {
             canJump = true
             jumpTimer = 0
         }
         
         // MARK: Enemy Contact Functions
-//        if nodeB.physicsBody?.contactTestBitMask == 2 {
-//            
-//            if nodeA.name == "player" {
-//                if (nodeB as! Enemy).isAlive {
-//                    if (nodeA as! Player).state == .normal {
-//                        checkScorpion(scorpion: (nodeB as! Enemy), contactPoint: contact.contactPoint)
-//                    } else if (nodeA as! Player).state == .superSaiyajin {
-//                        (nodeB as! Enemy).die()
-//                        health += CGFloat(Double((nodeB as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
-//                        points += (nodeB as! Enemy).pointValue
-//                        pointsLabel.text = String(points)
-//                    }
-//                    
-//                }
-//            } else if nodeA.physicsBody?.contactTestBitMask == 2 || nodeA.physicsBody?.contactTestBitMask == 3 {
-//                (nodeB as! Enemy).turnAround()
-//            }
-//        }
-//        
-//        if nodeA.physicsBody?.contactTestBitMask == 2 {
-//            if nodeB.name == "player" {
-//                if (nodeA as! Enemy).isAlive {
-//                    if (nodeB as! Player).state == .normal {
-//                        checkScorpion(scorpion: (nodeA as! Enemy), contactPoint: contact.contactPoint)
-//                    } else if (nodeB as! Player).state == .superSaiyajin {
-//                        (nodeA as! Enemy).die()
-//                        health += CGFloat(Double((nodeA as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
-//                        points += (nodeA as! Enemy).pointValue
-//                        pointsLabel.text = String(points)
-//                    }
-//                    
-//                }
-//            } else if nodeB.physicsBody?.contactTestBitMask == 2 || nodeB.physicsBody?.contactTestBitMask == 3 {
-//                (nodeA as! Enemy).turnAround()
-//            }
-//        }
         if nodeB.physicsBody?.contactTestBitMask == 2 {
-            if nodeA.name == "playerKillNode" {
+            
+            if nodeA.name == "player" {
                 if (nodeB as! Enemy).isAlive {
-                    (nodeB as! Enemy).die()
-                    health += CGFloat(Double((nodeB as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
-                    points += (nodeB as! Enemy).pointValue
-                    pointsLabel.text = String(points)
-                    if player.orientation == .right {
-                        player.physicsBody?.applyImpulse(CGVector(dx: -15, dy: 0))
-                    } else if player.orientation == .left {
-                        player.physicsBody?.applyImpulse(CGVector(dx: 15, dy: 0))
-                    }
-                    
-                }
-            } else if nodeA.name == "player" {
-                if (nodeB as! Enemy).isAlive {
-                    if player.state == .normal {
-                        gameState = .gameOver
-                    } else if player.state == .superSaiyajin {
+                    if (nodeA as! Player).state == .normal {
+                        checkScorpion(scorpion: (nodeB as! Enemy), contactPoint: contact.contactPoint)
+                    } else if (nodeA as! Player).state == .superSaiyajin {
                         (nodeB as! Enemy).die()
                         health += CGFloat(Double((nodeB as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
                         points += (nodeB as! Enemy).pointValue
                         pointsLabel.text = String(points)
                     }
-
+                    
                 }
             } else if nodeA.physicsBody?.contactTestBitMask == 2 || nodeA.physicsBody?.contactTestBitMask == 3 {
                 (nodeB as! Enemy).turnAround()
             }
         }
-
+        
         if nodeA.physicsBody?.contactTestBitMask == 2 {
-            if nodeB.name == "playerKillNode" {
+            if nodeB.name == "player" {
                 if (nodeA as! Enemy).isAlive {
-                    (nodeA as! Enemy).die()
-                    health += CGFloat(Double((nodeA as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
-                    points += (nodeA as! Enemy).pointValue
-                    pointsLabel.text = String(points)
-                    if player.orientation == .right {
-                        player.physicsBody?.applyImpulse(CGVector(dx: -15, dy: 0))
-                    } else if player.orientation == .left {
-                        player.physicsBody?.applyImpulse(CGVector(dx: 15, dy: 0))
-                    }
-                }
-            } else if nodeB.name == "player" {
-                if (nodeA as! Enemy).isAlive {
-                    if player.state == .normal {
-                        gameState = .gameOver
-                    } else if player.state == .superSaiyajin {
+                    if (nodeB as! Player).state == .normal {
+                        checkScorpion(scorpion: (nodeA as! Enemy), contactPoint: contact.contactPoint)
+                    } else if (nodeB as! Player).state == .superSaiyajin {
                         (nodeA as! Enemy).die()
                         health += CGFloat(Double((nodeA as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
                         points += (nodeA as! Enemy).pointValue
@@ -442,9 +382,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 (nodeA as! Enemy).turnAround()
             }
         }
-
-
-
+        
+        
         /* Checks if either contact is a gem */
         if nodeA == gem || nodeB == gem {
             if gem.gemValue == 1 {
@@ -487,7 +426,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 pointsLabel.isHidden = false
                 resumeLabel.fontColor = UIColor.white
             }
-        
+            
         } else if touchedNode == playPauseButton {
             if gameState == .active {
                 gameState = .paused
@@ -536,7 +475,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Remove old platforms */
             removePlatforms(side: .left)
             
-
+            
         case .top:
             
             /* Remove old platforms */
@@ -552,7 +491,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         default:
             break
-
+            
         }
     }
     
@@ -578,7 +517,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 run(seq)
             }
             gameState = .reversed
-
+            
         } else if (round - 1) % 5 == 0 {
             if gameState == .reversed {
                 run(seq)
@@ -650,7 +589,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* This is a fadeIn and fadeOut animation */
         roundLabel.run(SKAction(named: "RoundLabel")!)
     }
-  
+    
     func spawnEnemy(round: Int) {
         /* Create arrays of different spawn locations */
         var heightArray = [140,220,300,380]
@@ -672,7 +611,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             x += 1
         }
-    
+        
         var count = round + 1 // The round begins at 1 and we want 2 enemies to spawn in that round
         
         if round % 5 == 0 && round > 0 {
@@ -742,7 +681,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             /* Move the scorpion to the randomly chosen spawn point */
             enemy.position = CGPoint(x: positionArray[Int(spawnPoint)][0], y: positionArray[Int(spawnPoint)][1])
-
+            
             
             /* Prevent scorpios from being spawned at the same spots */
             positionArray.remove(at: Int(spawnPoint))
@@ -754,12 +693,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     /* Checks if player is above scorpion */
     func checkScorpion(scorpion: Enemy, contactPoint: CGPoint) {
-        print("contact x: \(contactPoint.x)")
-        
-        
+        print("player x: \(player.position.x)")
         switch scorpion.orientation {
         case .right:
-            if contactPoint.x - 1 < scorpion.position.x - (scorpion.size.height / 2) {
+            if player.position.x + 25 < scorpion.position.x - (scorpion.size.height / 2) {
                 scorpion.isAlive = false
                 scorpion.die()
                 player.physicsBody?.velocity = CGVector.zero
@@ -771,9 +708,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             } else {
                 gameState = .gameOver
             }
-            print("scorpion position - height/2: \(scorpion.position.x - (scorpion.size.height / 2))")
+            print("scorpion x right: \(scorpion.position.x - (scorpion.size.height / 2))")
         case .left:
-            if contactPoint.x > scorpion.position.x + scorpion.size.height {
+            if player.position.x + 5 > scorpion.position.x + (scorpion.size.height / 2) {
                 scorpion.isAlive = false
                 scorpion.die()
                 player.physicsBody?.velocity = CGVector.zero
@@ -785,7 +722,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             } else {
                 gameState = .gameOver
             }
-            print("scorpion position + height: \(scorpion.position.x + (scorpion.size.height))")
+            print("scorpion x left: \(scorpion.position.x + (scorpion.size.height / 2))")
         default:
             break
         }
@@ -896,7 +833,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     
-
+    
     func addPlatforms(side: Orientation) {
         /* Add platforms on the specified side to the gameScene */
         
@@ -913,7 +850,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             for platform in leftPlatforms {
                 addChild(platform)
             }
-
+            
         default:
             break
         }
@@ -927,13 +864,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         case .right:
             
             for platform in rightPlatforms {
-            platform.removeFromParent()
+                platform.removeFromParent()
             }
             break
             
         case .left:
             for platform in leftPlatforms {
-            platform.removeFromParent()
+                platform.removeFromParent()
             }
         default:
             break
@@ -1035,7 +972,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             default:
                 print("default ran")
             }
-
+            
         default:
             break
         }
@@ -1076,6 +1013,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     player.orientation = .right
                     player.run(SKAction(named: "Rotate")!)
                     
+                    
                 }
             case .right:
                 /* Make it so the player falls down and hits ground before moving forward */
@@ -1095,7 +1033,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .top
                     player.run(SKAction(named: "Rotate")!)
-             
+                    
                     
                     roundChecker()
                     spawnObstacles(orientation: player.orientation)
@@ -1103,6 +1041,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             case .top:
                 player.physicsBody?.velocity.dx = -1 * characterSpeed
+                //print(player.position)
                 if player.position.x < 10 {
                     
                     /* Change Gravity so left is down */
@@ -1112,7 +1051,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .left
                     player.run(SKAction(named: "Rotate")!)
-                   
+                    
                 }
             case .left:
                 /* Make it so the player falls down and hits ground before moving forward */
@@ -1132,20 +1071,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .bottom
                     player.run(SKAction(named: "Rotate")!)
-                 
+                    
                     
                     spawnObstacles(orientation: player.orientation)
                     roundChecker()
                     
                 }
             }
-
+            
         } else if gameState == .reversed {
             switch player.orientation {
             case .bottom:
                 player.physicsBody?.velocity.dx = characterSpeed * -1
                 
-                if player.position.x < 10 {
+                if player.position.x < 287/2 * 0.5 {
                     
                     /* Change Gravity so left is down */
                     self.physicsWorld.gravity.dx = -9.8
@@ -1154,10 +1093,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .left
                     player.run(SKAction(named: "FlipRotate")!)
-
+                    
                     
                 }
             case .left:
+                /* Make it so the player falls down and hits ground before moving forward */
                 if player.position.x < 5 {
                     player.physicsBody?.velocity.dy = characterSpeed
                 } else if player.position.y > 58 {
@@ -1174,7 +1114,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .top
                     player.run(SKAction(named: "FlipRotate")!)
-      
+                    
                     
                     roundChecker()
                     spawnObstacles(orientation: player.orientation)
@@ -1182,8 +1122,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             case .top:
                 player.physicsBody?.velocity.dx = characterSpeed
-        
-                if player.position.x > 277 {
+                
+                if player.position.x > 287 * 0.5 {
                     
                     /* Change Gravity so right is down */
                     self.physicsWorld.gravity.dx = 9.8
@@ -1192,9 +1132,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     /* Change player orientation to work with new gravity */
                     player.orientation = .right
                     player.run(SKAction(named: "FlipRotate")!)
-              
+                    
                 }
             case .right:
+                /* Make it so the player falls down and hits ground before moving forward */
                 if player.position.x > 285 {
                     player.physicsBody?.velocity.dy = -1 * characterSpeed
                 } else if player.position.y < 515 { // MARK: Get height and change
@@ -1216,7 +1157,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     
                 }
             }
-
+            
         }
         
         
@@ -1244,10 +1185,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         return returnPoint
     }
-
-
+    
+    
 }
-
 
 
 
