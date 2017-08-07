@@ -337,10 +337,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         
         /* Check that player has landed on ground or platform */
-        if nodeA.name == "player" && nodeB.physicsBody?.contactTestBitMask != 3 {
+        if nodeA.name == "playerKillNode" && nodeB.physicsBody?.contactTestBitMask != 3 {
             canJump = true
             jumpTimer = 0
-        } else if nodeB.name == "player" && nodeA.physicsBody?.contactTestBitMask != 3 {
+        } else if nodeB.name == "playerKillNode" && nodeA.physicsBody?.contactTestBitMask != 3 {
             canJump = true
             jumpTimer = 0
         }
@@ -389,6 +389,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     health += CGFloat(Double((nodeB as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
                     points += (nodeB as! Enemy).pointValue
                     pointsLabel.text = String(points)
+                    if player.orientation == .right {
+                        player.physicsBody?.applyImpulse(CGVector(dx: -15, dy: 0))
+                    } else if player.orientation == .left {
+                        player.physicsBody?.applyImpulse(CGVector(dx: 15, dy: 0))
+                    }
+                    
                 }
             } else if nodeA.name == "player" {
                 if (nodeB as! Enemy).isAlive {
@@ -414,6 +420,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     health += CGFloat(Double((nodeA as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
                     points += (nodeA as! Enemy).pointValue
                     pointsLabel.text = String(points)
+                    if player.orientation == .right {
+                        player.physicsBody?.applyImpulse(CGVector(dx: -15, dy: 0))
+                    } else if player.orientation == .left {
+                        player.physicsBody?.applyImpulse(CGVector(dx: 15, dy: 0))
+                    }
                 }
             } else if nodeB.name == "player" {
                 if (nodeA as! Enemy).isAlive {
