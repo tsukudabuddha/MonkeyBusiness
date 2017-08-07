@@ -36,14 +36,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     // Declare GameScene objects
     
+    /* Sprite Nodes */
     private var player: Player!
     private var playerImage: SKSpriteNode!
-    private var roundLabel: SKLabelNode! = SKLabelNode()
-    private var pointsLabel: SKLabelNode! = SKLabelNode()
-    private var dedLabel: SKLabelNode!
-    private var highScoreLabel: SKLabelNode!
-    private var restartLabel: SKLabelNode!
-    private var menuLabel: SKLabelNode!
     private var gameOverScreen: SKSpriteNode!
     private var instructionOverlay: SKSpriteNode!
     private var pauseScreen: SKSpriteNode!
@@ -53,25 +48,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var slidingBarTop: SKSpriteNode!
     private var slidingBarBottom: SKSpriteNode!
     private var resumeLabel: SKLabelNode!
-    private var round: Int = 0
-    private var canJump: Bool = true
-    private var jumping: Bool = false
-    private var enemyArray: [Enemy] = []
-    private var points: Int = 0
+    
+    /* Labels */
+    private var roundLabel: SKLabelNode! = SKLabelNode()
+    private var pointsLabel: SKLabelNode! = SKLabelNode()
+    private var dedLabel: SKLabelNode!
+    private var highScoreLabel: SKLabelNode!
+    private var restartLabel: SKLabelNode!
+    private var menuLabel: SKLabelNode!
+    
+    /* Etc */
     private var gem = Gem()
     private var cherry = Cherry()
     private var backgroundMusic: SKAudioNode!
     private var powerUpMusic: SKAudioNode!
     private var gameOverNoise: SKAction!
     
-    var sessionGemCounter: Int = 0 // Public so that it can be changed by the gem.onContact()
-    
+    /* Create Arrays */
     private var leftPlatforms = [Platform(), Platform(), Platform(), Platform()]
     private var rightPlatforms = [Platform(), Platform(), Platform(), Platform()]
+    private var enemyArray: [Enemy] = []
     
-    
+    /* Create Variables */
+    private var round: Int = 0
+    private var canJump: Bool = true
+    private var jumping: Bool = false
+    private var characterOrientation: characterOrientationState = .bottom
+    private var points: Int = 0
+    var characterSpeed: CGFloat = 150
+    var viewController: GameViewController!
+    var sessionGemCounter: Int = 0 // Public so that it can be changed by the gem.onContact()
     static var theme: Theme = .monkey // Static so it can be modified from Main Menu
-    let generator = UINotificationFeedbackGenerator()
+    let generator = UINotificationFeedbackGenerator() // Used to generate haptic feeback
     
     
     // Create Timing Variables
@@ -94,8 +102,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    var characterSpeed: CGFloat = 150
-    
     var gameState: GameSceneState = .active {
         didSet {
             switch gameState {
@@ -114,10 +120,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
-    private var characterOrientation: characterOrientationState = .bottom
     
-    var viewController: GameViewController!
-    
+    /* stayPaused and isPaused handle pausing when game is re-opened - stayPaused in App Delegate */
     static var stayPaused = false as Bool
     
     override var isPaused: Bool {
@@ -132,6 +136,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    /* This function runs when the scene is loaded */
     override func didMove(to view: SKView) {
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
@@ -153,7 +158,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Audio */
         if let musicURL = Bundle.main.url(forResource: "PimPoyPocket", withExtension: "wav") {
             backgroundMusic = SKAudioNode(url: musicURL)
-            addChild(backgroundMusic)
+            self.addChild(backgroundMusic)
         }
         
         if let musicURL = Bundle.main.url(forResource: "powerUpMusic", withExtension: "wav") {
@@ -175,9 +180,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Make all the platforms */
         setupGame()
         flipPlatforms()
-        
-        addChild(gem)
-        addChild(cherry)
         
         /* This helps reduce the vibration lag when the player dies */
         generator.prepare()
@@ -292,10 +294,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* This checks to see if the player is in SSJ or not */
         if player.state == .superSaiyajin {
-            /* Check to see if the player just went SSJ, if so run the animation */
+            /* Check to see if the player just went SSJ, if so run the animation and begin music*/
             if powerUpTimer == 0 {
                 playerImage.run(SKAction(named: "powerUpRun")!)
-                addChild(powerUpMusic)
+                self.addChild(powerUpMusic)
+                backgroundMusic.removeFromParent() // Stops playing regular background music
                 characterSpeed = 200
             }
             /* Update SSJ timer */
@@ -306,6 +309,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.state = .normal
                 playerImage.run(SKAction(named: "Run")!)
                 powerUpMusic.removeFromParent()
+                self.addChild(backgroundMusic) // Starts playing the regular background music
                 characterSpeed = 150
             }
         }
@@ -351,7 +355,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if nodeA.name == "player" {
                 if (nodeB as! Enemy).isAlive {
                     if (nodeA as! Player).state == .normal {
-                        checkScorpion(scorpion: (nodeB as! Enemy), contactPoint: contact.contactPoint)
+                        checkEnemy(enemy: (nodeB as! Enemy), contactPoint: contact.contactPoint)
                     } else if (nodeA as! Player).state == .superSaiyajin {
                         (nodeB as! Enemy).die()
                         health += CGFloat(Double((nodeB as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
@@ -369,7 +373,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if nodeB.name == "player" {
                 if (nodeA as! Enemy).isAlive {
                     if (nodeB as! Player).state == .normal {
-                        checkScorpion(scorpion: (nodeA as! Enemy), contactPoint: contact.contactPoint)
+                        checkEnemy(enemy: (nodeA as! Enemy), contactPoint: contact.contactPoint)
                     } else if (nodeB as! Player).state == .superSaiyajin {
                         (nodeA as! Enemy).die()
                         health += CGFloat(Double((nodeA as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
@@ -406,12 +410,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        /* Checks to see if game is running */
+        /* Runs when player removes their finger from the screen */
         
+        /* Get first touch and location */
         let touch  = touches.first!
         let location = touch.location(in: self)
+        
+        /* Use touch location to determine what node is being touched */
         let touchedNode = self.atPoint(location)
         
+        /* Only check touchedNode if the game is running... */
         if gameState == .gameOver || gameState == .paused {
             
             /* "Button" Code */
@@ -427,7 +435,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 resumeLabel.fontColor = UIColor.white
             }
             
-        } else if touchedNode == playPauseButton {
+        } else if touchedNode == playPauseButton { // ... unless the node is the pause button
             if gameState == .active {
                 gameState = .paused
                 playPauseButton.texture = SKTexture(imageNamed: "play")
@@ -449,10 +457,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func spawnObstacles(orientation: characterOrientationState) {
-        var fixedOrientation = orientation
+        /* This function handles the spawning of obstacles */
         
+        /* Remove all the platforms so that new ones can be added to the correct side */
         removePlatforms(side: .left)
         removePlatforms(side: .right)
+        
+        
+        var fixedOrientation = orientation // This is necessary for the reverse game mode to function properly
         
         if gameState == .reversed {
             
@@ -465,29 +477,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         switch fixedOrientation {
         case .bottom:
-            
-            /* Position new platforms */
-            positionPlatforms(side: .right)
-            
+ 
             /* Add platform to scene */
             addPlatforms(side: .right)
-            
-            /* Remove old platforms */
-            removePlatforms(side: .left)
-            
+ 
+            /* Position new platforms */
+            positionPlatforms(side: .right)
+            break
             
         case .top:
-            
-            /* Remove old platforms */
-            removePlatforms(side: .right)
-            
+
             /* Add new platforms */
             addPlatforms(side: .left)
             
             /* Position new platforms */
             positionPlatforms(side: .left)
-            
-            
             
         default:
             break
@@ -507,6 +511,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             newRound(round: round)
         }
         
+        /* Create color animation to indicate change in gameplay */
         let color = SKAction.colorize(with: UIColor.purple, colorBlendFactor: 1.0, duration: 0.25)
         let uncolor = SKAction.colorize(with: self.backgroundColor, colorBlendFactor: 1.0, duration: 0.25)
         let seq = SKAction.sequence([color, uncolor])
@@ -528,12 +533,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    // MARK: Setup Game
     func setupGame() {
         /* Called in the didMove function */
-        
-        /* Makes the player "Jump" to begin the game */
-        player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
         
         /* Switch statement to show different themes */
         switch GameScene.theme {
@@ -571,7 +572,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         instructionLabelp2.zPosition = 5
         self.addChild(instructionLabelp2)
         
-        
+        /* Add collectibles to scene */
+        self.addChild(gem)
+        self.addChild(cherry)
         
         /* Setup Points Label */
         pointsLabel.position = CGPoint(x: (self.frame.width / 2), y: (self.frame.height / 2) + 20)
@@ -595,21 +598,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var heightArray = [140,220,300,380]
         var sideArray = [20, 305]
         
-        // var positionArray = [[Int]]()
-        
-        
-        /* 2 dimensional array of arrays of Ints set to 0. Arrays size is 2x4 */
+        /* 2D array of arrays of Ints set to 0. Array size is 2x4 */
         var positionArray = Array(repeating: Array(repeating: 0, count: 2), count: 8)
         
-        var x = 0
-        
-        while x < sideArray.count * heightArray.count {
+        /* Fill in array with values from height and side arrays */
+        for x in 0..<sideArray.count * heightArray.count {
             if x < 4 {
                 positionArray[x] = [sideArray[0], heightArray[x]]
             } else {
                 positionArray[x] = [sideArray[1], heightArray[x - 4]]
             }
-            x += 1
         }
         
         var count = round + 1 // The round begins at 1 and we want 2 enemies to spawn in that round
@@ -658,7 +656,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             /* Create an enemy object and add it to the scene and enemy array */
             let enemy = Enemy(round: round)
-            enemyArray.append(enemy) // MARK: Remove enemyArray
+            enemyArray.append(enemy)
             
             if (positionArray[Int(spawnPoint)][1] == 0 || (positionArray[Int(spawnPoint)][1] == heightArray[heightArray.count - 1]) && enemy.type == .cobra) {
                 
@@ -668,7 +666,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     enemy.position.x += 10
                 }
             }
-            addChild(enemy)
+            self.addChild(enemy)
             
             /* Check to see which side the enemy is on, then rotate and set velcoity accordingly */
             if positionArray[Int(spawnPoint)][0] == sideArray[0] {
@@ -679,11 +677,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 enemy.orientation = .right
                 enemy.physicsBody?.velocity.dy = CGFloat(50.0 * enemy.xScale)
             }
+            
             /* Move the scorpion to the randomly chosen spawn point */
             enemy.position = CGPoint(x: positionArray[Int(spawnPoint)][0], y: positionArray[Int(spawnPoint)][1])
             
-            
-            /* Prevent scorpios from being spawned at the same spots */
+            /* Prevent enemies from being spawned at the same spot */
             positionArray.remove(at: Int(spawnPoint))
         }
         
@@ -692,37 +690,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
     /* Checks if player is above scorpion */
-    func checkScorpion(scorpion: Enemy, contactPoint: CGPoint) {
-        print("player x: \(player.position.x)")
-        switch scorpion.orientation {
+    func checkEnemy(enemy: Enemy, contactPoint: CGPoint) {
+        
+        switch enemy.orientation {
         case .right:
-            if player.position.x + 25 < scorpion.position.x - (scorpion.size.height / 2) {
-                scorpion.isAlive = false
-                scorpion.die()
+            if player.position.x + 25 < enemy.position.x - (enemy.size.height / 2) {
+                enemy.isAlive = false
+                enemy.die()
                 player.physicsBody?.velocity = CGVector.zero
                 player.physicsBody?.applyImpulse(CGVector(dx: -10, dy: 0))
-                points += scorpion.pointValue
+                points += enemy.pointValue
                 pointsLabel.text = String(points)
-                health += CGFloat(0.005 * Double(scorpion.pointValue))
+                health += CGFloat(0.005 * Double(enemy.pointValue))
                 
             } else {
                 gameState = .gameOver
             }
-            print("scorpion x right: \(scorpion.position.x - (scorpion.size.height / 2))")
+            break
+            
         case .left:
-            if player.position.x + 5 > scorpion.position.x + (scorpion.size.height / 2) {
-                scorpion.isAlive = false
-                scorpion.die()
+            if player.position.x + 5 > enemy.position.x + (enemy.size.height / 2) {
+                enemy.isAlive = false
+                enemy.die()
                 player.physicsBody?.velocity = CGVector.zero
                 player.physicsBody?.applyImpulse(CGVector(dx: 10, dy: 0))
-                points += scorpion.pointValue
+                points += enemy.pointValue
                 pointsLabel.text = String(points)
-                health += CGFloat(0.005 * Double(scorpion.pointValue))
+                health += CGFloat(0.005 * Double(enemy.pointValue))
                 
             } else {
                 gameState = .gameOver
             }
-            print("scorpion x left: \(scorpion.position.x + (scorpion.size.height / 2))")
+            
         default:
             break
         }
@@ -740,20 +739,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Reset Health */
         health = 1
         
-        
     }
     
     func gameOver() {
-        /* Set gamestate to gameOver and run player death animation */
+        /* Run player death animation and gameOver screen animation */
         player.death()
         gameOverScreen.run(SKAction.moveTo(y: 0, duration: 0.5))
         
         /* End background music */
         backgroundMusic.removeFromParent()
         
-        /* Wha Wha Noise */
+        /* Run Wha Wha Noise */
         run(gameOverNoise)
         
+        /* Hide all the unnecessary labels and change death label to output player score */
         dedLabel.text = "Your Score: \(points)"
         dedLabel.isHidden = false
         restartLabel.isHidden = false
@@ -780,7 +779,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         /* Haptic Feeback */
-        
         generator.notificationOccurred(.success)
         
     }
@@ -827,7 +825,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Ensure correct aspect mode */
         scene.scaleMode = .aspectFill
         
+        /* Create SK transition */
         let transition = SKTransition.doorsCloseHorizontal(withDuration: 0.5)
+        
         /* Restart Game Scene */
         skView?.presentScene(scene, transition: transition)
     }
@@ -836,19 +836,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func addPlatforms(side: Orientation) {
         /* Add platforms on the specified side to the gameScene */
-        
         switch side {
-            
         case .right:
-            
             for platform in rightPlatforms {
-                addChild(platform)
+                self.addChild(platform)
             }
             break
             
         case .left:
             for platform in leftPlatforms {
-                addChild(platform)
+                self.addChild(platform)
             }
             
         default:
@@ -862,7 +859,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         switch side {
         case .right:
-            
             for platform in rightPlatforms {
                 platform.removeFromParent()
             }
@@ -886,6 +882,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func positionPlatforms(side: Orientation) {
+        /* This function positions the platforms and collectibles */
         
         /* Create a random number variable to choose the formation of platforms */
         let formation = arc4random_uniform(UInt32(3)) // there are 3 formations
@@ -996,7 +993,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
     }
     
-    // MARK: Player Auto Run and calls spawnObstacles()
     func playerMovement() {
         if gameState == .active {
             switch player.orientation {
@@ -1041,7 +1037,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             case .top:
                 player.physicsBody?.velocity.dx = -1 * characterSpeed
-                //print(player.position)
+               
                 if player.position.x < 10 {
                     
                     /* Change Gravity so left is down */
@@ -1084,7 +1080,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case .bottom:
                 player.physicsBody?.velocity.dx = characterSpeed * -1
                 
-                if player.position.x < 287/2 * 0.5 {
+                if player.position.x < 10 {
                     
                     /* Change Gravity so left is down */
                     self.physicsWorld.gravity.dx = -9.8
@@ -1123,7 +1119,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             case .top:
                 player.physicsBody?.velocity.dx = characterSpeed
                 
-                if player.position.x > 287 * 0.5 {
+                if player.position.x > 277 {
                     
                     /* Change Gravity so right is down */
                     self.physicsWorld.gravity.dx = 9.8
@@ -1164,6 +1160,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func setupPhysicsBody() {
+        /* This functions sets up the physicsBody for the scene */
         physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         physicsBody?.categoryBitMask = 2
         physicsBody?.contactTestBitMask = 4294967295
@@ -1182,7 +1179,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if side == .right {
             returnPoint = CGPoint(x: rightPlatforms[random].position.x - 27, y: rightPlatforms[random].position.y)
         }
-        
         return returnPoint
     }
     
