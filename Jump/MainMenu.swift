@@ -22,6 +22,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     private var backgroundMusic: SKAudioNode!
     var gameScene: GameScene!
     var player: Player!
+    private var playerImage: SKSpriteNode!
     var characterSpeed: CGFloat = 150
     
     static var viewController: GameViewController!
@@ -42,7 +43,6 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         labelArray.append(playLabel)
         labelArray.append(creditLabel)
         labelArray.append(themeLabel)
-        labelArray.append(businessLabel)
         labelArray.append(leaderBoardLabel)
         
         /* Audio */
@@ -53,6 +53,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
+        playerImage = childNode(withName: "//playerImage") as! SKSpriteNode
         
         // Create Physics Body for frame
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
@@ -257,9 +258,9 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     }
     
     func beginningAnimation() {
-        player.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
-        player.run(SKAction(named: "beginAnimationMonkey")!)
-        player.run(SKAction(named: "Run")!)
+        playerImage.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
+        playerImage.run(SKAction(named: "beginAnimationMonkey")!)
+        playerImage.run(SKAction(named: "Run")!)
     }
     
     

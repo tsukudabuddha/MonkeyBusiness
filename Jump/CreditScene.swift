@@ -12,6 +12,7 @@ class CreditScene: SKScene {
     
     private var returnLabel: SKLabelNode!
     private var player: Player!
+    private var playerImage: SKSpriteNode!
     private var characterSpeed = GameScene(fileNamed: "GameScene")?.characterSpeed
     
     override func didMove(to view: SKView) {
@@ -20,6 +21,7 @@ class CreditScene: SKScene {
         /* Set UI connections */
         returnLabel = self.childNode(withName: "returnLabel") as! SKLabelNode
         player = self.childNode(withName: "//player") as! Player
+        playerImage = childNode(withName: "//playerImage") as! SKSpriteNode
         
         self.physicsBody = SKPhysicsBody(edgeLoopFrom: self.frame)
         
@@ -141,7 +143,7 @@ class CreditScene: SKScene {
     func beginningAnimation() {
         
         // Just to change up sprite
-        player.run(SKAction(named: "powerUpRun")!)
+        playerImage.run(SKAction(named: "powerUpRun")!)
 
     }
 
