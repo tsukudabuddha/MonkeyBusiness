@@ -141,13 +141,6 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
             }
         } else if touchedNode == leaderBoardLabel {
             MainMenu.viewController.checkGCLeaderboard()
-        } else if touchedNode == businessLabel {
-            /* 1) Grab reference to our spriteKit view */
-            guard let skView = self.view as SKView! else {
-                print("Could not get SkView")
-                return
-            }
-            skView.showsPhysics = !(skView.showsPhysics)
         }
         for label in labelArray {
             label.fontColor = UIColor.white
