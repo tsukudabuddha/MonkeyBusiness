@@ -15,7 +15,6 @@
 // TOOD: Make gems exist for a reason
 // TODO: Make character physicsbody rectangle so that it no longer gets stuck on platforms
 // TODO: Defeat all the enemies in animation for
-// TODO: Fix reverse movement
 // TODO: Add more enemies
 // TODO: Dress up monkey
 
@@ -133,6 +132,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 super.isPaused = newValue
             }
             GameScene.stayPaused = false
+            
         }
     }
     
@@ -278,7 +278,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Only countdown death timer when there are still enemies alive */
         if Enemy.totalAlive > 0 {
-            health -= 0.0008 // MARK: Tweak speed of rounds
+            health -= 0.0006 // MARK: Tweak speed of rounds
         }
         
         
@@ -477,16 +477,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         switch fixedOrientation {
         case .bottom:
- 
+            
             /* Add platform to scene */
             addPlatforms(side: .right)
- 
+            
             /* Position new platforms */
             positionPlatforms(side: .right)
             break
             
         case .top:
-
+            
             /* Add new platforms */
             addPlatforms(side: .left)
             
@@ -603,7 +603,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Fill in array with values from height and side arrays */
         for x in 0..<sideArray.count * heightArray.count {
-            if x < 4 {
+            if x < heightArray.count {
                 positionArray[x] = [sideArray[0], heightArray[x]]
             } else {
                 positionArray[x] = [sideArray[1], heightArray[x - 4]]
@@ -627,28 +627,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* This for loop is what spawns an enemy */
             
             /* Create the random numbers to pick height and side */
-            var spawnPoint = arc4random_uniform(UInt32(positionArray.count))
+            let spawnPoint = arc4random_uniform(UInt32(positionArray.count))
+            var adjustedSpawn = Int(spawnPoint)
             
             /* Spawns enemies on otherside of game as player */
             if ((round - 1) % 5 == 0) && round > 1 {
                 if player.orientation == .bottom {
-                    if spawnPoint >= 4 {
-                        spawnPoint -= 4
+                    if adjustedSpawn >= heightArray.count {
+                        adjustedSpawn -= heightArray.count
                     }
                 } else {
-                    if spawnPoint < 4 {
-                        spawnPoint += 4
+                    if adjustedSpawn < heightArray.count {
+                        adjustedSpawn += heightArray.count
                     }
                 }
                 
             } else if round % 5 == 0 && round > 0 {
                 if player.orientation == .top {
-                    if spawnPoint >= 4 {
-                        spawnPoint -= 4
+                    if adjustedSpawn >= 4 {
+                        adjustedSpawn -= 4
                     }
                 } else {
-                    if spawnPoint < 4 {
-                        spawnPoint += 4
+                    if adjustedSpawn < 4 {
+                        adjustedSpawn += 4
                     }
                 }
             }
@@ -658,7 +659,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let enemy = Enemy(round: round)
             enemyArray.append(enemy)
             
-            if (positionArray[Int(spawnPoint)][1] == 0 || (positionArray[Int(spawnPoint)][1] == heightArray[heightArray.count - 1]) && enemy.type == .cobra) {
+            if (positionArray[adjustedSpawn][1] == 0 || (positionArray[adjustedSpawn][1] == heightArray[heightArray.count - 1]) && enemy.type == .cobra) {
                 
                 if enemy.orientation == .right {
                     enemy.position.x -= 10
@@ -669,20 +670,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             self.addChild(enemy)
             
             /* Check to see which side the enemy is on, then rotate and set velcoity accordingly */
-            if positionArray[Int(spawnPoint)][0] == sideArray[0] {
+            if positionArray[adjustedSpawn][0] == sideArray[0] {
                 enemy.zRotation = CGFloat(Double.pi) // Marshall Cain Suggestion, fixed scropions
                 enemy.orientation = .left
                 enemy.physicsBody?.velocity.dy = CGFloat(50.0 * enemy.xScale * -1)
-            } else if positionArray[Int(spawnPoint)][0] == sideArray[1] {
+            } else if positionArray[adjustedSpawn][0] == sideArray[1] {
                 enemy.orientation = .right
                 enemy.physicsBody?.velocity.dy = CGFloat(50.0 * enemy.xScale)
             }
             
             /* Move the scorpion to the randomly chosen spawn point */
-            enemy.position = CGPoint(x: positionArray[Int(spawnPoint)][0], y: positionArray[Int(spawnPoint)][1])
+            enemy.position = CGPoint(x: positionArray[adjustedSpawn][0], y: positionArray[adjustedSpawn][1])
             
             /* Prevent enemies from being spawned at the same spot */
-            positionArray.remove(at: Int(spawnPoint))
+            positionArray.remove(at: adjustedSpawn)
         }
         
         
@@ -1037,7 +1038,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             case .top:
                 player.physicsBody?.velocity.dx = -1 * characterSpeed
-               
+                
                 if player.position.x < 10 {
                     
                     /* Change Gravity so left is down */
@@ -1184,7 +1185,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     
 }
-
 
 
 

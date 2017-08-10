@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3AC5029A632268CFB2D90D95 /* Pods_MonkeyBusinessUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A04122B93578CABE06716FB /* Pods_MonkeyBusinessUITests.framework */; };
-		3B7695C6BBC3D3E046C1BDD9 /* Pods_MonkeyBusinessTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 002EFA43FFFAF3EF5E41B94A /* Pods_MonkeyBusinessTests.framework */; };
 		4903D44E1F2284D20033A61F /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4903D44D1F2284D20033A61F /* AdSupport.framework */; };
 		49132D8C1F303FC100AE22AC /* CreditScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49132D8B1F303FC100AE22AC /* CreditScene.sks */; };
 		49266ACB1F0F0D170035AF75 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49266ACA1F0F0D170035AF75 /* Platform.swift */; };
@@ -21,8 +19,7 @@
 		494578FB1F0B05E200267C4A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 494578F91F0B05E200267C4A /* Main.storyboard */; };
 		494578FD1F0B05E200267C4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 494578FC1F0B05E200267C4A /* Assets.xcassets */; };
 		494579001F0B05E200267C4A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 494578FE1F0B05E200267C4A /* LaunchScreen.storyboard */; };
-		4945790B1F0B05E200267C4A /* JumpTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4945790A1F0B05E200267C4A /* JumpTests.swift */; };
-		494579161F0B05E200267C4A /* JumpUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 494579151F0B05E200267C4A /* JumpUITests.swift */; };
+		4946967A1F3A886B00CD2E7B /* Shop.sks in Resources */ = {isa = PBXBuildFile; fileRef = 494696791F3A886B00CD2E7B /* Shop.sks */; };
 		494F1A641F34ED7B004FC2D6 /* gameStart.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 494F1A631F34ED7B004FC2D6 /* gameStart.mp3 */; };
 		494F1A681F351287004FC2D6 /* coinPickup.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 494F1A671F351287004FC2D6 /* coinPickup.mp3 */; };
 		494F1A6A1F351CBC004FC2D6 /* menuBackgroundMusic.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 494F1A691F351CBC004FC2D6 /* menuBackgroundMusic.mp3 */; };
@@ -66,12 +63,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		002EFA43FFFAF3EF5E41B94A /* Pods_MonkeyBusinessTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MonkeyBusinessTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		0D07E8A79781DB4C06749BE7 /* Pods-MonkeyBusinessTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MonkeyBusinessTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MonkeyBusinessTests/Pods-MonkeyBusinessTests.debug.xcconfig"; sourceTree = "<group>"; };
 		1E208FA89512BE4337063D75 /* Pods-MonkeyBusiness.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MonkeyBusiness.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MonkeyBusiness/Pods-MonkeyBusiness.debug.xcconfig"; sourceTree = "<group>"; };
-		2A04122B93578CABE06716FB /* Pods_MonkeyBusinessUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MonkeyBusinessUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		35E423B2E538212A2F1BBC61 /* Pods-MonkeyBusinessUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MonkeyBusinessUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MonkeyBusinessUITests/Pods-MonkeyBusinessUITests.release.xcconfig"; sourceTree = "<group>"; };
-		3ACD571A674A216DD7E8D1E5 /* Pods-MonkeyBusinessTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MonkeyBusinessTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MonkeyBusinessTests/Pods-MonkeyBusinessTests.release.xcconfig"; sourceTree = "<group>"; };
 		4903D44D1F2284D20033A61F /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		49132D8B1F303FC100AE22AC /* CreditScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = CreditScene.sks; sourceTree = "<group>"; };
 		49266ACA1F0F0D170035AF75 /* Platform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
@@ -87,11 +79,8 @@
 		494578FF1F0B05E200267C4A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		494579011F0B05E200267C4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		494579061F0B05E200267C4A /* MonkeyBusinessTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MonkeyBusinessTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4945790A1F0B05E200267C4A /* JumpTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpTests.swift; sourceTree = "<group>"; };
-		4945790C1F0B05E200267C4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		494579111F0B05E200267C4A /* MonkeyBusinessUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MonkeyBusinessUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		494579151F0B05E200267C4A /* JumpUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JumpUITests.swift; sourceTree = "<group>"; };
-		494579171F0B05E200267C4A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		494696791F3A886B00CD2E7B /* Shop.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Shop.sks; sourceTree = "<group>"; };
 		494F1A631F34ED7B004FC2D6 /* gameStart.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = gameStart.mp3; sourceTree = "<group>"; };
 		494F1A671F351287004FC2D6 /* coinPickup.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = coinPickup.mp3; sourceTree = "<group>"; };
 		494F1A691F351CBC004FC2D6 /* menuBackgroundMusic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = menuBackgroundMusic.mp3; sourceTree = "<group>"; };
@@ -114,7 +103,6 @@
 		49E21A201F140501009E4C88 /* ka1.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = ka1.ttf; sourceTree = "<group>"; };
 		49F55E531F20155100E8553F /* sprites.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = sprites.atlas; sourceTree = "<group>"; };
 		49F605571F227FD3007B7BBD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		7A9A8732DB0052A521AE7581 /* Pods-MonkeyBusinessUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MonkeyBusinessUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MonkeyBusinessUITests/Pods-MonkeyBusinessUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		A0213DF68CE1A20D8EBF8914 /* Pods-MonkeyBusiness.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MonkeyBusiness.release.xcconfig"; path = "Pods/Target Support Files/Pods-MonkeyBusiness/Pods-MonkeyBusiness.release.xcconfig"; sourceTree = "<group>"; };
 		E5256F352AE786916C851BF5 /* Pods_MonkeyBusiness.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MonkeyBusiness.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -134,7 +122,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B7695C6BBC3D3E046C1BDD9 /* Pods_MonkeyBusinessTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -142,7 +129,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3AC5029A632268CFB2D90D95 /* Pods_MonkeyBusinessUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,8 +141,6 @@
 				49C0D4881F297288001D47A6 /* GameKit.framework */,
 				4903D44D1F2284D20033A61F /* AdSupport.framework */,
 				E5256F352AE786916C851BF5 /* Pods_MonkeyBusiness.framework */,
-				002EFA43FFFAF3EF5E41B94A /* Pods_MonkeyBusinessTests.framework */,
-				2A04122B93578CABE06716FB /* Pods_MonkeyBusinessUITests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -204,6 +188,7 @@
 				494578F11F0B05E200267C4A /* GameScene.sks */,
 				49D1D34B1F0D9D7D00FCB951 /* MainMenu.sks */,
 				49132D8B1F303FC100AE22AC /* CreditScene.sks */,
+				494696791F3A886B00CD2E7B /* Shop.sks */,
 			);
 			name = Scenes;
 			sourceTree = "<group>";
@@ -212,8 +197,6 @@
 			isa = PBXGroup;
 			children = (
 				494578EE1F0B05E200267C4A /* Jump */,
-				494579091F0B05E200267C4A /* JumpTests */,
-				494579141F0B05E200267C4A /* JumpUITests */,
 				494578ED1F0B05E200267C4A /* Products */,
 				490A7C2A1F1FD2F600A7F759 /* Frameworks */,
 				8C255E7070E9153B83D2B3C6 /* Pods */,
@@ -247,33 +230,11 @@
 			path = Jump;
 			sourceTree = "<group>";
 		};
-		494579091F0B05E200267C4A /* JumpTests */ = {
-			isa = PBXGroup;
-			children = (
-				4945790A1F0B05E200267C4A /* JumpTests.swift */,
-				4945790C1F0B05E200267C4A /* Info.plist */,
-			);
-			path = JumpTests;
-			sourceTree = "<group>";
-		};
-		494579141F0B05E200267C4A /* JumpUITests */ = {
-			isa = PBXGroup;
-			children = (
-				494579151F0B05E200267C4A /* JumpUITests.swift */,
-				494579171F0B05E200267C4A /* Info.plist */,
-			);
-			path = JumpUITests;
-			sourceTree = "<group>";
-		};
 		8C255E7070E9153B83D2B3C6 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				1E208FA89512BE4337063D75 /* Pods-MonkeyBusiness.debug.xcconfig */,
 				A0213DF68CE1A20D8EBF8914 /* Pods-MonkeyBusiness.release.xcconfig */,
-				0D07E8A79781DB4C06749BE7 /* Pods-MonkeyBusinessTests.debug.xcconfig */,
-				3ACD571A674A216DD7E8D1E5 /* Pods-MonkeyBusinessTests.release.xcconfig */,
-				7A9A8732DB0052A521AE7581 /* Pods-MonkeyBusinessUITests.debug.xcconfig */,
-				35E423B2E538212A2F1BBC61 /* Pods-MonkeyBusinessUITests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -402,6 +363,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4946967A1F3A886B00CD2E7B /* Shop.sks in Resources */,
 				49F55E541F20155100E8553F /* sprites.atlas in Resources */,
 				494F1A681F351287004FC2D6 /* coinPickup.mp3 in Resources */,
 				49551DEB1F36E1AC002FFC8A /* gameOver.wav in Resources */,
@@ -603,7 +565,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4945790B1F0B05E200267C4A /* JumpTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -611,7 +572,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				494579161F0B05E200267C4A /* JumpUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -779,7 +739,6 @@
 		};
 		4945791E1F0B05E200267C4A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0D07E8A79781DB4C06749BE7 /* Pods-MonkeyBusinessTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -795,7 +754,6 @@
 		};
 		4945791F1F0B05E200267C4A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3ACD571A674A216DD7E8D1E5 /* Pods-MonkeyBusinessTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -811,7 +769,6 @@
 		};
 		494579211F0B05E200267C4A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7A9A8732DB0052A521AE7581 /* Pods-MonkeyBusinessUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = YTYUD7N245;
@@ -826,7 +783,6 @@
 		};
 		494579221F0B05E200267C4A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 35E423B2E538212A2F1BBC61 /* Pods-MonkeyBusinessUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = YTYUD7N245;
