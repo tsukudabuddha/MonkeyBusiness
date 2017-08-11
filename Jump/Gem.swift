@@ -51,7 +51,10 @@ class Gem: SKSpriteNode {
         let oldGemCount = UserDefaults.standard.integer(forKey: "gemCount")
         UserDefaults.standard.set((oldGemCount + 1), forKey: "gemCount")
         
-        run(collectionSound)
+        if !MainMenu.isMuted {
+            run(collectionSound)
+        }
+        
         gemValue = 0
         
     }

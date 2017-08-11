@@ -142,7 +142,10 @@ class Enemy: SKSpriteNode {
         let seq = SKAction.sequence([death, removeScorpion])
         self.run(seq)
         
-        run(collisionNoise)
+        if !MainMenu.isMuted { // If isMuted  = false
+            run(collisionNoise)
+        }
+        
         
         Enemy.totalPointValue -= pointValue
         Enemy.totalAlive -= 1

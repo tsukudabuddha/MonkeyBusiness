@@ -17,6 +17,7 @@
 // TODO: Defeat all the enemies in animation for
 // TODO: Add more enemies
 // TODO: Dress up monkey
+// TODO: Fix background music turn on with toggle
 
 import SpriteKit
 import GameplayKit
@@ -56,6 +57,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var restartLabel: SKLabelNode!
     private var menuLabel: SKLabelNode!
     private var resumeLabel: SKLabelNode!
+    private var deathLabel: SKLabelNode!
     
     /* Etc */
     private var gem = Gem()
@@ -143,6 +145,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         player = childNode(withName: "//player") as! Player
         playerImage = childNode(withName: "//playerImage") as! SKSpriteNode
         dedLabel = childNode(withName: "//dedLabel") as! SKLabelNode
+        deathLabel = childNode(withName: "//deathLabel") as! SKLabelNode
         restartLabel = childNode(withName: "//restartLabel") as! SKLabelNode
         menuLabel = childNode(withName: "//menuLabel") as! SKLabelNode
         highScoreLabel = childNode(withName: "//highScoreLabel") as! SKLabelNode
@@ -293,6 +296,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if health <= 0 {
             gameState = .gameOver
+            deathLabel.text = "Your time ran out"
         }
         
         /* Once the jumpTimer is complete, the player falls to the ground and the timer is reset */
@@ -307,7 +311,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if powerUpTimer == 0 {
                 playerImage.run(SKAction(named: "powerUpRun")!)
                 play(node: powerUpMusic)
-                backgroundMusic.removeFromParent() // Stops playing regular background music
+                
+                if backgroundMusic.parent == self {
+                    backgroundMusic.removeFromParent() // Stops playing regular background music
+                }
                 characterSpeed = 200
             }
             /* Update SSJ timer */
@@ -317,7 +324,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if powerUpTimer >= powerUpTime {
                 player.state = .normal
                 playerImage.run(SKAction(named: "Run")!)
-                powerUpMusic.removeFromParent()
+                if powerUpMusic.parent == self {
+                    powerUpMusic.removeFromParent() // Stops playing powerUp background music
+                }
                 play(node: backgroundMusic) // Starts playing the regular background music
                 characterSpeed = 150
             }
@@ -452,7 +461,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     musicToggle.texture = SKTexture(imageNamed: "musicOff")
                     UserDefaults.standard.set(MainMenu.isMuted, forKey: "isMuted")
                 }
-                print("touchedNode is toggle")
+                play(node: backgroundMusic)
+                print("touched")
             }
             
         } else if touchedNode == playPauseButton { // ... unless the node is the pause button
@@ -726,6 +736,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
             } else {
                 gameState = .gameOver
+                deathLabel.text = "Death by \(enemy.type)"
             }
             break
             
@@ -741,6 +752,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
             } else {
                 gameState = .gameOver
+                deathLabel.text = "Death by \(enemy.type)"
             }
             
         default:
@@ -768,10 +780,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameOverScreen.run(SKAction.moveTo(y: 0, duration: 0.5))
         
         /* End background music */
-        backgroundMusic.removeFromParent()
+        if backgroundMusic.parent == self {
+            backgroundMusic.removeFromParent()
+        }
+        
         
         /* Run Wha Wha Noise */
-        run(gameOverNoise)
+        play(audio: gameOverNoise)
         
         /* Hide all the unnecessary labels and change death label to output player score */
         dedLabel.text = "Your Score: \(points)"
@@ -1210,9 +1225,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func play(node: SKAudioNode) {
-        if !MainMenu.isMuted { // if isMuted = false
+        if !MainMenu.isMuted && node.parent != self { // if isMuted = false
             addChild(node)
-        } else {
+           
+        } else if node.parent == self {
             node.removeFromParent()
         }
     }
