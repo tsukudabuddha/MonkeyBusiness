@@ -29,6 +29,7 @@
 		49551DEB1F36E1AC002FFC8A /* gameOver.wav in Resources */ = {isa = PBXBuildFile; fileRef = 49551DEA1F36E1AC002FFC8A /* gameOver.wav */; };
 		496483E01F26992D00A0ACA4 /* Gem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496483DF1F26992C00A0ACA4 /* Gem.swift */; };
 		4967AC631F2ABFCE00926E83 /* Spikes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4967AC621F2ABFCE00926E83 /* Spikes.swift */; };
+		498694CB1F3CC63E000FAFE4 /* Shop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498694CA1F3CC63E000FAFE4 /* Shop.swift */; };
 		49A143971F1EC99600CAA597 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49A143961F1EC99600CAA597 /* Actions.sks */; };
 		49C0D4831F292F55001D47A6 /* Cherry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C0D4821F292F55001D47A6 /* Cherry.swift */; };
 		49C0D4891F297288001D47A6 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49C0D4881F297288001D47A6 /* GameKit.framework */; };
@@ -90,6 +91,7 @@
 		49551DEA1F36E1AC002FFC8A /* gameOver.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = gameOver.wav; sourceTree = "<group>"; };
 		496483DF1F26992C00A0ACA4 /* Gem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gem.swift; sourceTree = "<group>"; };
 		4967AC621F2ABFCE00926E83 /* Spikes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Spikes.swift; sourceTree = "<group>"; };
+		498694CA1F3CC63E000FAFE4 /* Shop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shop.swift; sourceTree = "<group>"; };
 		49A143961F1EC99600CAA597 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		49C0D4821F292F55001D47A6 /* Cherry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cherry.swift; sourceTree = "<group>"; };
 		49C0D4881F297288001D47A6 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
@@ -171,6 +173,7 @@
 			children = (
 				49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */,
 				494578F51F0B05E200267C4A /* GameScene.swift */,
+				498694CA1F3CC63E000FAFE4 /* Shop.swift */,
 				4967AC621F2ABFCE00926E83 /* Spikes.swift */,
 				496483DF1F26992C00A0ACA4 /* Gem.swift */,
 				49C0D4821F292F55001D47A6 /* Cherry.swift */,
@@ -554,6 +557,7 @@
 				49D1D3481F0D615800FCB951 /* MSButtonNode.swift in Sources */,
 				49266ACB1F0F0D170035AF75 /* Platform.swift in Sources */,
 				49C0D4831F292F55001D47A6 /* Cherry.swift in Sources */,
+				498694CB1F3CC63E000FAFE4 /* Shop.swift in Sources */,
 				49266AD31F11C8DD0035AF75 /* CreditScene.swift in Sources */,
 				49D1D3551F0EC5CE00FCB951 /* Enemy.swift in Sources */,
 				4967AC631F2ABFCE00926E83 /* Spikes.swift in Sources */,

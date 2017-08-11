@@ -1,26 +1,24 @@
 //
-//  MainMenu.swift
+//  Shop.swift
 //  MonkeyBusiness
 //
-//  Created by Andrew Tsukuda on 7/5/17.
+//  Created by Andrew Tsukuda on 8/10/17.
 //  Copyright © 2017 Andrew Tsukuda. All rights reserved.
 //
+
 
 import SpriteKit
 import Firebase
 import AVFoundation
 
-class MainMenu: SKScene, SKPhysicsContactDelegate {
+class Shop: SKScene, SKPhysicsContactDelegate {
+    
     private var playLabel: SKLabelNode!
-    private var creditLabel: SKLabelNode!
-    private var themeLabel: SKLabelNode!
-    private var businessLabel: SKLabelNode!
     private var gemLabel: SKLabelNode!
-    private var leaderBoardLabel: SKLabelNode!
-    private var musicToggle: SKSpriteNode!
+
     private var labelArray: [SKLabelNode]! = []
     private var gameStartSound: SKAction!
-    private var backgroundMusic: SKAudioNode!
+
     var gameScene: GameScene!
     var player: Player!
     private var playerImage: SKSpriteNode!
@@ -28,33 +26,22 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     
     static var viewController: GameViewController!
     static var character: Bool = false
-    static var isMuted: Bool  = false
-    
     var gems: Int = UserDefaults.standard.integer(forKey: "gemCount")
     
     override func didMove(to view: SKView) {
         /* Set UI connections */
         playLabel = self.childNode(withName: "playLabel") as! SKLabelNode
-        creditLabel = self.childNode(withName: "creditLabel") as! SKLabelNode
-        themeLabel = childNode(withName: "themeLabel") as! SKLabelNode
         gemLabel = childNode(withName: "gemLabel") as! SKLabelNode
-        leaderBoardLabel = childNode(withName: "leaderBoardLabel") as! SKLabelNode
-        businessLabel = childNode(withName: "\"business\"Label") as! SKLabelNode
-        musicToggle = childNode(withName: "musicToggle") as! SKSpriteNode
         gameScene = GameScene(fileNamed: "GameScene")!
-       
         
         /* Create label array to make edits to all of them */
         labelArray.append(playLabel)
-        labelArray.append(creditLabel)
-        labelArray.append(themeLabel)
-        labelArray.append(leaderBoardLabel)
         
         /* Audio */
-//        if let musicURL = Bundle.main.url(forResource: "menuBackgroundMusic", withExtension: "mp3") {
-//            backgroundMusic = SKAudioNode(url: musicURL)
-//            addChild(backgroundMusic)
-//        }
+        //        if let musicURL = Bundle.main.url(forResource: "menuBackgroundMusic", withExtension: "mp3") {
+        //            backgroundMusic = SKAudioNode(url: musicURL)
+        //            addChild(backgroundMusic)
+        //        }
         
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
@@ -69,17 +56,10 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         /* Instantiate Game Audio */
         gameStartSound = SKAction.playSoundFileNamed("gameStart", waitForCompletion: false)
         
-        /* Mute */
-        MainMenu.isMuted = UserDefaults.standard.bool(forKey: "isMuted")
-        if MainMenu.isMuted {
-            musicToggle.texture = SKTexture(imageNamed: "musicOff")
-        } else {
-            musicToggle.texture = SKTexture(imageNamed: "musicOn")
-        }
-        
-        
         physicsWorld.contactDelegate = self
-        beginningAnimation()
+        
+        playerImage.run(SKAction(named: "beginAnimationMonkey")!)
+        playerImage.run(SKAction(named: "Run")!)
         
         
     }
@@ -125,7 +105,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
                 label.fontColor = UIColor.white
             }
         }
-
+        
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -134,42 +114,14 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         
         let touchedNode = self.atPoint(location)
         
-        if(touchedNode.name == "creditLabel"){
-            self.loadCredits()
-            
-        } else if(touchedNode.name == "playLabel"){
+        if touchedNode.name == "playLabel" {
             self.loadGame()
-            
-        } else if(touchedNode == themeLabel){
-            if GameScene.theme == .monkey {
-                GameScene.theme = .fox
-                themeLabel.text = "Foxy"
-                player.run(SKAction(named: "characterRun")!)
-                player.run(SKAction.scale(to: CGSize(width: SKTexture(imageNamed: "player-idle-1").size().width , height: SKTexture(imageNamed: "player-idle-1").size().height), duration: 0))
-                
-            } else {
-                GameScene.theme = .monkey
-                themeLabel.text = "Monkey"
-                player.run(SKAction(named: "Run")!)
-                player.run(SKAction.scale(to: CGSize(width: SKTexture(imageNamed: "Side1").size().width , height: SKTexture(imageNamed: "Side1").size().height), duration: 0))
-            }
-        } else if touchedNode == leaderBoardLabel {
-            MainMenu.viewController.checkGCLeaderboard()
-        } else if touchedNode == musicToggle {
-            if MainMenu.isMuted {
-                MainMenu.isMuted = false
-                musicToggle.texture = SKTexture(imageNamed: "musicOn")
-                UserDefaults.standard.set(MainMenu.isMuted, forKey: "isMuted")
-            } else {
-                MainMenu.isMuted = true
-                musicToggle.texture = SKTexture(imageNamed: "musicOff")
-                UserDefaults.standard.set(MainMenu.isMuted, forKey: "isMuted")
-            }
         }
+        
         for label in labelArray {
             label.fontColor = UIColor.white
         }
-
+        
     }
     
     
@@ -177,7 +129,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         /* Called if player is on bottom of screen */
         if player.orientation == .bottom {
             player.physicsBody?.velocity.dx = characterSpeed
-        
+            
             if player.position.x > self.frame.width - 50 {
                 
                 /* Change Gravity so right is down */
@@ -225,7 +177,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         /* Called if the player is on left-side of screen */
         if player.orientation == .left {
             player.physicsBody?.velocity.dy = -1 * characterSpeed
-           
+            
             if player.position.y < 10 {
                 
                 /* Change Gravity so bottom is down */
@@ -242,11 +194,8 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
     
     
     func loadGame() {
-        /* Play gameStart audio if MainMenu isMuted = false */
-        if !MainMenu.isMuted {
-            run(gameStartSound)
-        }
-        
+        /* Play gameStart audio */
+        run(gameStartSound)
         
         /* Load Game Scene */
         guard let scene = GameScene(fileNamed: "GameScene") as GameScene! else {
@@ -261,27 +210,5 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
         view?.presentScene(scene, transition: transition)
         
     }
-    
-    func loadCredits() {
-        /* Load Game Scene */
-        guard let scene = CreditScene(fileNamed: "CreditScene") as CreditScene! else {
-            return
-        }
-        
-        /* Ensure correct aspect mode */
-        scene.scaleMode = .aspectFill
-        
-        /* Restart Game Scene */
-        let doorsOpen = SKTransition.doorsOpenHorizontal(withDuration: 0.5)
-        view?.presentScene(scene, transition: doorsOpen)
-        
-    }
-    
-    func beginningAnimation() {
-        playerImage.physicsBody?.applyImpulse(CGVector(dx: 0, dy: 10))
-        playerImage.run(SKAction(named: "beginAnimationMonkey")!)
-        playerImage.run(SKAction(named: "Run")!)
-    }
-    
     
 }

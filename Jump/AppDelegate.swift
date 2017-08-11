@@ -27,5 +27,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GameScene.stayPaused = true
        
     }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        /* Makes sure muted state stays even after log off */
+        UserDefaults.standard.set(MainMenu.isMuted, forKey: "isMuted")
+    }
 }
 

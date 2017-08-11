@@ -46,7 +46,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var timerBar: SKSpriteNode!
     private var slidingBarTop: SKSpriteNode!
     private var slidingBarBottom: SKSpriteNode!
-    private var resumeLabel: SKLabelNode!
+    private var musicToggle: SKSpriteNode!
     
     /* Labels */
     private var roundLabel: SKLabelNode! = SKLabelNode()
@@ -55,6 +55,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var highScoreLabel: SKLabelNode!
     private var restartLabel: SKLabelNode!
     private var menuLabel: SKLabelNode!
+    private var resumeLabel: SKLabelNode!
     
     /* Etc */
     private var gem = Gem()
@@ -154,11 +155,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         slidingBarTop = childNode(withName: "slidingWallTop") as! SKSpriteNode
         slidingBarBottom = childNode(withName: "slidingWallBottom") as! SKSpriteNode
         resumeLabel = pauseScreen.childNode(withName: "resumeLabel") as! SKLabelNode
+        musicToggle = childNode(withName: "//musicToggle") as! SKSpriteNode
         
         /* Audio */
         if let musicURL = Bundle.main.url(forResource: "PimPoyPocket", withExtension: "wav") {
             backgroundMusic = SKAudioNode(url: musicURL)
-            self.addChild(backgroundMusic)
+            play(node: backgroundMusic)
         }
         
         if let musicURL = Bundle.main.url(forResource: "powerUpMusic", withExtension: "wav") {
@@ -183,6 +185,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* This helps reduce the vibration lag when the player dies */
         generator.prepare()
+        
+        /* Mute Toggle */
+        if MainMenu.isMuted {
+            musicToggle.texture = SKTexture(imageNamed: "musicOff")
+        } else {
+            musicToggle.texture = SKTexture(imageNamed: "musicOn")
+        }
         
     }
     
@@ -297,7 +306,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Check to see if the player just went SSJ, if so run the animation and begin music*/
             if powerUpTimer == 0 {
                 playerImage.run(SKAction(named: "powerUpRun")!)
-                self.addChild(powerUpMusic)
+                play(node: powerUpMusic)
                 backgroundMusic.removeFromParent() // Stops playing regular background music
                 characterSpeed = 200
             }
@@ -309,7 +318,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 player.state = .normal
                 playerImage.run(SKAction(named: "Run")!)
                 powerUpMusic.removeFromParent()
-                self.addChild(backgroundMusic) // Starts playing the regular background music
+                play(node: backgroundMusic) // Starts playing the regular background music
                 characterSpeed = 150
             }
         }
@@ -433,6 +442,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 pauseScreen.run(SKAction.moveTo(x: 320, duration: 0.25))
                 pointsLabel.isHidden = false
                 resumeLabel.fontColor = UIColor.white
+            } else if touchedNode == musicToggle {
+                if MainMenu.isMuted {
+                    MainMenu.isMuted = false
+                    musicToggle.texture = SKTexture(imageNamed: "musicOn")
+                    UserDefaults.standard.set(MainMenu.isMuted, forKey: "isMuted")
+                } else {
+                    MainMenu.isMuted = true
+                    musicToggle.texture = SKTexture(imageNamed: "musicOff")
+                    UserDefaults.standard.set(MainMenu.isMuted, forKey: "isMuted")
+                }
+                print("touchedNode is toggle")
             }
             
         } else if touchedNode == playPauseButton { // ... unless the node is the pause button
@@ -1181,6 +1201,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             returnPoint = CGPoint(x: rightPlatforms[random].position.x - 27, y: rightPlatforms[random].position.y)
         }
         return returnPoint
+    }
+    
+    func play(audio: SKAction) {
+        if !MainMenu.isMuted {
+            run(audio)
+        } 
+    }
+    
+    func play(node: SKAudioNode) {
+        if !MainMenu.isMuted { // if isMuted = false
+            addChild(node)
+        } else {
+            node.removeFromParent()
+        }
     }
     
     
