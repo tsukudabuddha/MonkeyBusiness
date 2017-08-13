@@ -13,11 +13,11 @@
 // TODO: Add spikes
 // TODO: Powerup that auto shoots
 // TOOD: Make gems exist for a reason
-// TODO: Make character physicsbody rectangle so that it no longer gets stuck on platforms
-// TODO: Defeat all the enemies in animation for
 // TODO: Add more enemies
 // TODO: Dress up monkey
 // TODO: Fix background music turn on with toggle
+// TODO: Fix disappear
+// TODO: Add in chain counter/ more points
 
 import SpriteKit
 import GameplayKit
@@ -40,7 +40,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var player: Player!
     private var playerImage: SKSpriteNode!
     private var gameOverScreen: SKSpriteNode!
-    private var instructionOverlay: SKSpriteNode!
     private var pauseScreen: SKSpriteNode!
     private var playPauseButton: SKSpriteNode!
     private var pauseScoreLabel: SKLabelNode!
@@ -77,6 +76,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var jumping: Bool = false
     private var characterOrientation: characterOrientationState = .bottom
     private var points: Int = 0
+    private var chain: Int = 0
     var characterSpeed: CGFloat = 150
     var viewController: GameViewController!
     var sessionGemCounter: Int = 0 // Public so that it can be changed by the gem.onContact()
@@ -100,6 +100,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             /* Scale health bar between 0.0 -> 1.0 e.g 0 -> 100% */
             timerBar.xScale = health
+            
+//            /* "Flash" when low health */
+//            if health <  0.33 {
+//                let fadeOut = SKAction.fadeOut(withDuration: 0.05)
+//                let fadeIn = SKAction.fadeIn(withDuration: 0.05)
+//                let seq = SKAction.sequence([fadeOut, fadeIn])
+//                player.run(seq)
+//            } else {
+//                player.alpha = 1
+//            }
+            
             
         }
     }
@@ -150,7 +161,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         menuLabel = childNode(withName: "//menuLabel") as! SKLabelNode
         highScoreLabel = childNode(withName: "//highScoreLabel") as! SKLabelNode
         gameOverScreen = childNode(withName: "gameOverScreen") as! SKSpriteNode
-        instructionOverlay = childNode(withName: "startingOverlay") as! SKSpriteNode
         playPauseButton = childNode(withName: "playPauseButton") as! SKSpriteNode
         pauseScreen = childNode(withName: "pauseScreen") as! SKSpriteNode
         pauseScoreLabel = childNode(withName: "//pauseScoreLabel") as! SKLabelNode
@@ -300,7 +310,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         /* Once the jumpTimer is complete, the player falls to the ground and the timer is reset */
-        if jumpTimer > jumpTime{
+        if jumpTimer > jumpTime {
             player.physicsBody?.affectedByGravity = true
             jumpTimer = 0
         }
@@ -741,7 +751,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             break
             
         case .left:
-            if player.position.x + 5 > enemy.position.x + (enemy.size.height / 2) {
+            if player.position.x + 8 > enemy.position.x + (enemy.size.height / 2) {
                 enemy.isAlive = false
                 enemy.die()
                 player.physicsBody?.velocity = CGVector.zero
@@ -978,6 +988,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 leftPlatforms[2].position = CGPoint(x: x1, y: y3)
                 leftPlatforms[3].position = CGPoint(x: x1, y: y4)
                 break
+            case 3:
+                leftPlatforms[0].position = CGPoint(x: x3, y: y1)
+                leftPlatforms[1].position = CGPoint(x: x2, y: y2)
+                leftPlatforms[2].position = CGPoint(x: x2, y: y3)
+                leftPlatforms[3].position = CGPoint(x: x1, y: y4)
             default:
                 print("default ran")
             }
@@ -1002,6 +1017,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 rightPlatforms[2].position = CGPoint(x: oppositeX2, y: y3)
                 rightPlatforms[3].position = CGPoint(x: oppositeX3, y: y4)
                 break
+            case 3:
+                rightPlatforms[0].position = CGPoint(x: oppositeX1, y: y1)
+                rightPlatforms[1].position = CGPoint(x: oppositeX2, y: y2)
+                rightPlatforms[2].position = CGPoint(x: oppositeX2, y: y3)
+                rightPlatforms[3].position = CGPoint(x: oppositeX3, y: y4)
             default:
                 print("default ran")
             }
