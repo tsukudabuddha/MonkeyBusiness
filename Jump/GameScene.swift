@@ -18,6 +18,7 @@
 // TODO: Fix background music turn on with toggle
 // TODO: Fix disappear
 // TODO: Add in chain counter/ more points
+// TODO: Add label informing player that if the player missees, they will have multiple chances with last one
 
 import SpriteKit
 import GameplayKit
@@ -77,6 +78,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var characterOrientation: characterOrientationState = .bottom
     private var points: Int = 0
     private var chain: Int = 0
+    private var reversed = false
     var characterSpeed: CGFloat = 150
     var viewController: GameViewController!
     var sessionGemCounter: Int = 0 // Public so that it can be changed by the gem.onContact()
@@ -206,6 +208,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             musicToggle.texture = SKTexture(imageNamed: "musicOn")
         }
         
+        /* Spawn Platforms and enemies */
+        spawnEnemy(round: round)
+        spawnObstacles(orientation: player.orientation)
+        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -299,7 +305,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         /* Only countdown death timer when there are still enemies alive */
-        if Enemy.totalAlive > 0 {
+        if Enemy.totalAlive > 0 && player.state != .superSaiyajin {
             health -= 0.0006 // MARK: Tweak speed of rounds
         }
         
@@ -386,6 +392,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         checkEnemy(enemy: (nodeB as! Enemy), contactPoint: contact.contactPoint)
                     } else if (nodeA as! Player).state == .superSaiyajin {
                         (nodeB as! Enemy).die()
+                        
+                        if let index = enemyArray.index(of: (nodeB as! Enemy)) {
+                            enemyArray.remove(at: index)
+                        }
+                        
                         health += CGFloat(Double((nodeB as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
                         points += (nodeB as! Enemy).pointValue
                         pointsLabel.text = String(points)
@@ -404,6 +415,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         checkEnemy(enemy: (nodeA as! Enemy), contactPoint: contact.contactPoint)
                     } else if (nodeB as! Player).state == .superSaiyajin {
                         (nodeA as! Enemy).die()
+                        
+                        if let index = enemyArray.index(of: (nodeA as! Enemy)) {
+                            enemyArray.remove(at: index)
+                        }
                         health += CGFloat(Double((nodeA as! Enemy).pointValue) / Double(Enemy.totalPointValue)) / 2
                         points += (nodeA as! Enemy).pointValue
                         pointsLabel.text = String(points)
@@ -476,17 +491,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
         } else if touchedNode == playPauseButton { // ... unless the node is the pause button
-            if gameState == .active {
+            if gameState != .gameOver {
                 gameState = .paused
                 playPauseButton.texture = SKTexture(imageNamed: "play")
                 pauseScreen.position.x = 0
                 pauseScoreLabel.text = "Your Score: \(points)"
                 pointsLabel.isHidden = true
-            } else if gameState == .paused {
-                gameState = .active
-                playPauseButton.texture = SKTexture(imageNamed: "pause")
-                pauseScreen.run(SKAction.moveTo(x: 320, duration: 0.25))
-                pointsLabel.isHidden = false
             }
         }
         
@@ -562,15 +572,56 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 run(seq)
             }
             gameState = .reversed
+            reversed = true
             
         } else if (round - 1) % 5 == 0 {
             if gameState == .reversed {
                 run(seq)
             }
             gameState = .active
+            reversed = false
         } else {
             gameState = .active
+            reversed = false
         }
+        if Enemy.totalAlive == 1 {
+            if enemyArray[0].orientation == .right {
+                if gameState == .active {
+                    if player.orientation == .top {
+                        gameState = .reversed
+                        run(seq)
+                    } else if player.orientation == .bottom {
+                        gameState = .active
+                    }
+                } else { // Reverse Case
+                    if player.orientation == .bottom {
+                         gameState = .active
+                        run(seq)
+                    } else if player.orientation == .top {
+                        gameState = .reversed
+                    }
+                }
+            } else if enemyArray[0].orientation == .left {
+                if gameState == .active {
+                    if player.orientation == .bottom {
+                        gameState = .reversed
+                        run(seq)
+                    } else if player.orientation == .top {
+                        gameState = .active
+                    }
+                } else { // Reverse Case
+                    if player.orientation == .top {
+                        gameState = .reversed
+                    } else if player.orientation == .bottom {
+                        gameState = .active
+                        run(seq)
+                    }
+                    
+                }
+            }
+            print("Orientation: \(enemyArray[0].orientation)")
+        }
+        print("player orientation: \(player.orientation)")
     }
     
     func setupGame() {
@@ -694,11 +745,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
             
+            if round == 0 {
+                if adjustedSpawn < 4 {
+                    adjustedSpawn += 4
+                }
+            }
+            
             
             /* Create an enemy object and add it to the scene and enemy array */
             let enemy = Enemy(round: round)
             enemyArray.append(enemy)
             
+            /* Conditional to prevent king cobra from spawniong outside of point */
             if (positionArray[adjustedSpawn][1] == 0 || (positionArray[adjustedSpawn][1] == heightArray[heightArray.count - 1]) && enemy.type == .cobra) {
                 
                 if enemy.orientation == .right {
@@ -707,6 +765,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     enemy.position.x += 10
                 }
             }
+            
             self.addChild(enemy)
             
             /* Check to see which side the enemy is on, then rotate and set velcoity accordingly */
@@ -738,11 +797,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if player.position.x + 25 < enemy.position.x - (enemy.size.height / 2) {
                 enemy.isAlive = false
                 enemy.die()
+                
+                if let index = enemyArray.index(of: enemy) {
+                    enemyArray.remove(at: index)
+                }
+                
                 player.physicsBody?.velocity = CGVector.zero
                 player.physicsBody?.applyImpulse(CGVector(dx: -10, dy: 0))
                 points += enemy.pointValue
                 pointsLabel.text = String(points)
-                health += CGFloat(0.005 * Double(enemy.pointValue))
+                health += CGFloat(0.01 * Double(enemy.pointValue))
                 
             } else {
                 gameState = .gameOver
@@ -754,11 +818,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if player.position.x + 8 > enemy.position.x + (enemy.size.height / 2) {
                 enemy.isAlive = false
                 enemy.die()
+                if let index = enemyArray.index(of: enemy) {
+                    enemyArray.remove(at: index)
+                }
                 player.physicsBody?.velocity = CGVector.zero
                 player.physicsBody?.applyImpulse(CGVector(dx: 10, dy: 0))
                 points += enemy.pointValue
                 pointsLabel.text = String(points)
-                health += CGFloat(0.005 * Double(enemy.pointValue))
+                health += CGFloat(0.01 * Double(enemy.pointValue))
                 
             } else {
                 gameState = .gameOver
@@ -822,6 +889,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         /* Remove all scorpions from scene */
         for scorpion in enemyArray {
             scorpion.die()
+            if let index = enemyArray.index(of: scorpion) {
+                enemyArray.remove(at: index)
+            }
         }
         
         /* Haptic Feeback */
