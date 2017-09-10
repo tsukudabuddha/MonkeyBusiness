@@ -151,7 +151,7 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
                 GameScene.theme = .monkey
                 themeLabel.text = "Monkey"
                 player.run(SKAction(named: "Run")!)
-                player.run(SKAction.scale(to: CGSize(width: SKTexture(imageNamed: "Side1").size().width , height: SKTexture(imageNamed: "Side1").size().height), duration: 0))
+                player.run(SKAction.scale(to: CGSize(width: 23, height: 25), duration: 0))
             }
         } else if touchedNode == leaderBoardLabel {
             MainMenu.viewController.checkGCLeaderboard()

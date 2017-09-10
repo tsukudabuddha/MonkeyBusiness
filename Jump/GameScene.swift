@@ -16,9 +16,10 @@
 // TODO: Add more enemies
 // TODO: Dress up monkey
 // TODO: Fix background music turn on with toggle
-// TODO: Fix disappear
 // TODO: Add in chain counter/ more points
 // TODO: Add label informing player that if the player missees, they will have multiple chances with last one
+
+// TODO: Fix Round 5 bug
 
 import SpriteKit
 import GameplayKit
@@ -112,6 +113,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //            } else {
 //                player.alpha = 1
 //            }
+            
+            // TODO: Change opacity then wait then change back
             
             
         }
