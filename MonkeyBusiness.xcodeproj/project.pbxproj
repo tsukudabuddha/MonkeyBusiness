@@ -34,7 +34,6 @@
 		49C0D4831F292F55001D47A6 /* Cherry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C0D4821F292F55001D47A6 /* Cherry.swift */; };
 		49C0D4891F297288001D47A6 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49C0D4881F297288001D47A6 /* GameKit.framework */; };
 		49D1D3461F0D55E800FCB951 /* monkey.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D3451F0D55E800FCB951 /* monkey.sks */; };
-		49D1D3481F0D615800FCB951 /* MSButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3471F0D615800FCB951 /* MSButtonNode.swift */; };
 		49D1D34A1F0D845000FCB951 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D3491F0D845000FCB951 /* Player.swift */; };
 		49D1D34C1F0D9D7D00FCB951 /* MainMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = 49D1D34B1F0D9D7D00FCB951 /* MainMenu.sks */; };
 		49D1D34E1F0D9E6700FCB951 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */; };
@@ -96,7 +95,6 @@
 		49C0D4821F292F55001D47A6 /* Cherry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cherry.swift; sourceTree = "<group>"; };
 		49C0D4881F297288001D47A6 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 		49D1D3451F0D55E800FCB951 /* monkey.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = monkey.sks; sourceTree = "<group>"; };
-		49D1D3471F0D615800FCB951 /* MSButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MSButtonNode.swift; sourceTree = "<group>"; };
 		49D1D3491F0D845000FCB951 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		49D1D34B1F0D9D7D00FCB951 /* MainMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MainMenu.sks; sourceTree = "<group>"; };
 		49D1D34D1F0D9E6700FCB951 /* MainMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
@@ -153,7 +151,6 @@
 				49D1D3451F0D55E800FCB951 /* monkey.sks */,
 				49E21A201F140501009E4C88 /* ka1.ttf */,
 				49D1D3511F0EB71C00FCB951 /* go3v2.ttf */,
-				49D1D3471F0D615800FCB951 /* MSButtonNode.swift */,
 				494578F31F0B05E200267C4A /* originalActions.sks */,
 				49A143961F1EC99600CAA597 /* Actions.sks */,
 				49F605571F227FD3007B7BBD /* GoogleService-Info.plist */,
@@ -554,7 +551,6 @@
 				494578F61F0B05E200267C4A /* GameScene.swift in Sources */,
 				494578F81F0B05E200267C4A /* GameViewController.swift in Sources */,
 				494578F01F0B05E200267C4A /* AppDelegate.swift in Sources */,
-				49D1D3481F0D615800FCB951 /* MSButtonNode.swift in Sources */,
 				49266ACB1F0F0D170035AF75 /* Platform.swift in Sources */,
 				49C0D4831F292F55001D47A6 /* Cherry.swift in Sources */,
 				498694CB1F3CC63E000FAFE4 /* Shop.swift in Sources */,
