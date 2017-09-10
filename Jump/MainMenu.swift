@@ -56,6 +56,13 @@ class MainMenu: SKScene, SKPhysicsContactDelegate {
 //            addChild(backgroundMusic)
 //        }
         
+        // Set the themeLabel
+        if GameScene.theme == .fox {
+            themeLabel.text = "Foxy"
+            player.run(SKAction(named: "characterRun")!)
+            player.run(SKAction.scale(to: CGSize(width: SKTexture(imageNamed: "player-idle-1").size().width , height: SKTexture(imageNamed: "player-idle-1").size().height), duration: 0))
+        }
+        
         // Connect variables to code
         player = childNode(withName: "//player") as! Player
         playerImage = childNode(withName: "//playerImage") as! SKSpriteNode
